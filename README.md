@@ -54,7 +54,7 @@ Hazlo en este orden: la web tiene que estar publicada antes de desplegar el scri
 La tarea está en [`apps-script/Tarea.gs`](apps-script/Tarea.gs) y va en el mismo proyecto que `Code.gs`. Cada hora:
 
 1. **COLORES** ← "RES · Inventario" (pestaña STOCK): gramos DISPONIBLE de cada filamento. `IDS_FILAMENTO` queda como `ID:gramos;ID:gramos` y `DISPONIBLE_G` es la suma. Los negativos cuentan como 0. ELEGIBLE no se toca.
-2. **PEDIDOS_WEB → "RES · Pedidos"**: cada pedido web nuevo se copia una sola vez a PEDIDOS (Por cobrar · Pendiente, TRANSFERENCIA en la UE y PAYPAL fuera), LINEAS (una por réplica) y CLIENTES (por email; si no existe, uno nuevo). Las columnas con fórmula se copian de la fila anterior. El SR-XXXXXX queda en ID_FORM y el RES-AAAA-NNN en la columna **W** (REGISTRADO) de PEDIDOS_WEB.
+2. **PEDIDOS_WEB ↔ "RES · Pedidos"**: la tarea **no crea pedidos**. Los importa la app Pedidos Resinator, que escribe el SR-XXXXXX en ID_FORM y `web-sr-xxxxxx` en ID_APP. La tarea busca cada pedido web por ID_FORM y apunta su RES-AAAA-NNN en la columna **W** (REGISTRADO) de PEDIDOS_WEB; si la app aún no lo ha importado, lo vuelve a mirar a la hora siguiente.
 3. **ESTADO_WEB** ← "RES · Pedidos": estado, pago, servicio y tracking; placas hechas/total según las "Bandeja N" de COMPROMETIDO (una bandeja está hecha cuando todas sus filas están CONSUMIDO). La primera vez que el pago deja de ser Pendiente se fija FECHA_PAGO y FECHA_ENVIO_ESTIMADA, y ya no cambian. El ID_APP de RES · Pedidos pasa a la columna **X**.
 4. **CONFIG**: A2 = horas que quedan por imprimir de los pedidos "En producción" (las horas de catalog.json, descontando las bandejas hechas) y D2 = fecha. **E2 (PEDIDOS_ABIERTOS) no se toca.**
 
@@ -62,7 +62,7 @@ Equivalencias estado: Por cobrar → pendiente_pago · En producción → en_pro
 
 Instalación:
 
-1. **Borra antes los pedidos de prueba** de PEDIDOS_WEB y ESTADO_WEB: si no, la tarea los copiará a "RES · Pedidos" como pedidos reales.
+1. **Borra antes los pedidos de prueba** de PEDIDOS_WEB y ESTADO_WEB: si no, la app los importará a "RES · Pedidos" como pedidos reales.
 2. En el editor de Apps Script: **+ (Añadir archivo) → Secuencia de comandos**, llámalo `Tarea` y pega [`apps-script/Tarea.gs`](apps-script/Tarea.gs).
 3. Sustituye `appsscript.json` por [`apps-script/appsscript.json`](apps-script/appsscript.json): ahora pide acceso a tus hojas (para abrir Inventario y Pedidos) y a los activadores.
 4. Guarda, elige **instalarTarea** y **Ejecutar**. Google volverá a pedir permisos. Crea el activador de cada hora y hace la primera pasada; el registro de ejecución muestra un resumen (`COLORES: … · Pedidos nuevos: … · Estados: … · Cola: … h`).
