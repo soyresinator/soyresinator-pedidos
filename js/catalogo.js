@@ -17,6 +17,8 @@ async function main() {
       C.loadJSON('data/colores-serie.json').catch(() => ({ colores: [] })),
       C.initI18n()
     ]);
+    // "oculto": true en catalog.json = aún no presentado; no se muestra ni se puede pedir.
+    cat.productos = cat.productos.filter(p => !p.oculto);
     Object.assign(state, { cfg, cat, ship, serie: serie.colores || [] });
   } catch (e) {
     await C.initI18n().catch(() => {});
@@ -144,7 +146,7 @@ function card(p, tax) {
       <div class="media">
         ${p.especial ? `<span class="badge">${C.esc(C.t('cat.especial'))}</span>` : ''}
         <span class="ph-name" aria-hidden="true">${C.esc(p.nombre)}</span>
-        <img data-ph src="img/${p.id}-1.jpg" alt="${C.esc(p.nombre)}" loading="lazy" decoding="async" width="800" height="600">
+        <img data-ph src="img/${p.id}-1.webp" alt="${C.esc(p.nombre)}" loading="lazy" decoding="async" width="1200" height="675">
       </div>
       <div class="card-body">
         <h4>${C.esc(p.nombre)}</h4>
