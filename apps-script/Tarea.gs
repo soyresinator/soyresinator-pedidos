@@ -3,8 +3,8 @@
  *
  * Hace cuatro cosas, en este orden:
  *   1. COLORES      <- RES · Inventario (STOCK): gramos disponibles de cada color.
- *   2. PEDIDOS_WEB  -> RES · Pedidos: copia cada pedido web nuevo una sola vez (PEDIDOS, LINEAS y CLIENTES)
- *                      y apunta el RES-AAAA-NNN en la columna W (REGISTRADO).
+ *   2. PEDIDOS_WEB  <-> RES · Pedidos: NO crea pedidos (eso lo hace la app Pedidos Resinator).
+ *                      Busca el pedido por ID_FORM = SR-XXXXXX y apunta su RES-AAAA-NNN en la columna W (REGISTRADO).
  *   3. ESTADO_WEB   <- RES · Pedidos y COMPROMETIDO: estado, pago, placas, servicio, tracking e ID_APP (columna X).
  *   4. CONFIG       <- horas de impresión que quedan en cola (A2) y fecha (D2). PEDIDOS_ABIERTOS (E2) no se toca.
  *
@@ -27,7 +27,6 @@ const MAPA_ESTADO = {
   'listo': 'listo', 'empaquetado': 'listo', 'enviado': 'enviado', 'entregado': 'entregado', 'cancelado': 'cancelado'
 };
 const MAPA_PAGO = { 'pendiente': 'pendiente', '1ª parte': 'parcial', '1a parte': 'parcial', 'pagado': 'pagado', 'regalo': 'pagado' };
-const MAPA_SERVICIO_RES = { 'InPost': 'InPost', 'Correos Standard': 'Standard', 'Correos Premium': 'Premium' };
 const MAPA_SERVICIO_WEB = { 'InPost': 'InPost', 'Standard': 'Correos Standard', 'Premium': 'Correos Premium' };
 
 function instalarTarea() {
@@ -49,13 +48,12 @@ function tareaHoraria() {
     const inv = SpreadsheetApp.openById(TAREA.ID_INVENTARIO);
     const res = SpreadsheetApp.openById(TAREA.ID_PEDIDOS);
     const cat = ficheroPages('data/catalog.json');
-    const ship = ficheroPages('data/shipping.json');
     const cfgWeb = ficheroPages('data/config.json');
     const ahora = new Date();
     const log = [];
 
     log.push(sincronizarColores(inv, ahora));
-    log.push(registrarPedidos(res, cat, ship, ahora));
+    log.push(registrarPedidos(res));
     const placas = leerPlacas(inv);
     const cola = calcularCola(res, cat, placas);
     log.push(actualizarEstados(res, cat, cfgWeb, placas, cola, ahora));
@@ -96,77 +94,31 @@ function sincronizarColores(inv, ahora) {
   return 'COLORES: ' + cambios + ' cambios';
 }
 
-/* ---------- 2. Copiar pedidos web nuevos a RES · Pedidos ---------- */
-function registrarPedidos(res, cat, ship, ahora) {
+/* ---------- 2. Enlazar pedidos web con RES · Pedidos ----------
+ * Los pedidos los crea la app Pedidos Resinator (con ID_FORM = SR-XXXXXX). Esta tarea NO crea filas
+ * en PEDIDOS, LINEAS ni CLIENTES: solo busca el pedido por ID_FORM y apunta su RES-AAAA-NNN en la
+ * columna W (REGISTRADO) de PEDIDOS_WEB. Si la app aún no lo ha importado, lo deja para la hora siguiente.
+ */
+function registrarPedidos(res) {
   const web = hoja(H.PEDIDOS);
   const n = web.getLastRow() - 1;
-  if (n < 1) return 'Pedidos nuevos: 0';
+  if (n < 1) return 'Pedidos enlazados: 0';
   const datos = web.getRange(2, 1, n, 24).getValues();
 
-  const shP = res.getSheetByName('PEDIDOS');
-  const shL = res.getSheetByName('LINEAS');
-  const shC = res.getSheetByName('CLIENTES');
-  const pedidos = tabla(shP);
   const ya = {};
-  pedidos.filas.forEach(function (r) { if (str(r.ID_FORM)) ya[str(r.ID_FORM)] = str(r.ID_PEDIDO); });
-  const nombresReplica = {};
-  tabla(shL).filas.forEach(function (r) { if (!nombresReplica[str(r.ID_REPLICA)]) nombresReplica[str(r.ID_REPLICA)] = str(r.PRODUCTO); });
-  const clientes = tabla(shC);
+  tabla(res.getSheetByName('PEDIDOS')).filas.forEach(function (r) {
+    if (str(r.ID_FORM)) ya[str(r.ID_FORM)] = str(r.ID_PEDIDO);
+  });
 
-  let nuevos = 0;
+  let enlazados = 0, esperando = 0;
   datos.forEach(function (w, i) {
     const idWeb = str(w[0]);
-    if (!idWeb || str(w[22])) return;                   // sin ID o ya registrado
-    if (ya[idWeb]) { web.getRange(i + 2, 23).setNumberFormat('@').setValue(ya[idWeb]); return; } // copiado a mano
-
-    const items = JSON.parse(String(w[11] || '[]'));
-    const fecha = w[1] instanceof Date ? w[1] : new Date(String(w[1]));
-    const email = str(w[4]).toLowerCase();
-    const paisNombre = str(w[9]);
-    const pais = ship.paises.filter(function (p) { return p.nombre_es === paisNombre; })[0] || {};
-
-    // Cliente: por email; si no existe, uno nuevo.
-    let cli = clientes.filas.filter(function (c) { return str(c.EMAIL).toLowerCase() === email; })[0];
-    let idCli = cli ? str(cli.ID_CLIENTE) : siguienteId(clientes.filas.map(function (c) { return str(c.ID_CLIENTE); }), 'CLI-', 3);
-    if (!cli) {
-      const fila = { ID_CLIENTE: idCli, NOMBRE: str(w[3]), EMAIL: email, TELEFONO: str(w[5]),
-        DIRECCION: str(w[6]) + ', ' + str(w[7]) + ' ' + str(w[8]), PAIS: paisNombre, INSTAGRAM: str(w[10]) };
-      anadirFila(shC, clientes.enc, fila);
-      clientes.filas.push(fila);
-    }
-
-    // Líneas: una por unidad, con el nombre que ya usa RES · Pedidos para esa réplica.
-    const lineas = items.map(function (it, k) {
-      const rep = it.id_replica || idReplica(it.modelo);
-      const colores = (it.colores || []).map(function (c) { return c.etiqueta_es + ': ' + c.color_es; }).join(', ');
-      return { LINEA: k + 1, ID_REPLICA: rep, PRODUCTO: nombresReplica[rep] || it.nombre, CANTIDAD: 1,
-        TEXTO_CLIENTE: it.nombre + (colores ? ' (' + colores + ')' : '') };
-    });
-    const cuenta = {};
-    lineas.forEach(function (l) { cuenta[l.PRODUCTO] = (cuenta[l.PRODUCTO] || 0) + 1; });
-    const productos = Object.keys(cuenta).map(function (p) { return (cuenta[p] > 1 ? cuenta[p] + '× ' : '') + p; }).join(', ');
-
-    const anio = Utilities.formatDate(fecha, AJUSTES.ZONA_HORARIA, 'yyyy');
-    const idRes = siguienteId(pedidos.filas.map(function (r) { return str(r.ID_PEDIDO); }), 'RES-' + anio + '-', 3);
-    const notas = str(w[12]) + (str(w[13]) ? ' · Notas: ' + str(w[13]) : '') + (str(w[18]) === 'dos_partes' ? ' · Pago en dos partes' : '');
-    const filaP = {
-      ID_PEDIDO: idRes, FECHA: fecha, ID_CLIENTE: idCli, CLIENTE: str(w[3]), PAIS: paisNombre, PRODUCTOS: productos,
-      ESTADO: 'Por cobrar', PAGO: 'Pendiente', FORMA_PAGO: pais.ue ? 'TRANSFERENCIA' : 'PAYPAL',
-      IMPORTE_PRODUCTOS: num(w[14]) + num(w[15]), ENVIO_COBRADO: num(w[16]), COBRADO: 0,
-      MONTAJE: num(w[15]) > 0 ? 'SÍ' : 'NO', SERVICIO_ENVIO: MAPA_SERVICIO_RES[str(w[19])] || str(w[19]),
-      NOTAS_CLIENTE: notas, ID_FORM: idWeb,
-      CLAVE_FORM: Utilities.formatDate(fecha, AJUSTES.ZONA_HORARIA, 'd/MM/yyyy H:mm:ss') + '|' + email + '|' + idWeb + '|' +
-        items.map(function (it) { return it.nombre; }).join(', ')
-    };
-    anadirFila(shP, pedidos.enc, filaP);
-    pedidos.filas.push(filaP);
-    lineas.forEach(function (l) { l.ID_PEDIDO = idRes; anadirFila(shL, tabla(shL).enc, l); });
-
-    web.getRange(i + 2, 23).setNumberFormat('@').setValue(idRes);
-    ya[idWeb] = idRes;
-    nuevos++;
+    if (!idWeb || str(w[22])) return;                   // sin ID o ya enlazado
+    if (!ya[idWeb]) { esperando++; return; }            // la app todavía no lo ha importado
+    web.getRange(i + 2, 23).setNumberFormat('@').setValue(ya[idWeb]);
+    enlazados++;
   });
-  return 'Pedidos nuevos: ' + nuevos;
+  return 'Pedidos enlazados: ' + enlazados + (esperando ? ' (' + esperando + ' esperando a la app)' : '');
 }
 
 /* ---------- Placas (bandejas) por pedido, desde COMPROMETIDO ---------- */
@@ -193,7 +145,7 @@ function leerPlacas(inv) {
 /* ---------- Horas de cola: lo que queda por imprimir de los pedidos en producción ---------- */
 function calcularCola(res, cat, placas) {
   const horasReplica = {};
-  cat.productos.forEach(function (p) { horasReplica[idReplica(p.modelo)] = p.horas; });
+  cat.productos.forEach(function (p) { horasReplica[p.id_replica || idReplica(p.modelo)] = p.horas; });
   const horasPedido = {};
   tabla(res.getSheetByName('LINEAS')).filas.forEach(function (l) {
     const rep = str(l.ID_REPLICA);
@@ -277,32 +229,6 @@ function tabla(sh) {
   const filas = v.slice(1).filter(function (r) { return r.some(function (c) { return c !== '' && c !== null; }); })
     .map(function (r) { const o = {}; enc.forEach(function (h, i) { if (h) o[h] = r[i]; }); return o; });
   return { enc: enc, filas: filas };
-}
-
-/** Añade una fila al final copiando formato y fórmulas de la fila anterior; escribe solo las columnas que no son fórmula. */
-function anadirFila(sh, enc, obj) {
-  const ultima = sh.getLastRow();
-  const nueva = ultima + 1;
-  const ancho = enc.length;
-  const formulas = ultima >= 2 ? sh.getRange(ultima, 1, 1, ancho).getFormulasR1C1()[0] : [];
-  if (ultima >= 2) {
-    sh.getRange(ultima, 1, 1, ancho).copyTo(sh.getRange(nueva, 1, 1, ancho), SpreadsheetApp.CopyPasteType.PASTE_FORMAT, false);
-    sh.getRange(ultima, 1, 1, ancho).copyTo(sh.getRange(nueva, 1, 1, ancho), SpreadsheetApp.CopyPasteType.PASTE_DATA_VALIDATION, false);
-  }
-  enc.forEach(function (h, i) {
-    const celda = sh.getRange(nueva, i + 1);
-    if (formulas[i]) { celda.setFormulaR1C1(formulas[i]); return; }
-    if (!h || obj[h] === undefined) return;
-    const val = obj[h];
-    if (typeof val === 'string') celda.setNumberFormat('@');
-    celda.setValue(val);
-  });
-}
-
-function siguienteId(ids, prefijo, digitos) {
-  let max = 0;
-  ids.forEach(function (id) { if (id.indexOf(prefijo) === 0) max = Math.max(max, parseInt(id.slice(prefijo.length), 10) || 0); });
-  return prefijo + String(max + 1).padStart(digitos, '0');
 }
 
 function idReplica(modelo) {

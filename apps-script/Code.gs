@@ -233,7 +233,7 @@ function crearPedido(b) {
   for (let i = 0; i < b.items.length; i++) {
     const it = b.items[i] || {};
     const prod = cat.productos.filter(function (p) { return p.id === it.pid; })[0];
-    if (!prod) return { ok: false, error: 'producto_no_existe' };
+    if (!prod || prod.oculto) return { ok: false, error: 'producto_no_existe' };
     if (typeof it.montaje !== 'boolean' && it.montaje !== undefined) return { ok: false, error: 'datos_invalidos' };
     const montaje = it.montaje === true;
     if (montaje && !pais.montaje) return { ok: false, error: 'montaje_no_disponible' };
