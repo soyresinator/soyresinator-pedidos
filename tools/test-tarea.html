@@ -84,7 +84,7 @@ const CacheService = { getScriptCache: () => ({ get: k => cacheMem[k] ?? null, p
 const LockService = { getScriptLock: () => ({ waitLock() {}, tryLock: () => true, releaseLock() {} }) };
 const MailApp = { sendEmail() {} };
 const ficheros = {};
-const PAGES = 'https://TU-USUARIO.github.io/soyresinator-pedidos/';
+const PAGES = 'https://soyresinator.com/';
 const UrlFetchApp = { fetch: url => { const txt = ficheros[url.replace(PAGES, '')]; return { getResponseCode: () => (txt === undefined ? 404 : 200), getContentText: () => txt }; } };
 const pad = n => String(n).padStart(2, '0');
 const Utilities = {
@@ -126,7 +126,7 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     check('instalarTarea crea un único activador horario de tareaHoraria', triggers.length === 1 && triggers[0].h === 'tareaHoraria' && triggers[0].n === 1, triggers.length);
     G.instalarTarea();
     check('Reinstalar no duplica el activador', triggers.length === 1, triggers.length);
-    check('La ejecución devuelve un resumen', /Pedidos nuevos: 2/.test(log), log);
+    check('La ejecución devuelve un resumen (2 esperando a la app)', /Pedidos enlazados: 0 \(2 esperando a la app\)/.test(log), log);
 
     // 1. COLORES
     const dor = H('COLORES').data.find(r => r[0] === 'dorado');
@@ -137,23 +137,22 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     check('Filamento que no está en STOCK cuenta como 0', azul[8] === 0, azul[7]);
     check('ELEGIBLE no se toca', H('COLORES').data.slice(1).every(r => r[9] === 'sí'));
 
-    // 2. Registro
-    const pa = filaRes('RES-2026-031'), pb = filaRes('RES-2026-032');
+    // 2. Enlace (la tarea ya NO crea pedidos: los crea la app)
     const c = h => ENC_P.indexOf(h);
-    check('Pedidos nuevos con el siguiente RES-AAAA-NNN', pa && pb && pa[c('ID_FORM')] === a.id && pb[c('ID_FORM')] === b.id, pa && pa[0] + ' / ' + (pb && pb[0]));
-    check('Por cobrar / Pendiente, PAYPAL fuera de la UE y TRANSFERENCIA en la UE', pa[c('ESTADO')] === 'Por cobrar' && pa[c('PAGO')] === 'Pendiente' && pa[c('FORMA_PAGO')] === 'PAYPAL' && pb[c('FORMA_PAGO')] === 'TRANSFERENCIA', pa[c('FORMA_PAGO')] + ' / ' + pb[c('FORMA_PAGO')]);
-    check('Importes, servicio (Premium / InPost) y montaje NO', pa[c('IMPORTE_PRODUCTOS')] === 260 && pa[c('ENVIO_COBRADO')] === 90 && pa[c('SERVICIO_ENVIO')] === 'Premium' && pb[c('SERVICIO_ENVIO')] === 'InPost' && pa[c('MONTAJE')] === 'NO', [pa[c('IMPORTE_PRODUCTOS')], pa[c('ENVIO_COBRADO')], pa[c('SERVICIO_ENVIO')]].join(' · '));
-    check('PRODUCTOS con el nombre de RES · Pedidos y "2×" si se repite', pa[c('PRODUCTOS')] === 'Bolter Primera Fundación, Las Pistol' && pb[c('PRODUCTOS')] === '2× Rifle Krieg', pa[c('PRODUCTOS')] + ' / ' + pb[c('PRODUCTOS')]);
-    check('NOTAS_CLIENTE con colores y pago en dos partes', pa[c('NOTAS_CLIENTE')].includes('Detalles rojos: Dorado') && pa[c('NOTAS_CLIENTE')].includes('dos partes'), pa[c('NOTAS_CLIENTE')]);
-    check('Fórmulas copiadas de la fila anterior (TOTAL, PENDIENTE) y formato copiado', shPed.f['4:12'] === '=R[0]C[-2]+R[0]C[-1]' && shPed.f['5:14'] === '=R[0]C[-2]-R[0]C[-1]' && shPed.copias.includes(4), JSON.stringify(shPed.f));
-    check('Textos del cliente escritos como texto (@)', shPed.fmt['4:4'] === '@' && shPed.fmt['4:23'] === '@');
-    const lin = shLin.data.filter(r => r[0] === 'RES-2026-031' || r[0] === 'RES-2026-032');
-    check('LINEAS: una por unidad con ID_REPLICA (krieg -> RIFLE-KRIEG)', lin.length === 4 && lin[0][2] === 'BOLTER-PF' && lin[1][2] === 'PISTOLA-LASER' && lin[2][2] === 'RIFLE-KRIEG', lin.map(r => r[2]).join(','));
-    check('Cliente existente reutilizado; nuevo cliente con el siguiente CLI', pb[c('ID_CLIENTE')] === 'CLI-039' && pa[c('ID_CLIENTE')] === 'CLI-040' && shCli.data.length === 3 && shCli.f['3:8'], pa[c('ID_CLIENTE')] + ' / ' + pb[c('ID_CLIENTE')]);
+    check('La tarea no crea filas en PEDIDOS, LINEAS ni CLIENTES', shPed.data.length === 3 && shLin.data.length === 4 && shCli.data.length === 2, [shPed.data.length, shLin.data.length, shCli.data.length].join(' / '));
+    check('Sin importar por la app: columna W vacía', H('PEDIDOS_WEB').data[1][22] === '' && H('PEDIDOS_WEB').data[2][22] === '');
+    // La app importa el pedido a (con ID_FORM = SR-…); b sigue sin importar
+    shPed.data.push(filaP('RES-2026-031', 'CLI-040', 'Por cobrar', 'Pendiente', { ID_FORM: a.id, ID_APP: 'web-' + a.id.toLowerCase(), SERVICIO_ENVIO: 'Premium' }));
+    shLin.data.push(['RES-2026-031', 1, 'BOLTER-PF', 'Bolter Primera Fundación', 1, 'Founders Bolt'], ['RES-2026-031', 2, 'PISTOLA-LASER', 'Pistola láser', 1, 'Las Pistol']);
+    log = G.tareaHoraria();
+    const pa = filaRes('RES-2026-031');
     const w = H('PEDIDOS_WEB').data;
-    check('PEDIDOS_WEB columna W (REGISTRADO) con el RES', w[1][22] === 'RES-2026-031' && w[2][22] === 'RES-2026-032', w[1][22]);
+    check('Enlaza por ID_FORM: W = RES-2026-031; el otro sigue esperando', w[1][22] === 'RES-2026-031' && w[2][22] === '' && /Pedidos enlazados: 1 \(1 esperando a la app\)/.test(log), w[1][22] + ' · ' + log);
+    check('ID_APP de la app copiado a la columna X', w[1][23] === 'web-' + a.id.toLowerCase(), w[1][23]);
     G.tareaHoraria();
-    check('Una segunda ejecución no duplica nada', shPed.data.length === 5 && shLin.data.length === 8 && shCli.data.length === 3, shPed.data.length);
+    check('Una segunda ejecución no duplica ni crea nada', shPed.data.length === 4 && shLin.data.length === 6 && shCli.data.length === 2, shPed.data.length);
+    const itA = JSON.parse(w[1][11]);
+    check('ITEMS_JSON trae id_replica y placas para la app', itA[0].id_replica === 'BOLTER-PF' && JSON.stringify(itA[0].colores[0].placas) === '[1]' && itA[0].colores[0].filamento_serie === 'FIL-PLAM-DARKRED' && itA[0].colores[0].id_filamento.includes('GOLD'),JSON.stringify(itA[0].colores[0]));
 
     // 3. Estados
     let e = H('ESTADO_WEB').data.find(r => r[0] === a.id);

@@ -220,6 +220,8 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     check('Montaje fuera de España: rechazado', r.error === 'montaje_no_disponible', JSON.stringify(r));
     r = post(pedido([item('tau-rifle')]));
     check('Producto inexistente: rechazado', r.error === 'producto_no_existe', JSON.stringify(r));
+    r = post(pedido([item('plague-bolt')]));
+    check('Producto oculto (Plague Bolt, sin presentar): rechazado', r.error === 'producto_no_existe', JSON.stringify(r));
     r = post(pedido([item('las-pistol')], { pais: 'RU' }));
     check('País fuera de la lista: rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
     r = post(pedido([item('las-pistol')], { web: 'http://spam' }));
