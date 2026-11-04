@@ -3,7 +3,7 @@
   "regla_cajas": "cajas = max(replicas largas, ceil(pistolas / 2)); cada caja admite 1 larga + hasta 2 pistolas",
   "pistolas_por_caja": 2,
   "paises": [
-    { "code": "ES", "nombre_es": "España", "ue": true, "servicio": "InPost", "por_caja": 10, "montaje": true, "prefijo": "+34" },
+    { "code": "ES", "nombre_es": "España", "ue": true, "servicio": "InPost", "por_caja": 10, "montaje": false, "prefijo": "+34" },
     { "code": "PT", "nombre_es": "Portugal", "ue": true, "servicio": "InPost", "por_caja": 10, "montaje": false, "prefijo": "+351" },
     { "code": "DE", "nombre_es": "Alemania", "ue": true, "servicio": "InPost", "por_caja": 15, "montaje": false, "prefijo": "+49" },
     { "code": "BE", "nombre_es": "Bélgica", "ue": true, "servicio": "InPost", "por_caja": 15, "montaje": false, "prefijo": "+32" },
