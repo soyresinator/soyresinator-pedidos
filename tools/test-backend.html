@@ -96,7 +96,7 @@ const LockService = { getScriptLock: () => ({ waitLock() {}, tryLock: () => true
 const correos = [];
 const MailApp = { sendEmail: o => correos.push(o) };
 const ficheros = {};
-const PAGES = 'https://TU-USUARIO.github.io/soyresinator-pedidos/';
+const PAGES = 'https://soyresinator.com/';
 const UrlFetchApp = { fetch: url => {
   const p = url.replace(PAGES, '');
   const txt = ficheros[p];
@@ -164,9 +164,13 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     let f = ultima();
     check('Founders Bolt azul marino + Las Pistol + montaje a España = 370 € (total_cliente manipulado a 1)', r.ok && r.total === 370 && f[col('TOTAL')] === 370 && f[col('SUBTOTAL')] === 260 && f[col('MONTAJE')] === 100 && f[col('ENVIO')] === 10, JSON.stringify(r));
     check('ID con formato SR-XXXXXX', /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/.test(r.id), r.id);
-    check('RESUMEN_ES correcto', f[col('RESUMEN_ES')] === '1. Founders Bolt · Detalles rojos: Azul marino · Montaje: sí | 2. Las Pistol · colores de serie · Montaje: sí', f[col('RESUMEN_ES')]);
+    check('RESUMEN_ES correcto', f[col('RESUMEN_ES')] === '1. Founders Bolt · Detalles rojos: Azul marino · Montaje: sí | 2. Las Pistol · Cuerpo verde: Verde oscuro (de serie) · Montaje: sí', f[col('RESUMEN_ES')]);
     const items = JSON.parse(f[col('ITEMS_JSON')]);
     check('ITEMS_JSON con modelo, filamento y gramos', items[0].modelo === 'bolter-pf' && items[0].colores[0].id_filamento === 'FIL-PLAM-MARINEBLUE' && items[0].colores[0].gramos === 296 && items[0].colores[0].de_serie === false, JSON.stringify(items[0].colores[0]));
+    check('ITEMS_JSON con réplica y bandejas: BOLTER-PF placa 1 cambia FIL-PLAM-DARKRED por el elegido', items[0].id_replica === 'BOLTER-PF' && JSON.stringify(items[0].colores[0].placas) === '[1]' && items[0].colores[0].filamento_serie === 'FIL-PLAM-DARKRED' && items[1].id_replica === 'PISTOLA-LASER' && JSON.stringify(items[1].colores[0].placas) === '[3]', JSON.stringify(items.map(i => [i.id_replica, i.colores.map(c => c.placas)])));
+    // Cada parte del catálogo tiene bandejas y filamento de serie
+    const sinPlacas = cat.productos.flatMap(p => p.partes.filter(pt => !Array.isArray(pt.placas) || !pt.placas.length || !pt.filamento_serie).map(pt => p.id + '/' + pt.grupo));
+    check('catalog.json: todas las partes con placas y filamento_serie, todos los productos con id_replica', !sinPlacas.length && cat.productos.every(p => p.id_replica), sinPlacas.join(', '));
     const est = ss.getSheetByName('ESTADO_WEB').data.find(x => x[0] === r.id);
     check('ESTADO_WEB: fila inicial recibido / pendiente con hash del email', est && est[2] === 'recibido' && est[5] === 'pendiente' && est[1] === G.hashEmail(`ana${n}@example.com`), est && est.slice(0, 6).join(' | '));
     check('Dos correos: cliente (responder a la tienda) y copia "Pedido web nuevo"', correos.length === 2 && correos[0].replyTo === 'soyresinator@gmail.com' && correos[1].subject === 'Pedido web nuevo ' + r.id, correos.map(c => c.subject).join(' / '));
@@ -199,6 +203,10 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     check('Heavy Bolt Wolf en negro: rechazado (solo amarillo o azul marino)', r.error === 'color_no_disponible', JSON.stringify(r));
     r = post(pedido([item('heavy-bolt-wolf', { principal: 'azul-marino', metalicos: 'dorado' })]));
     check('Heavy Bolt Wolf en azul marino y dorado: aceptado', r.ok, JSON.stringify(r));
+    r = post(pedido([item('las-pistol', { verde: 'negro' })]));
+    check('Las Pistol con el cuerpo en negro: aceptado', r.ok, JSON.stringify(r));
+    r = post(pedido([item('las-pistol', { verde: 'rojo-oscuro' })]));
+    check('Las Pistol con el cuerpo en rojo: rechazado (solo verde o negro)', r.error === 'color_no_disponible', JSON.stringify(r));
     colores().data.find(x => x[0] === 'azul-marino')[9] = 'no';
     r = post(pedido([item('founders-bolt', { rojo: 'azul-marino' })]));
     check('Color con ELEGIBLE "no": rechazado', r.error === 'color_no_disponible', JSON.stringify(r));
