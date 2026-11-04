@@ -137,7 +137,7 @@ function registrarPedidos(res, cat, ship, ahora) {
 
     // Líneas: una por unidad, con el nombre que ya usa RES · Pedidos para esa réplica.
     const lineas = items.map(function (it, k) {
-      const rep = idReplica(it.modelo);
+      const rep = it.id_replica || idReplica(it.modelo);
       const colores = (it.colores || []).map(function (c) { return c.etiqueta_es + ': ' + c.color_es; }).join(', ');
       return { LINEA: k + 1, ID_REPLICA: rep, PRODUCTO: nombresReplica[rep] || it.nombre, CANTIDAD: 1,
         TEXTO_CLIENTE: it.nombre + (colores ? ' (' + colores + ')' : '') };

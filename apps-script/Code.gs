@@ -16,7 +16,7 @@
 // =====================  AJUSTES: revísalos antes de desplegar  =====================
 const AJUSTES = {
   // URL pública de GitHub Pages, con la barra final. De aquí se leen catalog.json, shipping.json y los textos.
-  PAGES_BASE: 'https://TU-USUARIO.github.io/soyresinator-pedidos/',
+  PAGES_BASE: 'https://soyresinator.com/',
   EMAIL_TIENDA: 'soyresinator@gmail.com',
   NOMBRE_REMITENTE: 'Soy Resinator',
   ZONA_HORARIA: 'Europe/Madrid',
@@ -258,7 +258,9 @@ function crearPedido(b) {
         nombres: nombres,
         id_filamento: fila ? mejorFilamento(fila.filamentos) : '',
         gramos: part.gramos,
-        de_serie: env.color_id === part.de_serie
+        de_serie: env.color_id === part.de_serie,
+        placas: Array.isArray(part.placas) ? part.placas : [],
+        filamento_serie: part.filamento_serie || ''
       });
     }
     const nota = limpiar(it.nota, notaMax, true);
@@ -280,10 +282,14 @@ function crearPedido(b) {
 
     const itemsJson = unidades.map(function (u) {
       return {
-        pid: u.prod.id, modelo: u.prod.modelo, nombre: u.prod.nombre, precio: u.prod.pvp, montaje: u.montaje,
+        pid: u.prod.id, modelo: u.prod.modelo, id_replica: u.prod.id_replica || '', nombre: u.prod.nombre,
+        precio: u.prod.pvp, montaje: u.montaje,
+        // placas = bandejas de RES · Catálogo (PLACAS) de esa réplica que se imprimen con id_filamento
+        // en lugar de filamento_serie.
         colores: u.colores.map(function (c) {
           return { grupo: c.grupo, etiqueta_es: c.etiqueta_es, color_id: c.color_id, color_es: c.color_es,
-            id_filamento: c.id_filamento, gramos: c.gramos, de_serie: c.de_serie };
+            id_filamento: c.id_filamento, gramos: c.gramos, de_serie: c.de_serie,
+            placas: c.placas, filamento_serie: c.filamento_serie };
         }),
         nota: u.nota
       };
