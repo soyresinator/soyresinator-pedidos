@@ -1,0 +1,24 @@
+{
+  "api_url": "",
+  "email": "soyresinator@gmail.com",
+  "instagram": "soyresinator",
+  "legal": {
+    "titular": "[NOMBRE Y APELLIDOS DE LA TITULAR]",
+    "nif": "[NIF]",
+    "domicilio": "[DOMICILIO FISCAL]",
+    "dias_pago": 7,
+    "dias_incidencias": 7,
+    "actualizado": "2026-11-04"
+  },
+  "idiomas": ["en", "es", "de", "fr", "it"],
+  "idioma_defecto": "en",
+  "nota_max": 500,
+  "stock_minimo_g": 200,
+  "plazo": {
+    "dias_minimo": 21,
+    "factor_horas": 1.08,
+    "horas_dia_defecto": 16,
+    "dias_preparacion_defecto": 2
+  },
+  "timeout_ms": 8000
+}

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Soy Resinator</title>
+  <meta name="description" content="">
+  <meta name="color-scheme" content="dark light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Saira+Condensed:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/legal.js"></script>
+</head>
+<body data-legal="condiciones">
+  <a class="skip" href="#main" data-i18n="nav.saltar"></a>
+
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Soy Resinator</span>
+      </a>
+      <div class="header-tools">
+        <label class="sr-only" for="lang" data-i18n="nav.idioma"></label>
+        <select id="lang" class="select select-sm"></select>
+        <button id="theme" class="icon-btn" type="button">
+          <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+          <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+          <span class="sr-only" id="theme-label"></span>
+        </button>
+        <a href="index.html#catalogo" class="nav-link" data-i18n="nav.catalogo"></a>
+      </div>
+      <a href="index.html#pedido" id="cart-link" class="cart-btn">
+        <span data-i18n="nav.pedido"></span>
+        <span id="cart-count" class="count" aria-hidden="true">0</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main" class="wrap legal">
+    <h1 id="legal-titulo" class="page-title"></h1>
+    <p id="legal-fecha" class="muted"></p>
+    <div id="legal-cuerpo"></div>
+    <p class="block"><a class="btn btn-ghost" href="index.html" data-i18n="ped.seguir"></a></p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <p class="brand-name">Soy Resinator</p>
+        <p class="muted" data-i18n="pie.texto"></p>
+        <p class="muted small" data-i18n="pie.aviso"></p>
+      </div>
+      <nav class="footer-links">
+        <a href="privacidad.html" data-i18n="pie.privacidad"></a>
+        <a href="condiciones.html" data-i18n="pie.condiciones"></a>
+        <a class="contact-email" href="#"></a>
+        <a class="contact-ig" href="#" rel="noopener" target="_blank"></a>
+      </nav>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

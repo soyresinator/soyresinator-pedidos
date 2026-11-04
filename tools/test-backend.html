@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pruebas del Apps Script</title>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; margin: 16px; background: #fff; color: #111; }
+  table { border-collapse: collapse; width: 100%; }
+  td, th { border-bottom: 1px solid #ddd; padding: 6px 8px; text-align: left; vertical-align: top; }
+  .ok { color: #116b2c; font-weight: 600; } .ko { color: #b00020; font-weight: 600; }
+  pre { white-space: pre-wrap; background: #f5f5f5; padding: 8px; font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>Pruebas del Apps Script (simulado)</h1>
+<p>Ejecuta <code>apps-script/Code.gs</code> en el navegador con Sheets, caché, correo y UrlFetch simulados.
+Sírvelo con <code>python -m http.server</code> desde la raíz y abre <code>/tools/test-backend.html</code>.</p>
+<p id="resumen">Ejecutando…</p>
+<table><thead><tr><th>Prueba</th><th>Resultado</th><th>Detalle</th></tr></thead><tbody id="filas"></tbody></table>
+<h2>Último correo al cliente</h2><pre id="correo"></pre>
+<script>
+/* ---------- SHA-256 síncrono (para Utilities.computeDigest) ---------- */
+function sha256(bytes) {
+  const K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  let h = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const l = bytes.length, withPad = new Uint8Array(((l + 9 + 63) >> 6) << 6);
+  withPad.set(bytes); withPad[l] = 0x80;
+  const dv = new DataView(withPad.buffer); dv.setUint32(withPad.length - 4, l * 8);
+  const w = new Uint32Array(64), r = (x, n) => (x >>> n) | (x << (32 - n));
+  for (let o = 0; o < withPad.length; o += 64) {
+    for (let i = 0; i < 16; i++) w[i] = dv.getUint32(o + i * 4);
+    for (let i = 16; i < 64; i++) {
+      const s0 = r(w[i-15],7) ^ r(w[i-15],18) ^ (w[i-15] >>> 3), s1 = r(w[i-2],17) ^ r(w[i-2],19) ^ (w[i-2] >>> 10);
+      w[i] = (w[i-16] + s0 + w[i-7] + s1) >>> 0;
+    }
+    let [a,b,c,d,e,f,g,hh] = h;
+    for (let i = 0; i < 64; i++) {
+      const t1 = (hh + (r(e,6) ^ r(e,11) ^ r(e,25)) + ((e & f) ^ (~e & g)) + K[i] + w[i]) >>> 0;
+      const t2 = ((r(a,2) ^ r(a,13) ^ r(a,22)) + ((a & b) ^ (a & c) ^ (b & c))) >>> 0;
+      hh = g; g = f; f = e; e = (d + t1) >>> 0; d = c; c = b; b = a; a = (t1 + t2) >>> 0;
+    }
+    h = h.map((v, i) => (v + [a,b,c,d,e,f,g,hh][i]) >>> 0);
+  }
+  const out = []; h.forEach(v => { for (let s = 24; s >= 0; s -= 8) { const x = (v >>> s) & 255; out.push(x > 127 ? x - 256 : x); } });
+  return out;
+}
+
+/* ---------- Hoja simulada ---------- */
+class Rango {
+  constructor(sh, r, c, nr, nc) { Object.assign(this, { sh, r, c, nr, nc }); }
+  getValues() {
+    const out = [];
+    for (let i = 0; i < this.nr; i++) {
+      const row = this.sh.data[this.r - 1 + i] || [];
+      out.push(Array.from({ length: this.nc }, (_, j) => row[this.c - 1 + j] ?? ''));
+    }
+    return out;
+  }
+  setValues(v) {
+    v.forEach((row, i) => {
+      const idx = this.r - 1 + i;
+      while (this.sh.data.length <= idx) this.sh.data.push([]);
+      row.forEach((val, j) => { this.sh.data[idx][this.c - 1 + j] = val; });
+    });
+    return this;
+  }
+  setNumberFormats(f) { this.sh.formats[this.r] = f[0]; return this; }
+  setFontWeight() { return this; }
+  setDataValidation() { return this; }
+}
+class Hoja {
+  constructor(name) { this.name = name; this.data = []; this.formats = {}; }
+  getName() { return this.name; }
+  getLastRow() { let n = this.data.length; while (n && !this.data[n - 1].some(v => v !== '' && v !== undefined)) n--; return n; }
+  getRange(r, c, nr = 1, nc = 1) { return new Rango(this, r, c, nr, nc); }
+  setFrozenRows() {}
+}
+const ss = {
+  hojas: [new Hoja('Hoja 1')],
+  getSheetByName(n) { return this.hojas.find(h => h.name === n) || null; },
+  insertSheet(n) { const h = new Hoja(n); this.hojas.push(h); return h; },
+  getSheets() { return [...this.hojas]; },
+  deleteSheet(h) { this.hojas = this.hojas.filter(x => x !== h); },
+  setSpreadsheetTimeZone() {}
+};
+const validacion = { requireValueInList() { return this; }, setAllowInvalid() { return this; }, build() { return {}; } };
+const SpreadsheetApp = { getActiveSpreadsheet: () => ss, newDataValidation: () => validacion, flush() {} };
+
+const cacheMem = {};
+const CacheService = { getScriptCache: () => ({
+  get: k => cacheMem[k] ?? null, put: (k, v) => { cacheMem[k] = v; }, remove: k => { delete cacheMem[k]; },
+  removeAll: ks => ks.forEach(k => delete cacheMem[k])
+}) };
+const LockService = { getScriptLock: () => ({ waitLock() {}, tryLock: () => true, releaseLock() {} }) };
+const correos = [];
+const MailApp = { sendEmail: o => correos.push(o) };
+const ficheros = {};
+const PAGES = 'https://TU-USUARIO.github.io/soyresinator-pedidos/';
+const UrlFetchApp = { fetch: url => {
+  const p = url.replace(PAGES, '');
+  const txt = ficheros[p];
+  return { getResponseCode: () => (txt === undefined ? 404 : 200), getContentText: () => txt };
+} };
+const Utilities = {
+  DigestAlgorithm: { SHA_256: 'SHA_256' }, Charset: { UTF_8: 'UTF_8' },
+  computeDigest: (alg, s) => sha256(new TextEncoder().encode(s)),
+  formatDate: (d, tz, fmt) => new Date(d).toISOString().slice(0, 10),
+  newBlob: s => ({ getBytes: () => Array.from(new TextEncoder().encode(s)) })
+};
+const ContentService = { MimeType: { JSON: 'json' }, createTextOutput: s => ({ content: s, setMimeType() { return this; } }) };
+
+/* ---------- Pruebas ---------- */
+const resultados = [];
+function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, detalle: detalle === undefined ? '' : String(detalle) }); }
+
+(async () => {
+  const rutas = ['data/catalog.json', 'data/shipping.json', 'data/config.json', 'data/colores-serie.json',
+    'i18n/en.json', 'i18n/es.json', 'i18n/de.json', 'i18n/fr.json', 'i18n/it.json'];
+  for (const r of rutas) ficheros[r] = await (await fetch('../' + r, { cache: 'no-cache' })).text();
+  const codigo = await (await fetch('../apps-script/Code.gs', { cache: 'no-cache' })).text();
+  const G = new Function('SpreadsheetApp', 'CacheService', 'LockService', 'MailApp', 'UrlFetchApp', 'Utilities', 'ContentService',
+    codigo + '\nreturn { instalar, doGet, doPost, hashEmail, AJUSTES };')(
+    SpreadsheetApp, CacheService, LockService, MailApp, UrlFetchApp, Utilities, ContentService);
+
+  const cat = JSON.parse(ficheros['data/catalog.json']);
+  const post = body => JSON.parse(G.doPost({ postData: { contents: typeof body === 'string' ? body : JSON.stringify(body) } }).content);
+  const get = p => JSON.parse(G.doGet({ parameter: p }).content);
+  let n = 0;
+  const pedido = (items, over = {}) => ({
+    accion: 'pedido', idioma: 'es', web: '',
+    cliente: { nombre: 'Ana Prueba', email: `ana${++n}@example.com`, telefono: '+34 612 345 678', direccion: 'Calle Mayor 1', cp: '08001', ciudad: 'Barcelona', instagram: '' },
+    pais: 'ES', modo_pago: 'completo', items, total_cliente: 1, consentimiento: true, ...over
+  });
+  const item = (pid, colores = {}, montaje = false, nota = '') => {
+    const p = cat.productos.find(x => x.id === pid);
+    return { pid, montaje, nota, colores: (p ? p.partes : []).map(pt => ({ grupo: pt.grupo, color_id: colores[pt.grupo] || pt.de_serie })) };
+  };
+  const ped = () => ss.getSheetByName('PEDIDOS_WEB');
+  const ultima = () => { const s = ped(); return s.data[s.getLastRow() - 1]; };
+  const col = name => ['ID_WEB','FECHA','IDIOMA','NOMBRE','EMAIL','TELEFONO','DIRECCION','CP','CIUDAD','PAIS','INSTAGRAM','ITEMS_JSON','RESUMEN_ES','NOTAS_ORIGINAL','SUBTOTAL','MONTAJE','ENVIO','TOTAL','MODO_PAGO','SERVICIO_ENVIO','CAJAS','CONSENTIMIENTO','REGISTRADO','ID_APP'].indexOf(name);
+  const colores = () => ss.getSheetByName('COLORES');
+  const setStock = (id, g) => { const r = colores().data.find(x => x[0] === id); r[8] = g; };
+
+  try {
+    // Instalación
+    G.instalar();
+    check('instalar crea las 4 pestañas y quita la vacía', ss.hojas.map(h => h.name).sort().join(',') === 'COLORES,CONFIG,ESTADO_WEB,PEDIDOS_WEB', ss.hojas.map(h => h.name));
+    check('COLORES con 22 filas iniciales y ELEGIBLE "sí"', colores().getLastRow() === 23 && colores().data.slice(1).every(r => r[9] === 'sí'), colores().getLastRow() - 1);
+    check('Encabezados exactos de PEDIDOS_WEB (24 columnas, A..X)', ped().data[0].length === 24 && ped().data[0][23] === 'ID_APP');
+    check('CONFIG fila 2 con PEDIDOS_ABIERTOS "sí"', ss.getSheetByName('CONFIG').data[1][4] === 'sí', JSON.stringify(ss.getSheetByName('CONFIG').data[1]));
+
+    // ?accion=config
+    const cfg = get({ accion: 'config' });
+    check('?accion=config devuelve 22 colores elegibles y cola vacía = null', cfg.ok && cfg.colores.length === 22 && cfg.horas_cola === null && cfg.pedidos_abiertos === true, `${cfg.colores.length} colores, cola ${cfg.horas_cola}`);
+
+    // Precio correcto aunque el navegador mande otro
+    let r = post(pedido([item('founders-bolt', { rojo: 'azul-marino' }, true), item('las-pistol', {}, true)], { total_cliente: 1 }));
+    let f = ultima();
+    check('Founders Bolt azul marino + Las Pistol + montaje a España = 370 € (total_cliente manipulado a 1)', r.ok && r.total === 370 && f[col('TOTAL')] === 370 && f[col('SUBTOTAL')] === 260 && f[col('MONTAJE')] === 100 && f[col('ENVIO')] === 10, JSON.stringify(r));
+    check('ID con formato SR-XXXXXX', /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/.test(r.id), r.id);
+    check('RESUMEN_ES correcto', f[col('RESUMEN_ES')] === '1. Founders Bolt · Detalles rojos: Azul marino · Montaje: sí | 2. Las Pistol · colores de serie · Montaje: sí', f[col('RESUMEN_ES')]);
+    const items = JSON.parse(f[col('ITEMS_JSON')]);
+    check('ITEMS_JSON con modelo, filamento y gramos', items[0].modelo === 'bolter-pf' && items[0].colores[0].id_filamento === 'FIL-PLAM-MARINEBLUE' && items[0].colores[0].gramos === 296 && items[0].colores[0].de_serie === false, JSON.stringify(items[0].colores[0]));
+    const est = ss.getSheetByName('ESTADO_WEB').data.find(x => x[0] === r.id);
+    check('ESTADO_WEB: fila inicial recibido / pendiente con hash del email', est && est[2] === 'recibido' && est[5] === 'pendiente' && est[1] === G.hashEmail(`ana${n}@example.com`), est && est.slice(0, 6).join(' | '));
+    check('Dos correos: cliente (responder a la tienda) y copia "Pedido web nuevo"', correos.length === 2 && correos[0].replyTo === 'soyresinator@gmail.com' && correos[1].subject === 'Pedido web nuevo ' + r.id, correos.map(c => c.subject).join(' / '));
+
+    // Pedido en alemán
+    r = post(pedido([item('founders-bolt', { rojo: 'azul-marino' })], { idioma: 'de', pais: 'DE' }));
+    f = ultima();
+    const mailDe = correos[correos.length - 2];
+    check('Pedido en alemán: RESUMEN_ES en español, correo al cliente en alemán', r.ok && f[col('IDIOMA')] === 'de' && f[col('RESUMEN_ES')].includes('Detalles rojos: Azul marino') && mailDe.subject.startsWith('Deine Bestellung') && mailDe.body.includes('Rote Details: Marineblau'), mailDe.subject);
+    document.getElementById('correo').textContent = mailDe.subject + '\n\n' + mailDe.body;
+    check('PAIS en español y servicio', f[col('PAIS')] === 'Alemania' && f[col('SERVICIO_ENVIO')] === 'InPost');
+
+    // Cajas
+    r = post(pedido([item('las-pistol'), item('las-pistol'), item('founders-bolt-pistol')], { pais: 'DE' }));
+    f = ultima();
+    check('3 pistolas a Alemania = 2 cajas = 30 €', f[col('CAJAS')] === 2 && f[col('ENVIO')] === 30, `${f[col('CAJAS')]} cajas, ${f[col('ENVIO')]} €`);
+    r = post(pedido([item('founders-bolt'), item('heavy-bolt'), item('las-pistol')], { pais: 'US' }));
+    f = ultima();
+    check('2 bólters + 1 pistola a EE. UU. = 2 cajas = 180 €', f[col('CAJAS')] === 2 && f[col('ENVIO')] === 180, `${f[col('CAJAS')]} cajas, ${f[col('ENVIO')]} €`);
+
+    // Colores
+    r = post(pedido([item('founders-bolt', { rojo: 'azul-ultramar' })]));
+    check('Azul ultramar (100 g) forzado en Founders Bolt: rechazado', r.error === 'color_no_disponible', JSON.stringify(r));
+    r = post(pedido([item('trooper-las-rifle', { dorado: 'azul-ultramar' })]));
+    check('Azul ultramar forzado en Detalle dorado (19 g): rechazado por el mínimo de 200 g', r.error === 'color_no_disponible', JSON.stringify(r));
+    setStock('rojo-oscuro', 0);
+    r = post(pedido([item('founders-bolt')]));
+    check('Color de serie con stock 0: aceptado', r.ok, JSON.stringify(r));
+    r = post(pedido([item('heavy-bolt-wolf', { principal: 'negro' })]));
+    check('Heavy Bolt Wolf en negro: rechazado (solo amarillo o azul marino)', r.error === 'color_no_disponible', JSON.stringify(r));
+    r = post(pedido([item('heavy-bolt-wolf', { principal: 'azul-marino', metalicos: 'dorado' })]));
+    check('Heavy Bolt Wolf en azul marino y dorado: aceptado', r.ok, JSON.stringify(r));
+    colores().data.find(x => x[0] === 'azul-marino')[9] = 'no';
+    r = post(pedido([item('founders-bolt', { rojo: 'azul-marino' })]));
+    check('Color con ELEGIBLE "no": rechazado', r.error === 'color_no_disponible', JSON.stringify(r));
+    colores().data.find(x => x[0] === 'azul-marino')[9] = 'sí';
+    colores().data.find(x => x[0] === 'dorado')[7] = 'FIL-SILK-GOLD:900;FIL-WINKLE-SILK-GOLD:2500';
+    r = post(pedido([item('trooper-las-rifle')]));
+    check('id_filamento: el de más gramos si la tarea los escribe', JSON.parse(ultima()[col('ITEMS_JSON')])[0].colores[1].id_filamento === 'FIL-WINKLE-SILK-GOLD');
+
+    // Montaje y otros rechazos
+    r = post(pedido([item('founders-bolt', {}, true)], { pais: 'FR' }));
+    check('Montaje fuera de España: rechazado', r.error === 'montaje_no_disponible', JSON.stringify(r));
+    r = post(pedido([item('tau-rifle')]));
+    check('Producto inexistente: rechazado', r.error === 'producto_no_existe', JSON.stringify(r));
+    r = post(pedido([item('las-pistol')], { pais: 'RU' }));
+    check('País fuera de la lista: rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(pedido([item('las-pistol')], { web: 'http://spam' }));
+    check('Campo trampa relleno: rechazado', r.error === 'datos_invalidos');
+    r = post(JSON.stringify(pedido([item('las-pistol', {}, false, 'x'.repeat(21000))])));
+    check('Cuerpo de más de 20 KB: rechazado', r.error === 'datos_invalidos');
+    r = post(pedido([item('las-pistol')], { cliente: { nombre: 'A', email: 'no-es-email', telefono: '1', direccion: '', cp: '', ciudad: '' } }));
+    check('Email y campos inválidos: rechazado', r.error === 'datos_invalidos');
+
+    // Inyección de fórmulas
+    r = post(pedido([item('las-pistol', {}, false, '=IMPORTXML("http://x","//a")')], { cliente: { nombre: '=HYPERLINK("http://x")', email: 'formula@example.com', telefono: '+34 612345678', direccion: 'Calle 1', cp: '08001', ciudad: 'BCN' } }));
+    const fila = ped().getLastRow();
+    check('Textos que empiezan por "=" se guardan como texto (formato @)', r.ok && ped().formats[fila][col('NOMBRE')] === '@' && ped().formats[fila][col('NOTAS_ORIGINAL')] === '@' && ped().formats[fila][col('TELEFONO')] === '@', ped().formats[fila].slice(0, 8).join(','));
+
+    // Límite por email y día
+    const mismo = 'repetido@example.com';
+    let res6;
+    for (let i = 0; i < 6; i++) res6 = post(pedido([item('las-pistol')], { cliente: { nombre: 'Rep', email: mismo, telefono: '+34 612345678', direccion: 'C 1', cp: '1', ciudad: 'X' } }));
+    check('Sexto pedido del mismo email en el día: rechazado', res6.error === 'demasiados_pedidos', JSON.stringify(res6));
+
+    // Pedidos cerrados
+    ss.getSheetByName('CONFIG').data[1][4] = 'no';
+    r = post(pedido([item('las-pistol')]));
+    check('PEDIDOS_ABIERTOS "no": pedido forzado rechazado', r.error === 'pedidos_cerrados', JSON.stringify(r));
+    delete cacheMem['config_pub'];
+    check('PEDIDOS_ABIERTOS "no": ?accion=config lo indica', get({ accion: 'config' }).pedidos_abiertos === false);
+    ss.getSheetByName('CONFIG').data[1][4] = 'sí';
+
+    // Estado
+    r = post(pedido([item('las-pistol')], { cliente: { nombre: 'Eva', email: 'Eva@Example.com', telefono: '+34 612345678', direccion: 'C 1', cp: '1', ciudad: 'X' } }));
+    let e = post({ accion: 'estado', id: r.id, email: ' eva@example.com ' });
+    check('Estado con el email correcto (sin importar mayúsculas ni espacios)', e.ok && e.estado === 'recibido' && e.pago === 'pendiente', JSON.stringify(e));
+    check('Estado sin datos personales', e.ok && !JSON.stringify(e).toLowerCase().includes('eva') && !('email' in e) && !('nombre' in e), Object.keys(e).join(','));
+    e = post({ accion: 'estado', id: r.id, email: 'otra@example.com' });
+    const e2 = post({ accion: 'estado', id: 'SR-ZZZZZZ', email: 'eva@example.com' });
+    check('Email equivocado o ID inexistente: mismo "no_encontrado"', e.error === 'no_encontrado' && e2.error === 'no_encontrado' && JSON.stringify(e) === JSON.stringify(e2));
+  } catch (err) {
+    check('Error inesperado', false, err.stack || err);
+  }
+
+  const ok = resultados.filter(x => x.ok).length;
+  document.getElementById('resumen').textContent = `${ok} de ${resultados.length} pruebas correctas`;
+  document.getElementById('filas').innerHTML = resultados.map(x =>
+    `<tr><td>${x.nombre}</td><td class="${x.ok ? 'ok' : 'ko'}">${x.ok ? 'OK' : 'FALLA'}</td><td>${x.detalle.replace(/</g, '&lt;')}</td></tr>`).join('');
+  window.__resultados = resultados;
+})();
+</script>
+</body>
+</html>

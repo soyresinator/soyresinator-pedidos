@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "regla_cajas": "cajas = max(replicas largas, ceil(pistolas / 2)); cada caja admite 1 larga + hasta 2 pistolas",
+  "pistolas_por_caja": 2,
+  "paises": [
+    { "code": "ES", "nombre_es": "España", "ue": true, "servicio": "InPost", "por_caja": 10, "montaje": true, "prefijo": "+34" },
+    { "code": "PT", "nombre_es": "Portugal", "ue": true, "servicio": "InPost", "por_caja": 10, "montaje": false, "prefijo": "+351" },
+    { "code": "DE", "nombre_es": "Alemania", "ue": true, "servicio": "InPost", "por_caja": 15, "montaje": false, "prefijo": "+49" },
+    { "code": "BE", "nombre_es": "Bélgica", "ue": true, "servicio": "InPost", "por_caja": 15, "montaje": false, "prefijo": "+32" },
+    { "code": "FR", "nombre_es": "Francia", "ue": true, "servicio": "InPost", "por_caja": 15, "montaje": false, "prefijo": "+33" },
+    { "code": "IT", "nombre_es": "Italia", "ue": true, "servicio": "InPost", "por_caja": 15, "montaje": false, "prefijo": "+39" },
+    { "code": "LU", "nombre_es": "Luxemburgo", "ue": true, "servicio": "InPost", "por_caja": 15, "montaje": false, "prefijo": "+352" },
+    { "code": "NL", "nombre_es": "Países Bajos", "ue": true, "servicio": "InPost", "por_caja": 15, "montaje": false, "prefijo": "+31" },
+    { "code": "PL", "nombre_es": "Polonia", "ue": true, "servicio": "InPost", "por_caja": 15, "montaje": false, "prefijo": "+48" },
+    { "code": "GB", "nombre_es": "Reino Unido", "ue": false, "servicio": "Correos Standard", "por_caja": 20, "montaje": false, "prefijo": "+44" },
+    { "code": "AT", "nombre_es": "Austria", "ue": true, "servicio": "Correos Standard", "por_caja": 25, "montaje": false, "prefijo": "+43" },
+    { "code": "CH", "nombre_es": "Suiza", "ue": false, "servicio": "Correos Standard", "por_caja": 25, "montaje": false, "prefijo": "+41" },
+    { "code": "CA", "nombre_es": "Canadá", "ue": false, "servicio": "Correos Premium", "por_caja": 35, "montaje": false, "prefijo": "+1" },
+    { "code": "US", "nombre_es": "Estados Unidos", "ue": false, "servicio": "Correos Premium", "por_caja": 90, "montaje": false, "prefijo": "+1" },
+    { "code": "AU", "nombre_es": "Australia", "ue": false, "servicio": "Correos Premium", "por_caja": 85, "montaje": false, "prefijo": "+61" },
+    { "code": "NZ", "nombre_es": "Nueva Zelanda", "ue": false, "servicio": "Correos Premium", "por_caja": 85, "montaje": false, "prefijo": "+64" },
+    { "code": "MX", "nombre_es": "México", "ue": false, "servicio": "Correos Premium", "por_caja": 70, "montaje": false, "prefijo": "+52" },
+    { "code": "BR", "nombre_es": "Brasil", "ue": false, "servicio": "Correos Premium", "por_caja": 70, "montaje": false, "prefijo": "+55" },
+    { "code": "AR", "nombre_es": "Argentina", "ue": false, "servicio": "Correos Premium", "por_caja": 70, "montaje": false, "prefijo": "+54" },
+    { "code": "CL", "nombre_es": "Chile", "ue": false, "servicio": "Correos Premium", "por_caja": 70, "montaje": false, "prefijo": "+56" },
+    { "code": "CO", "nombre_es": "Colombia", "ue": false, "servicio": "Correos Premium", "por_caja": 70, "montaje": false, "prefijo": "+57" },
+    { "code": "JP", "nombre_es": "Japón", "ue": false, "servicio": "Correos Premium", "por_caja": 40, "montaje": false, "prefijo": "+81" }
+  ]
+}

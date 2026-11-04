@@ -1,0 +1,130 @@
+{
+  "_nota": "Igual que mock-config.json pero con la forja cerrada.",
+  "ok": true,
+  "horas_cola": 120,
+  "horas_dia": 16,
+  "dias_preparacion": 2,
+  "pedidos_abiertos": false,
+  "colores": [
+    {
+      "id": "negro",
+      "hex": "#1f1d1a",
+      "disponible_g": 5684,
+      "nombres": {
+        "es": "Negro",
+        "en": "Black",
+        "de": "Schwarz",
+        "fr": "Noir",
+        "it": "Nero"
+      }
+    },
+    {
+      "id": "gris-titan",
+      "hex": "#8c9094",
+      "disponible_g": 3812,
+      "nombres": {
+        "es": "Gris titán",
+        "en": "Titan grey",
+        "de": "Titangrau",
+        "fr": "Gris titane",
+        "it": "Grigio titanio"
+      }
+    },
+    {
+      "id": "dorado",
+      "hex": "#c9a24a",
+      "disponible_g": 4316,
+      "nombres": {
+        "es": "Dorado",
+        "en": "Gold",
+        "de": "Gold",
+        "fr": "Doré",
+        "it": "Oro"
+      }
+    },
+    {
+      "id": "rojo-oscuro",
+      "hex": "#7a1e1e",
+      "disponible_g": 0,
+      "nombres": {
+        "es": "Rojo oscuro",
+        "en": "Dark red",
+        "de": "Dunkelrot",
+        "fr": "Rouge foncé",
+        "it": "Rosso scuro"
+      }
+    },
+    {
+      "id": "rojo-lava",
+      "hex": "#c0301f",
+      "disponible_g": 300,
+      "nombres": {
+        "es": "Rojo lava",
+        "en": "Lava red",
+        "de": "Lavarot",
+        "fr": "Rouge lave",
+        "it": "Rosso lava"
+      }
+    },
+    {
+      "id": "amarillo",
+      "hex": "#e3c62c",
+      "disponible_g": 1000,
+      "nombres": {
+        "es": "Amarillo limón",
+        "en": "Lemon yellow",
+        "de": "Zitronengelb",
+        "fr": "Jaune citron",
+        "it": "Giallo limone"
+      }
+    },
+    {
+      "id": "verde-oscuro",
+      "hex": "#2f4a2a",
+      "disponible_g": 2845,
+      "nombres": {
+        "es": "Verde oscuro",
+        "en": "Dark green",
+        "de": "Dunkelgrün",
+        "fr": "Vert foncé",
+        "it": "Verde scuro"
+      }
+    },
+    {
+      "id": "azul-marino",
+      "hex": "#1f3a68",
+      "disponible_g": 1000,
+      "nombres": {
+        "es": "Azul marino",
+        "en": "Navy blue",
+        "de": "Marineblau",
+        "fr": "Bleu marine",
+        "it": "Blu marino"
+      }
+    },
+    {
+      "id": "azul-ultramar",
+      "hex": "#2a3f9e",
+      "disponible_g": 100,
+      "nombres": {
+        "es": "Azul ultramar",
+        "en": "Ultramarine blue",
+        "de": "Ultramarinblau",
+        "fr": "Bleu outremer",
+        "it": "Blu oltremare"
+      }
+    },
+    {
+      "id": "blanco-marfil",
+      "hex": "#e9e4d6",
+      "disponible_g": 2950,
+      "nombres": {
+        "es": "Blanco marfil",
+        "en": "Ivory white",
+        "de": "Elfenbeinweiß",
+        "fr": "Blanc ivoire",
+        "it": "Bianco avorio"
+      }
+    }
+  ]
+}
