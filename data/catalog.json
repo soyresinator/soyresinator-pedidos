@@ -12,6 +12,7 @@
       "id": "founders-bolt",
       "nombre": "Founders Bolt",
       "modelo": "bolter-pf",
+      "id_replica": "BOLTER-PF",
       "coleccion": "imperium-arsenal",
       "pvp": 160,
       "especial": false,
@@ -19,13 +20,15 @@
       "horas": 50.8,
       "caja": "larga",
       "partes": [
-        { "grupo": "rojo", "etiqueta": "parte.detalles_rojos", "gramos": 296, "de_serie": "rojo-oscuro", "opciones": "stock" }
+        { "grupo": "rojo", "etiqueta": "parte.detalles_rojos", "gramos": 296, "de_serie": "rojo-oscuro", "opciones": "stock",
+          "placas": [1], "filamento_serie": "FIL-PLAM-DARKRED" }
       ]
     },
     {
       "id": "heavy-bolt",
       "nombre": "Heavy Bolt",
       "modelo": "bolter-primaris",
+      "id_replica": "BOLTER-PRIMARIS",
       "coleccion": "imperium-arsenal",
       "pvp": 190,
       "especial": false,
@@ -33,13 +36,15 @@
       "horas": 59.1,
       "caja": "larga",
       "partes": [
-        { "grupo": "rojo", "etiqueta": "parte.partes_rojas", "gramos": 728, "de_serie": "rojo-oscuro", "opciones": "stock" }
+        { "grupo": "rojo", "etiqueta": "parte.partes_rojas", "gramos": 728, "de_serie": "rojo-oscuro", "opciones": "stock",
+          "placas": [8, 9], "filamento_serie": "FIL-PLAM-DARKRED" }
       ]
     },
     {
       "id": "heavy-bolt-wolf",
       "nombre": "Heavy Bolt Wolf Version",
       "modelo": "bolter-primaris-sw",
+      "id_replica": "BOLTER-PRIMARIS-SW",
       "coleccion": "imperium-arsenal",
       "pvp": 250,
       "especial": true,
@@ -47,14 +52,17 @@
       "horas": 66.0,
       "caja": "larga",
       "partes": [
-        { "grupo": "principal", "etiqueta": "parte.color_principal", "gramos": 754, "de_serie": "amarillo", "opciones": ["amarillo", "azul-marino"] },
-        { "grupo": "metalicos", "etiqueta": "parte.detalles_metalicos", "gramos": 571, "de_serie": "gris-titan", "opciones": ["gris-titan", "dorado"] }
+        { "grupo": "principal", "etiqueta": "parte.color_principal", "gramos": 754, "de_serie": "amarillo", "opciones": ["amarillo", "azul-marino"],
+          "placas": [8, 9], "filamento_serie": "FIL-PLAM-LEMONYELLOW" },
+        { "grupo": "metalicos", "etiqueta": "parte.detalles_metalicos", "gramos": 571, "de_serie": "gris-titan", "opciones": ["gris-titan", "dorado"],
+          "placas": [2, 3, 4, 11, 12], "filamento_serie": "FIL-SILK-GREYTITAN" }
       ]
     },
     {
       "id": "founders-bolt-pistol",
       "nombre": "Founders Bolt Pistol",
       "modelo": "pistola-pf",
+      "id_replica": "PISTOLA-PF",
       "coleccion": "imperium-arsenal",
       "pvp": 100,
       "especial": false,
@@ -62,13 +70,15 @@
       "horas": 31.3,
       "caja": "pistola",
       "partes": [
-        { "grupo": "rojo", "etiqueta": "parte.detalle_rojo", "gramos": 145, "de_serie": "rojo-oscuro", "opciones": "stock" }
+        { "grupo": "rojo", "etiqueta": "parte.detalle_rojo", "gramos": 145, "de_serie": "rojo-oscuro", "opciones": "stock",
+          "placas": [6], "filamento_serie": "FIL-PLAM-DARKRED" }
       ]
     },
     {
       "id": "heavybolt-pistol",
       "nombre": "Heavybolt Pistol",
       "modelo": "pistola-primaris",
+      "id_replica": "PISTOLA-PRIMARIS",
       "coleccion": "imperium-arsenal",
       "pvp": 130,
       "especial": false,
@@ -76,13 +86,15 @@
       "horas": 39.1,
       "caja": "pistola",
       "partes": [
-        { "grupo": "rojo", "etiqueta": "parte.partes_rojas", "gramos": 404, "de_serie": "rojo-oscuro", "opciones": "stock" }
+        { "grupo": "rojo", "etiqueta": "parte.partes_rojas", "gramos": 404, "de_serie": "rojo-oscuro", "opciones": "stock",
+          "placas": [2], "filamento_serie": "FIL-PLAM-DARKRED" }
       ]
     },
     {
       "id": "trench-las-rifle",
       "nombre": "Trench Las Rifle",
       "modelo": "krieg",
+      "id_replica": "RIFLE-KRIEG",
       "coleccion": "guard-legions",
       "pvp": 160,
       "especial": false,
@@ -95,6 +107,7 @@
       "id": "trooper-las-rifle",
       "nombre": "Trooper Las Rifle",
       "modelo": "cadia",
+      "id_replica": "RIFLE-CADIA",
       "coleccion": "guard-legions",
       "pvp": 160,
       "especial": false,
@@ -102,26 +115,33 @@
       "horas": 33.9,
       "caja": "larga",
       "partes": [
-        { "grupo": "verde", "etiqueta": "parte.cuerpo_verde", "gramos": 331, "de_serie": "verde-oscuro", "opciones": "stock" },
-        { "grupo": "dorado", "etiqueta": "parte.detalle_dorado", "gramos": 19, "de_serie": "dorado", "opciones": "stock" }
+        { "grupo": "verde", "etiqueta": "parte.cuerpo_verde", "gramos": 331, "de_serie": "verde-oscuro", "opciones": "stock",
+          "placas": [2], "filamento_serie": "FIL-PLAM-DARKGREEN" },
+        { "grupo": "dorado", "etiqueta": "parte.detalle_dorado", "gramos": 19, "de_serie": "dorado", "opciones": "stock",
+          "placas": [3], "filamento_serie": "FIL-SILK-GOLD" }
       ]
     },
     {
       "id": "las-pistol",
       "nombre": "Las Pistol",
       "modelo": "pistola-laser",
+      "id_replica": "PISTOLA-LASER",
       "coleccion": "guard-legions",
       "pvp": 100,
       "especial": false,
       "incluye": ["inc.kit"],
       "horas": 17.0,
       "caja": "pistola",
-      "partes": []
+      "partes": [
+        { "grupo": "verde", "etiqueta": "parte.cuerpo_verde", "gramos": 156, "de_serie": "verde-oscuro", "opciones": ["verde-oscuro", "negro"],
+          "placas": [3], "filamento_serie": "FIL-PLAM-DARKGREEN" }
+      ]
     },
     {
       "id": "renegade-bolt",
       "nombre": "Renegade Bolt",
       "modelo": "bolter-caos",
+      "id_replica": "BOLTER-CAOS",
       "coleccion": "xenos-and-hereticus",
       "pvp": 160,
       "especial": false,
@@ -129,14 +149,17 @@
       "horas": 51.1,
       "caja": "larga",
       "partes": [
-        { "grupo": "principal", "etiqueta": "parte.pieza_principal", "gramos": 315, "de_serie": "negro", "opciones": "stock" },
-        { "grupo": "metalicos", "etiqueta": "parte.detalles_metalicos", "gramos": 259, "de_serie": "gris-titan", "opciones": ["gris-titan", "dorado"] }
+        { "grupo": "principal", "etiqueta": "parte.pieza_principal", "gramos": 315, "de_serie": "negro", "opciones": "stock",
+          "placas": [1], "filamento_serie": "FIL-PLAM-CHARCOAL" },
+        { "grupo": "metalicos", "etiqueta": "parte.detalles_metalicos", "gramos": 259, "de_serie": "gris-titan", "opciones": ["gris-titan", "dorado"],
+          "placas": [4, 8], "filamento_serie": "FIL-SILK-GREYTITAN" }
       ]
     },
     {
       "id": "plague-bolt",
       "nombre": "Plague Bolt",
       "modelo": "bolter-plague",
+      "id_replica": "BOLTER-PLAGUE",
       "coleccion": "xenos-and-hereticus",
       "pvp": 220,
       "especial": true,
