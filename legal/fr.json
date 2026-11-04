@@ -2,29 +2,192 @@
   "privacidad": {
     "titulo": "Politique de confidentialité",
     "secciones": [
-      { "h": "Qui traite tes données", "p": ["Soy Resinator est la marque de {titular}, numéro fiscal {nif}, domicilié(e) à {domicilio}. Nous sommes responsables des données que tu nous transmets lors d'une commande. Tu peux nous écrire à {email}."] },
-      { "h": "Les données que nous collectons", "p": ["Uniquement celles dont nous avons besoin pour ta commande :"], "ul": ["Nom complet, e-mail et téléphone.", "Adresse de livraison, code postal, ville et pays.", "Ton compte Instagram, si tu choisis de nous le donner.", "Ce que tu commandes : répliques, couleurs, montage, notes et mode de paiement."] },
-      { "h": "À quoi elles servent", "p": ["À fabriquer, facturer et expédier ta commande, et à t'écrire à son sujet : informations de paiement, délais, expédition et suivi.", "Nous ne les utilisons pas pour la publicité, nous ne faisons pas de profilage et nous ne les vendons ni ne les cédons à personne pour ses propres fins."] },
-      { "h": "Base légale", "p": ["Nous traitons tes données car elles sont nécessaires au contrat que tu concluis avec nous en passant commande (article 6, paragraphe 1, point b, du RGPD) et au respect de nos obligations fiscales et comptables (article 6, paragraphe 1, point c, du RGPD)."] },
-      { "h": "Qui d'autre y a accès", "p": ["Pour fonctionner, nous utilisons ces services, qui traitent les données selon nos instructions :", "Pour exécuter la commande, nous partageons aussi le strict nécessaire avec le transporteur (InPost ou Correos : nom, adresse et téléphone) et, si tu paies avec PayPal, avec PayPal."], "ul": ["Google (Google Ireland Limited) : nous enregistrons les commandes dans Google Sheets, les traitons avec Google Apps Script et t'écrivons avec Gmail. Google peut traiter des données hors de l'Espace économique européen avec les garanties du cadre de protection des données UE-États-Unis et des clauses contractuelles types.", "GitHub (GitHub, Inc.) : héberge ce site. Comme tout serveur web, il reçoit ton adresse IP lors de ta visite.", "Google Fonts : les polices de ce site sont chargées depuis des serveurs de Google, qui reçoivent ton adresse IP."] },
-      { "h": "Durée de conservation", "p": ["Pendant le traitement de ta commande puis pendant la durée imposée par la loi pour les documents fiscaux et comptables (en général jusqu'à 6 ans). Ensuite, nous les supprimons."] },
-      { "h": "Tes droits", "p": ["Tu peux nous demander d'accéder à tes données, de les rectifier ou de les effacer, t'opposer à leur traitement, le limiter ou récupérer tes données pour un autre service. Écris-nous à {email} en indiquant ton identifiant de commande.", "Si tu estimes que nous n'avons pas bien traité tes données, tu peux déposer une réclamation auprès de l'Agence espagnole de protection des données (www.aepd.es) ou de l'autorité de ton pays."] },
-      { "h": "Cookies et stockage", "p": ["Ce site n'utilise ni cookies ni outils d'analyse. Il enregistre seulement dans ton navigateur (localStorage) la commande en cours de préparation et la langue choisie, pour que tu ne les perdes pas en revenant. Tu peux les effacer à tout moment depuis les réglages de ton navigateur."] }
+      {
+        "h": "Qui traite tes données",
+        "p": [
+          "Soy Resinator est la marque de {titular}, numéro fiscal {nif}, domicilié(e) à {domicilio}. Nous sommes responsables des données que tu nous transmets lors d'une commande. Tu peux nous écrire à {email}."
+        ]
+      },
+      {
+        "h": "Les données que nous collectons",
+        "p": [
+          "Uniquement celles dont nous avons besoin pour ta commande :",
+          "Toutes sont obligatoires, sauf Instagram et les notes. Sans elles, nous ne pouvons ni fabriquer ni expédier ta commande, et nous ne pourrions donc pas l'accepter."
+        ],
+        "ul": [
+          "Nom complet, e-mail et téléphone.",
+          "Adresse de livraison, code postal, ville et pays.",
+          "Ton compte Instagram, si tu choisis de nous le donner.",
+          "Ce que tu commandes : répliques, couleurs, notes et mode de paiement."
+        ]
+      },
+      {
+        "h": "À quoi elles servent",
+        "p": [
+          "À fabriquer, facturer et expédier ta commande, et à t'écrire à son sujet : informations de paiement, délais, expédition et suivi.",
+          "Nous ne les utilisons pas pour la publicité, nous ne faisons pas de profilage et nous ne les vendons ni ne les cédons à personne pour ses propres fins."
+        ]
+      },
+      {
+        "h": "Base légale",
+        "p": [
+          "Nous traitons tes données car elles sont nécessaires au contrat que tu concluis avec nous en passant commande (article 6, paragraphe 1, point b, du RGPD) et au respect de nos obligations fiscales et comptables (article 6, paragraphe 1, point c, du RGPD)."
+        ]
+      },
+      {
+        "h": "Qui d'autre y a accès",
+        "p": [
+          "Pour fonctionner, nous utilisons ces services, qui traitent les données selon nos instructions :",
+          "Pour exécuter la commande, nous partageons aussi le strict nécessaire avec le transporteur (InPost ou Correos : nom, adresse et téléphone) et, si tu paies avec PayPal, avec PayPal.",
+          "Si ton colis part vers un pays situé hors de l'Espace économique européen (par exemple les États-Unis, la Suisse ou le Royaume-Uni), le transporteur et ses partenaires sur place traitent tes données de livraison dans ce pays. Ce transfert est nécessaire à l'exécution du contrat que tu conclus avec nous (article 49, paragraphe 1, point b, du RGPD). La Suisse et le Royaume-Uni bénéficient en outre d'une décision d'adéquation de la Commission européenne."
+        ],
+        "ul": [
+          "Google (Google Ireland Limited) : nous enregistrons les commandes dans Google Sheets, les traitons avec Google Apps Script et t'écrivons avec Gmail. Google peut traiter des données hors de l'Espace économique européen avec les garanties du cadre de protection des données UE-États-Unis et des clauses contractuelles types.",
+          "GitHub (GitHub, Inc.) : héberge ce site. Comme tout serveur web, il reçoit ton adresse IP lors de ta visite.",
+          "Google Fonts : les polices de ce site sont chargées depuis des serveurs de Google, qui reçoivent ton adresse IP."
+        ]
+      },
+      {
+        "h": "Durée de conservation",
+        "p": [
+          "Pendant le traitement de ta commande puis pendant la durée imposée par la loi pour les documents fiscaux et comptables (en général jusqu'à 6 ans). Ensuite, nous les supprimons."
+        ]
+      },
+      {
+        "h": "Tes droits",
+        "p": [
+          "Tu peux nous demander d'accéder à tes données, de les rectifier ou de les effacer, t'opposer à leur traitement, le limiter ou récupérer tes données pour un autre service. Écris-nous à {email} en indiquant ton identifiant de commande.",
+          "Si tu estimes que nous n'avons pas bien traité tes données, tu peux déposer une réclamation auprès de l'Agence espagnole de protection des données (www.aepd.es) ou de l'autorité de ton pays."
+        ]
+      },
+      {
+        "h": "Cookies et stockage",
+        "p": [
+          "Ce site n'utilise ni cookies ni outils d'analyse. Il enregistre seulement dans ton navigateur (localStorage) la commande en cours de préparation et la langue choisie, pour que tu ne les perdes pas en revenant. Tu peux les effacer à tout moment depuis les réglages de ton navigateur."
+        ]
+      }
     ]
   },
   "condiciones": {
     "titulo": "Conditions de vente",
     "secciones": [
-      { "h": "Qui sommes-nous", "p": ["Soy Resinator est la marque de {titular}, numéro fiscal {nif}, domicilié(e) à {domicilio}. Contact : {email}."] },
-      { "h": "Ce que nous vendons", "p": ["Des répliques d'exposition grandeur nature, inspirées de la science-fiction et imprimées en 3D à la commande. Elles sont livrées démontées et non peintes : la couleur de chaque pièce est celle du filament.", "Ce sont des objets décoratifs, sans capacité de tir ni mécanisme fonctionnel. Ce ne sont pas des jouets : elles contiennent de petites pièces et ne conviennent pas aux enfants de moins de 14 ans.", "S'agissant d'impressions FDM, il est normal de voir les lignes de couche et de légères différences de teinte entre lots de filament. Les photos du site sont de vraies impressions réalisées par nous."] },
-      { "h": "Comment passer commande", "p": ["Tu choisis les répliques et les couleurs, tu saisis tes coordonnées et tu envoies la commande, sans créer de compte. Tu reçois alors un identifiant de commande à l'écran et par e-mail.", "Sous 24 heures, nous t'envoyons les informations de paiement. La commande passe en production dès réception du paiement, ou du premier paiement si tu paies en deux fois."] },
-      { "h": "Prix et taxes", "p": ["Chaque réplique coûte le même prix dans tous les pays.", "Pour les livraisons dans l'Union européenne, les prix incluent la TVA.", "Pour les livraisons hors de l'Union européenne, le prix affiché est le prix final de notre vente. La douane du pays de destination peut percevoir des taxes ou droits d'importation à l'arrivée du colis. Ces montants sont à la charge du client.", "Les frais de livraison sont calculés par carton selon le pays et s'affichent avant l'envoi de la commande."] },
-      { "h": "Paiement", "p": ["Tu peux payer la commande en une fois ou en deux fois : 50 % pour démarrer et les 50 % restants avant l'expédition.", "En Espagne et dans l'UE, le paiement se fait par virement bancaire ; dans les autres pays, avec PayPal. Rien n'est débité sur le site.", "Si nous ne recevons pas le premier paiement dans les {dias_pago} jours suivant la commande, nous pouvons l'annuler. Si tu paies en deux fois, nous expédions la réplique à réception du second paiement."] },
-      { "h": "Délais", "p": ["Tous les délais courent à partir de la date du paiement, ou du premier paiement si tu paies en deux fois. Notre délai d'expédition idéal est de 3 semaines à partir de là ; le site te donne une estimation selon notre file d'impression.", "La date estimée est fixée à la réception de ton paiement. Si quelque chose la retarde, nous te prévenons."] },
-      { "h": "Service de montage", "p": ["Uniquement pour les livraisons en Espagne, pour 50 € par réplique. Nous la livrons montée et non peinte."] },
-      { "h": "Livraison", "p": ["Nous expédions avec InPost ou Correos selon le pays. Chaque carton contient une réplique longue et jusqu'à deux pistolets.", "Quand le colis part, nous te donnons le numéro de suivi. Vérifie le carton à la réception."] },
-      { "h": "Échanges, retours et garantie", "p": ["Si tu choisis des couleurs différentes de celles de série, la réplique est fabriquée selon tes spécifications et, comme le prévoit la loi dans ce cas, ne peut pas faire l'objet d'une rétractation.", "Si tu la commandes dans les couleurs de série, tu disposes de 14 jours calendaires à compter de la livraison pour te rétracter : écris-nous et renvoie-la inutilisée dans son carton. Nous remboursons le prix et la livraison standard ; les frais de retour sont à ta charge.", "Si une pièce arrive cassée ou défectueuse, ou s'il en manque une, écris-nous dans les {dias_incidencias} jours suivant la livraison avec des photos du colis et de la pièce. Nous la réimprimons et te l'envoyons gratuitement ou, si ce n'est pas possible, nous la remboursons.", "Rien de tout cela ne limite ta garantie légale de conformité en tant que consommateur."] },
-      { "h": "Droit applicable", "p": ["Ces conditions sont régies par le droit espagnol, sans préjudice des droits que te reconnaît en tant que consommateur la loi de ton pays de résidence."] }
+      {
+        "h": "Qui sommes-nous",
+        "p": [
+          "Soy Resinator est la marque de {titular}, numéro fiscal {nif}, domicilié(e) à {domicilio}. Contact : {email}."
+        ]
+      },
+      {
+        "h": "Ce que nous vendons",
+        "p": [
+          "Des répliques d'exposition grandeur nature, inspirées de la science-fiction et imprimées en 3D à la commande. Elles sont livrées démontées et non peintes : la couleur de chaque pièce est celle du filament.",
+          "Ce sont des objets décoratifs, sans capacité de tir ni mécanisme fonctionnel. Ce ne sont pas des jouets : elles contiennent de petites pièces et ne conviennent pas aux enfants de moins de 14 ans.",
+          "S'agissant d'impressions FDM, il est normal de voir les lignes de couche et de légères différences de teinte entre lots de filament. Les photos du site sont de vraies impressions réalisées par nous."
+        ]
+      },
+      {
+        "h": "Comment passer commande",
+        "p": [
+          "Tu choisis les répliques et les couleurs, tu saisis tes coordonnées et tu envoies la commande, sans créer de compte. Tu reçois alors un identifiant de commande à l'écran et par e-mail.",
+          "Sous 24 heures, nous t'envoyons les informations de paiement. La commande passe en production dès réception du paiement, ou du premier paiement si tu paies en deux fois."
+        ]
+      },
+      {
+        "h": "Prix et taxes",
+        "p": [
+          "Chaque réplique coûte le même prix dans tous les pays.",
+          "Pour les livraisons dans l'Union européenne, les prix incluent la TVA.",
+          "Pour les livraisons hors de l'Union européenne, le prix affiché est le prix final de notre vente. La douane du pays de destination peut percevoir des taxes ou droits d'importation à l'arrivée du colis. Ces montants sont à la charge du client.",
+          "Les frais de livraison sont calculés par carton selon le pays et s'affichent avant l'envoi de la commande."
+        ]
+      },
+      {
+        "h": "Paiement",
+        "p": [
+          "Tu peux payer la commande en une fois ou en deux fois : 50 % pour démarrer et les 50 % restants avant l'expédition.",
+          "En Espagne et dans l'UE, le paiement se fait par virement bancaire ; dans les autres pays, avec PayPal. Rien n'est débité sur le site.",
+          "Si nous ne recevons pas le premier paiement dans les {dias_pago} jours suivant la commande, nous pouvons l'annuler. Si tu paies en deux fois, nous expédions la réplique à réception du second paiement."
+        ]
+      },
+      {
+        "h": "Délais",
+        "p": [
+          "Tous les délais courent à partir de la date du paiement, ou du premier paiement si tu paies en deux fois. Notre délai d'expédition idéal est de 3 semaines à partir de là ; le site te donne une estimation selon notre file d'impression.",
+          "La date estimée est fixée à la réception de ton paiement. Si quelque chose la retarde, nous te prévenons."
+        ]
+      },
+      {
+        "h": "Livraison",
+        "p": [
+          "Nous expédions avec InPost ou Correos selon le pays. Chaque carton contient une réplique longue et jusqu'à deux pistolets.",
+          "Quand le colis part, nous te donnons le numéro de suivi. Vérifie le carton à la réception."
+        ]
+      },
+      {
+        "h": "Échanges, retours et garantie",
+        "p": [
+          "Si tu choisis des couleurs différentes de celles de série, la réplique est fabriquée selon tes spécifications et, comme le prévoit la loi dans ce cas, ne peut pas faire l'objet d'une rétractation.",
+          "Si tu la commandes dans les couleurs de série, tu disposes de 14 jours calendaires à compter de la livraison pour te rétracter : écris-nous et renvoie-la inutilisée dans son carton. Nous remboursons le prix et la livraison standard ; les frais de retour sont à ta charge.",
+          "Si une pièce arrive cassée ou défectueuse, ou s'il en manque une, écris-nous dans les {dias_incidencias} jours suivant la livraison avec des photos du colis et de la pièce. Nous la réimprimons et te l'envoyons gratuitement ou, si ce n'est pas possible, nous la remboursons.",
+          "Rien de tout cela ne limite ta garantie légale de conformité en tant que consommateur."
+        ]
+      },
+      {
+        "h": "Droit applicable",
+        "p": [
+          "Ces conditions sont régies par le droit espagnol, sans préjudice des droits que te reconnaît en tant que consommateur la loi de ton pays de résidence."
+        ]
+      }
+    ]
+  },
+  "aviso": {
+    "titulo": "Mentions légales",
+    "secciones": [
+      {
+        "h": "Propriétaire du site",
+        "p": [
+          "Conformément à la loi espagnole 34/2002 sur les services de la société de l'information et le commerce électronique (LSSI), ce site appartient à :"
+        ],
+        "ul": [
+          "Titulaire : {titular}",
+          "Numéro fiscal (NIF) : {nif}",
+          "Adresse : {domicilio}",
+          "E-mail : {email}",
+          "Instagram : {instagram}"
+        ]
+      },
+      {
+        "h": "Ce que propose ce site",
+        "p": [
+          "Ce site permet de consulter le catalogue de répliques de Soy Resinator, de passer commande et d'en suivre l'état. Les achats sont régis par les conditions de vente, et le traitement de tes données par la politique de confidentialité."
+        ]
+      },
+      {
+        "h": "Utilisation du site",
+        "p": [
+          "Tu peux utiliser ce site pour t'informer et passer commande. Il est interdit de l'utiliser à des fins illicites, d'envoyer de fausses commandes ou de tenter d'en perturber le fonctionnement."
+        ]
+      },
+      {
+        "h": "Propriété intellectuelle",
+        "p": [
+          "Les textes, photos, le design et le code de ce site appartiennent à la titulaire ou sont utilisés avec autorisation. Tu ne peux pas les copier ni les réutiliser sans autorisation, sauf pour un usage personnel.",
+          "Les répliques sont des créations inspirées de la science-fiction. Soy Resinator n'est liée à aucun studio, éditeur ou fabricant de jeux et n'utilise pas leurs marques."
+        ]
+      },
+      {
+        "h": "Responsabilité et liens",
+        "p": [
+          "Nous veillons à ce que les informations du site soient exactes et à jour, mais elles peuvent contenir des erreurs ponctuelles. Le montant et les conditions qui s'appliquent sont ceux de l'e-mail de confirmation de ta commande.",
+          "Le site contient des liens vers Instagram et d'autres services tiers. Nous ne sommes pas responsables de leurs contenus ni de leurs politiques."
+        ]
+      },
+      {
+        "h": "Droit applicable",
+        "p": [
+          "Les présentes mentions légales sont régies par le droit espagnol."
+        ]
+      }
     ]
   }
 }

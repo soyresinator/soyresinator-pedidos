@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pruebas de la tarea</title>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; margin: 16px; background: #fff; color: #111; }
+  table { border-collapse: collapse; width: 100%; }
+  td, th { border-bottom: 1px solid #ddd; padding: 6px 8px; text-align: left; vertical-align: top; }
+  .ok { color: #116b2c; font-weight: 600; } .ko { color: #b00020; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>Pruebas de la tarea programada (simulado)</h1>
+<p>Ejecuta <code>apps-script/Code.gs</code> + <code>apps-script/Tarea.gs</code> con RES · Pedidos y RES · Inventario simulados.</p>
+<p id="resumen">Ejecutando…</p>
+<table><thead><tr><th>Prueba</th><th>Resultado</th><th>Detalle</th></tr></thead><tbody id="filas"></tbody></table>
+<script>
+/* ---------- Hojas simuladas (con fórmulas R1C1 y formatos por celda) ---------- */
+class Rango {
+  constructor(sh, r, c, nr, nc) { Object.assign(this, { sh, r, c, nr, nc }); }
+  cell(i, j) { const idx = this.r - 1 + i; while (this.sh.data.length <= idx) this.sh.data.push([]); return [idx, this.c - 1 + j]; }
+  getValues() { return Array.from({ length: this.nr }, (_, i) => Array.from({ length: this.nc }, (_, j) => (this.sh.data[this.r - 1 + i] || [])[this.c - 1 + j] ?? '')); }
+  setValues(v) { v.forEach((row, i) => row.forEach((val, j) => { const [a, b] = this.cell(i, j); this.sh.data[a][b] = val; })); return this; }
+  setValue(v) { return this.setValues([[v]]); }
+  getFormulasR1C1() { return Array.from({ length: this.nr }, (_, i) => Array.from({ length: this.nc }, (_, j) => this.sh.f[(this.r + i) + ':' + (this.c + j)] || '')); }
+  setFormulaR1C1(f) { this.sh.f[this.r + ':' + this.c] = f; const [a, b] = this.cell(0, 0); this.sh.data[a][b] = '=' ; return this; }
+  setNumberFormat(fm) { for (let i = 0; i < this.nr; i++) for (let j = 0; j < this.nc; j++) this.sh.fmt[(this.r + i) + ':' + (this.c + j)] = fm; return this; }
+  setNumberFormats(f) { f.forEach((row, i) => row.forEach((fm, j) => { this.sh.fmt[(this.r + i) + ':' + (this.c + j)] = fm; })); return this; }
+  copyTo(dest) { this.sh.copias.push(dest.r); }
+  setFontWeight() { return this; } setDataValidation() { return this; }
+}
+class Hoja {
+  constructor(name, data = []) { this.name = name; this.data = data; this.f = {}; this.fmt = {}; this.copias = []; }
+  getName() { return this.name; }
+  getLastRow() { let n = this.data.length; while (n && !this.data[n - 1].some(v => v !== '' && v !== undefined)) n--; return n; }
+  getRange(r, c, nr = 1, nc = 1) { return new Rango(this, r, c, nr, nc); }
+  getDataRange() { return new Rango(this, 1, 1, this.getLastRow(), Math.max(...this.data.map(r => r.length), 1)); }
+  setFrozenRows() {}
+}
+function libro(hojas) {
+  return { hojas, getSheetByName(n) { return this.hojas.find(h => h.name === n) || null; },
+    insertSheet(n) { const h = new Hoja(n); this.hojas.push(h); return h; }, getSheets() { return [...this.hojas]; },
+    deleteSheet(h) { this.hojas = this.hojas.filter(x => x !== h); }, setSpreadsheetTimeZone() {} };
+}
+const web = libro([new Hoja('Hoja 1')]);
+
+const ENC_P = ['ID_PEDIDO','FECHA','ID_CLIENTE','CLIENTE','PAIS','PRODUCTOS','ESTADO','PAGO','FORMA_PAGO','IMPORTE_PRODUCTOS','ENVIO_COBRADO','TOTAL','COBRADO','PENDIENTE_COBRO','MONTAJE','ENVIO_IDEAL','SERVICIO_ENVIO','TRAMO_PESO','COSTE_ENVIO_EST','DIF_ENVIO','FECHA_ENVIO','TRACKING','NOTAS_CLIENTE','ID_FORM','CLAVE_FORM','ID_APP'];
+const filaP = (id, cli, est, pago, extra = {}) => ENC_P.map(h => ({ ID_PEDIDO: id, ID_CLIENTE: cli, ESTADO: est, PAGO: pago, ...extra })[h] ?? '');
+const shPed = new Hoja('PEDIDOS', [ENC_P,
+  filaP('RES-2026-029', 'CLI-037', 'En producción', 'Pagado'),
+  filaP('RES-2026-030', 'CLI-039', 'En producción', '1ª parte')]);
+shPed.f['3:12'] = '=R[0]C[-2]+R[0]C[-1]'; shPed.f['3:14'] = '=R[0]C[-2]-R[0]C[-1]';
+const shLin = new Hoja('LINEAS', [['ID_PEDIDO','LINEA','ID_REPLICA','PRODUCTO','CANTIDAD','TEXTO_CLIENTE'],
+  ['RES-2026-029', 1, 'BOLTER-PF', 'Bolter Primera Fundación', 1, 'First Born Bolter'],
+  ['RES-2026-030', 1, 'RIFLE-KRIEG', 'Rifle Krieg', 1, 'TRENCH LASRIFLE'],
+  ['RES-2026-030', 2, 'STAND', 'Stand', 1, 'STAND']]);
+const shCli = new Hoja('CLIENTES', [['ID_CLIENTE','NOMBRE','EMAIL','TELEFONO','DIRECCION','PAIS','INSTAGRAM','NUM_PEDIDOS','TOTAL_GASTADO','PRIMER_PEDIDO','ULTIMO_PEDIDO','NOTAS'],
+  ['CLI-039', 'Jason', 'repite@example.com', '1', 'x', 'Estados Unidos', '', 1, 0, '', '']]);
+shCli.f['2:8'] = '=COUNTIF(PEDIDOS!C:C;R[0]C[-7])';
+const pedidosRes = libro([shPed, shLin, shCli]);
+
+const inventario = libro([
+  new Hoja('STOCK', [['ID_ITEM','TIPO_ITEM','DESCRIPCION','UNIDAD','STOCK','COMPROMETIDO','DISPONIBLE','MINIMO','ESTADO'],
+    ['FIL-PLAM-CHARCOAL', 'FILAMENTO', '', 'g', 8698.3, 3413.03, 5285.27, 3000, 'OK'],
+    ['FIL-SILK-GOLD', 'FILAMENTO', '', 'g', 2971, 155, 2816.24, 1000, 'OK'],
+    ['FIL-WINKLE-SILK-GOLD', 'FILAMENTO', '', 'g', 1500, 0, 1500, 0, 'OK'],
+    ['FIL-PLAM-DARKBROWN', 'FILAMENTO', '', 'g', 657, 684, -26.3, 400, 'FALTA']]),
+  new Hoja('COMPROMETIDO', [['FECHA','PEDIDO','CLIENTE','ID_ITEM','CANTIDAD','UNIDAD','ESTADO','ORIGEN'],
+    ['', 'RES-2026-029', '', 'FIL', 1, 'g', 'CONSUMIDO', 'Bandeja 1'],
+    ['', 'RES-2026-029', '', 'FIL', 1, 'g', 'CONSUMIDO', 'Bandeja 2'],
+    ['', 'RES-2026-029', '', 'FIL2', 1, 'g', 'PENDIENTE', 'Bandeja 2'],
+    ['', 'RES-2026-029', '', 'FIL', 1, 'g', 'PENDIENTE', 'Bandeja 3'],
+    ['', 'RES-2026-029', '', 'TOR', 4, 'ud', 'PENDIENTE', 'Tornillería']])
+]);
+const libros = { '1cV7D0LwBZCqQdgznJN6SVJA-pFeHtrWg_5cAtqPxVAY': pedidosRes, '1vqMkX0nOf9kKBq4OS1lWmz02HBNua4v2LZGP771EtP8': inventario };
+
+const validacion = { requireValueInList() { return this; }, setAllowInvalid() { return this; }, build() { return {}; } };
+const SpreadsheetApp = { getActiveSpreadsheet: () => web, openById: id => libros[id], newDataValidation: () => validacion, flush() {},
+  CopyPasteType: { PASTE_FORMAT: 'f', PASTE_DATA_VALIDATION: 'v' } };
+const cacheMem = {};
+const CacheService = { getScriptCache: () => ({ get: k => cacheMem[k] ?? null, put: (k, v) => { cacheMem[k] = v; }, remove: k => { delete cacheMem[k]; }, removeAll: ks => ks.forEach(k => delete cacheMem[k]) }) };
+const LockService = { getScriptLock: () => ({ waitLock() {}, tryLock: () => true, releaseLock() {} }) };
+const MailApp = { sendEmail() {} };
+const ficheros = {};
+const PAGES = 'https://TU-USUARIO.github.io/soyresinator-pedidos/';
+const UrlFetchApp = { fetch: url => { const txt = ficheros[url.replace(PAGES, '')]; return { getResponseCode: () => (txt === undefined ? 404 : 200), getContentText: () => txt }; } };
+const pad = n => String(n).padStart(2, '0');
+const Utilities = {
+  DigestAlgorithm: { SHA_256: 'S' }, Charset: { UTF_8: 'U' }, computeDigest: () => [1, 2, 3],
+  newBlob: s => ({ getBytes: () => Array.from(new TextEncoder().encode(s)) }),
+  formatDate: (d, tz, fmt) => { d = new Date(d); return fmt.replace('yyyy', d.getFullYear()).replace('MM', pad(d.getMonth() + 1)).replace('dd', pad(d.getDate()))
+    .replace(/\bd\b/, d.getDate()).replace('H', d.getHours()).replace('mm', pad(d.getMinutes())).replace('ss', pad(d.getSeconds())); }
+};
+const triggers = [];
+const ScriptApp = { newTrigger: h => ({ timeBased: () => ({ everyHours: n => ({ create: () => triggers.push({ h, n, getHandlerFunction: () => h }) }) }) }),
+  getProjectTriggers: () => [...triggers], deleteTrigger: t => triggers.splice(triggers.indexOf(t), 1) };
+const ContentService = { MimeType: { JSON: 'json' }, createTextOutput: s => ({ content: s, setMimeType() { return this; } }) };
+
+const resultados = [];
+function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, detalle: detalle === undefined ? '' : String(detalle) }); }
+
+(async () => {
+  for (const r of ['data/catalog.json', 'data/shipping.json', 'data/config.json', 'data/colores-serie.json', 'i18n/en.json', 'i18n/es.json', 'i18n/de.json', 'i18n/fr.json', 'i18n/it.json'])
+    ficheros[r] = await (await fetch('../' + r, { cache: 'no-cache' })).text();
+  const codigo = await (await fetch('../apps-script/Code.gs', { cache: 'no-cache' })).text();
+  const tarea = await (await fetch('../apps-script/Tarea.gs', { cache: 'no-cache' })).text();
+  const G = new Function('SpreadsheetApp', 'CacheService', 'LockService', 'MailApp', 'UrlFetchApp', 'Utilities', 'ContentService', 'ScriptApp',
+    codigo + '\n' + tarea + '\nreturn { instalar, doGet, doPost, instalarTarea, tareaHoraria, quitarTarea };')(
+    SpreadsheetApp, CacheService, LockService, MailApp, UrlFetchApp, Utilities, ContentService, ScriptApp);
+  const cat = JSON.parse(ficheros['data/catalog.json']);
+  const post = b => JSON.parse(G.doPost({ postData: { contents: JSON.stringify(b) } }).content);
+  const item = (pid, colores = {}) => { const p = cat.productos.find(x => x.id === pid); return { pid, nota: '', colores: p.partes.map(pt => ({ grupo: pt.grupo, color_id: colores[pt.grupo] || pt.de_serie })) }; };
+  const pedido = (email, items, pais = 'ES', extra = {}) => ({ accion: 'pedido', idioma: 'en', web: '', cliente: { nombre: 'Cliente ' + email, email, telefono: '+34 612345678', direccion: 'Calle 1', cp: '28001', ciudad: 'Madrid', instagram: '' }, pais, modo_pago: 'completo', items, consentimiento: true, ...extra });
+  const H = n => web.getSheetByName(n);
+  const filaRes = id => shPed.data.find(r => r[0] === id);
+
+  try {
+    G.instalar();
+    const a = post(pedido('nuevo@example.com', [item('founders-bolt', { rojo: 'dorado' }), item('las-pistol')], 'US', { modo_pago: 'dos_partes' }));
+    const b = post(pedido('repite@example.com', [item('trench-las-rifle'), item('trench-las-rifle')], 'DE'));
+    check('Dos pedidos web de prueba creados', a.ok && b.ok, JSON.stringify([a, b]));
+
+    let log = G.instalarTarea();
+    check('instalarTarea crea un único activador horario de tareaHoraria', triggers.length === 1 && triggers[0].h === 'tareaHoraria' && triggers[0].n === 1, triggers.length);
+    G.instalarTarea();
+    check('Reinstalar no duplica el activador', triggers.length === 1, triggers.length);
+    check('La ejecución devuelve un resumen', /Pedidos nuevos: 2/.test(log), log);
+
+    // 1. COLORES
+    const dor = H('COLORES').data.find(r => r[0] === 'dorado');
+    check('COLORES dorado = suma de sus dos filamentos con gramos por ID', dor[7] === 'FIL-SILK-GOLD:2816;FIL-WINKLE-SILK-GOLD:1500' && dor[8] === 4316, dor[7] + ' = ' + dor[8]);
+    const mar = H('COLORES').data.find(r => r[0] === 'marron-oscuro');
+    check('Disponible negativo en Inventario cuenta como 0', mar[8] === 0, mar[7] + ' = ' + mar[8]);
+    const azul = H('COLORES').data.find(r => r[0] === 'azul');
+    check('Filamento que no está en STOCK cuenta como 0', azul[8] === 0, azul[7]);
+    check('ELEGIBLE no se toca', H('COLORES').data.slice(1).every(r => r[9] === 'sí'));
+
+    // 2. Registro
+    const pa = filaRes('RES-2026-031'), pb = filaRes('RES-2026-032');
+    const c = h => ENC_P.indexOf(h);
+    check('Pedidos nuevos con el siguiente RES-AAAA-NNN', pa && pb && pa[c('ID_FORM')] === a.id && pb[c('ID_FORM')] === b.id, pa && pa[0] + ' / ' + (pb && pb[0]));
+    check('Por cobrar / Pendiente, PAYPAL fuera de la UE y TRANSFERENCIA en la UE', pa[c('ESTADO')] === 'Por cobrar' && pa[c('PAGO')] === 'Pendiente' && pa[c('FORMA_PAGO')] === 'PAYPAL' && pb[c('FORMA_PAGO')] === 'TRANSFERENCIA', pa[c('FORMA_PAGO')] + ' / ' + pb[c('FORMA_PAGO')]);
+    check('Importes, servicio (Premium / InPost) y montaje NO', pa[c('IMPORTE_PRODUCTOS')] === 260 && pa[c('ENVIO_COBRADO')] === 90 && pa[c('SERVICIO_ENVIO')] === 'Premium' && pb[c('SERVICIO_ENVIO')] === 'InPost' && pa[c('MONTAJE')] === 'NO', [pa[c('IMPORTE_PRODUCTOS')], pa[c('ENVIO_COBRADO')], pa[c('SERVICIO_ENVIO')]].join(' · '));
+    check('PRODUCTOS con el nombre de RES · Pedidos y "2×" si se repite', pa[c('PRODUCTOS')] === 'Bolter Primera Fundación, Las Pistol' && pb[c('PRODUCTOS')] === '2× Rifle Krieg', pa[c('PRODUCTOS')] + ' / ' + pb[c('PRODUCTOS')]);
+    check('NOTAS_CLIENTE con colores y pago en dos partes', pa[c('NOTAS_CLIENTE')].includes('Detalles rojos: Dorado') && pa[c('NOTAS_CLIENTE')].includes('dos partes'), pa[c('NOTAS_CLIENTE')]);
+    check('Fórmulas copiadas de la fila anterior (TOTAL, PENDIENTE) y formato copiado', shPed.f['4:12'] === '=R[0]C[-2]+R[0]C[-1]' && shPed.f['5:14'] === '=R[0]C[-2]-R[0]C[-1]' && shPed.copias.includes(4), JSON.stringify(shPed.f));
+    check('Textos del cliente escritos como texto (@)', shPed.fmt['4:4'] === '@' && shPed.fmt['4:23'] === '@');
+    const lin = shLin.data.filter(r => r[0] === 'RES-2026-031' || r[0] === 'RES-2026-032');
+    check('LINEAS: una por unidad con ID_REPLICA (krieg -> RIFLE-KRIEG)', lin.length === 4 && lin[0][2] === 'BOLTER-PF' && lin[1][2] === 'PISTOLA-LASER' && lin[2][2] === 'RIFLE-KRIEG', lin.map(r => r[2]).join(','));
+    check('Cliente existente reutilizado; nuevo cliente con el siguiente CLI', pb[c('ID_CLIENTE')] === 'CLI-039' && pa[c('ID_CLIENTE')] === 'CLI-040' && shCli.data.length === 3 && shCli.f['3:8'], pa[c('ID_CLIENTE')] + ' / ' + pb[c('ID_CLIENTE')]);
+    const w = H('PEDIDOS_WEB').data;
+    check('PEDIDOS_WEB columna W (REGISTRADO) con el RES', w[1][22] === 'RES-2026-031' && w[2][22] === 'RES-2026-032', w[1][22]);
+    G.tareaHoraria();
+    check('Una segunda ejecución no duplica nada', shPed.data.length === 5 && shLin.data.length === 8 && shCli.data.length === 3, shPed.data.length);
+
+    // 3. Estados
+    let e = H('ESTADO_WEB').data.find(r => r[0] === a.id);
+    check('ESTADO_WEB: Por cobrar -> pendiente_pago, pago pendiente, sin fecha', e[2] === 'pendiente_pago' && e[5] === 'pendiente' && e[6] === '' && e[8] === 'Correos Premium', e.join(' | '));
+    pa[c('ESTADO')] = 'En producción'; pa[c('PAGO')] = '1ª parte'; pa[c('ID_APP')] = 'f-app-1';
+    G.tareaHoraria();
+    e = H('ESTADO_WEB').data.find(r => r[0] === a.id);
+    const hoy = new Date();
+    check('Primer pago: en_produccion, parcial, FECHA_PAGO hoy y FECHA_ENVIO_ESTIMADA >= 21 días', e[2] === 'en_produccion' && e[5] === 'parcial' && e[6] === Utilities.formatDate(hoy, '', 'yyyy-MM-dd') && (new Date(e[7]) - new Date(e[6])) / 86400000 >= 21, e.slice(2, 8).join(' | '));
+    check('ID_APP copiado a la columna X', H('PEDIDOS_WEB').data[1][23] === 'f-app-1');
+    const fechaFijada = e[7];
+    pa[c('ESTADO')] = 'Enviado'; pa[c('PAGO')] = 'Pagado'; pa[c('TRACKING')] = 'UA123456789ES';
+    G.tareaHoraria();
+    e = H('ESTADO_WEB').data.find(r => r[0] === a.id);
+    check('Enviado con tracking; la fecha estimada no cambia', e[2] === 'enviado' && e[5] === 'pagado' && e[9] === 'UA123456789ES' && e[7] === fechaFijada, e.slice(2, 10).join(' | '));
+
+    // Placas y cola
+    const f029 = filaRes('RES-2026-029');
+    f029[c('ID_FORM')] = 'SR-PLACAS';
+    H('PEDIDOS_WEB').data.push(['SR-PLACAS']); H('PEDIDOS_WEB').data[H('PEDIDOS_WEB').data.length - 1][22] = 'RES-2026-029';
+    H('ESTADO_WEB').data.push(['SR-PLACAS', 'h', 'recibido', '', '', 'pendiente', '', '', '', '', '']);
+    G.tareaHoraria();
+    e = H('ESTADO_WEB').data.find(r => r[0] === 'SR-PLACAS');
+    check('Placas: 1 de 3 bandejas terminadas (la 2 tiene una parte pendiente; tornillería no cuenta)', e[3] === 1 && e[4] === 3, e[3] + ' / ' + e[4]);
+    const cola = H('CONFIG').data[1][0];
+    const esperado = Math.round((50.8 * 2 / 3 + 34.2 + 8) * 10) / 10;
+    check('HORAS_COLA = lo que queda de los pedidos en producción', cola === esperado, cola + ' (esperado ' + esperado + ')');
+    check('PEDIDOS_ABIERTOS (E2) intacto', H('CONFIG').data[1][4] === 'sí');
+    check('?accion=config ya devuelve la cola', JSON.parse(G.doGet({ parameter: { accion: 'config' } }).content).horas_cola === cola);
+
+    G.quitarTarea();
+    check('quitarTarea borra el activador', triggers.length === 0);
+  } catch (err) {
+    check('Error inesperado', false, err.stack || err);
+  }
+  const ok = resultados.filter(x => x.ok).length;
+  document.getElementById('resumen').textContent = `${ok} de ${resultados.length} pruebas correctas`;
+  document.getElementById('filas').innerHTML = resultados.map(x => `<tr><td>${x.nombre}</td><td class="${x.ok ? 'ok' : 'ko'}">${x.ok ? 'OK' : 'FALLA'}</td><td>${x.detalle.replace(/</g, '&lt;')}</td></tr>`).join('');
+  window.__resultados = resultados;
+})();
+</script>
+</body>
+</html>

@@ -1,9 +1,9 @@
-// Soy Resinator · privacidad.html y condiciones.html
+// Soy Resinator · privacidad.html, condiciones.html y aviso-legal.html
 // Los textos salen de legal/<idioma>.json; los datos de la titular, de data/config.json ("legal").
 import * as C from './core.js';
 
 let cfg = null;
-const doc = document.body.dataset.legal; // "privacidad" | "condiciones"
+const doc = document.body.dataset.legal; // "privacidad" | "condiciones" | "aviso"
 
 async function main() {
   const [c] = await Promise.all([C.loadJSON('data/config.json'), C.initI18n()]);

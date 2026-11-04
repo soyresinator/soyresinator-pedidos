@@ -118,6 +118,11 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
   const rutas = ['data/catalog.json', 'data/shipping.json', 'data/config.json', 'data/colores-serie.json',
     'i18n/en.json', 'i18n/es.json', 'i18n/de.json', 'i18n/fr.json', 'i18n/it.json'];
   for (const r of rutas) ficheros[r] = await (await fetch('../' + r, { cache: 'no-cache' })).text();
+  // El montaje está desactivado en todos los países; para seguir probando la regla, simulamos que España lo tiene.
+  const shipReal = JSON.parse(ficheros['data/shipping.json']);
+  check('shipping.json real: ningún país con montaje', shipReal.paises.every(p => p.montaje === false));
+  shipReal.paises.find(p => p.code === 'ES').montaje = true;
+  ficheros['data/shipping.json'] = JSON.stringify(shipReal);
   const codigo = await (await fetch('../apps-script/Code.gs', { cache: 'no-cache' })).text();
   const G = new Function('SpreadsheetApp', 'CacheService', 'LockService', 'MailApp', 'UrlFetchApp', 'Utilities', 'ContentService',
     codigo + '\nreturn { instalar, doGet, doPost, hashEmail, AJUSTES };')(

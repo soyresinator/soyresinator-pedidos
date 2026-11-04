@@ -49,13 +49,30 @@ Hazlo en este orden: la web tiene que estar publicada antes de desplegar el scri
 3. Haz un pedido de prueba con tu propio correo: tiene que aparecer una fila en PEDIDOS_WEB y otra en ESTADO_WEB, y deben llegar dos correos (el del cliente y la copia "Pedido web nuevo SR-…").
    Después borra esas dos filas a mano.
 
-### 6. Pásale el ID de la hoja a la tarea programada
+### 6. Instalar la tarea de cada hora
 
-El ID es la parte de la dirección de la hoja entre `/d/` y `/edit`. La tarea de cada hora es la que rellena CONFIG, ESTADO_WEB (salvo la fila inicial), las columnas W y X de PEDIDOS_WEB y sincroniza COLORES con "RES · Inventario".
+La tarea está en [`apps-script/Tarea.gs`](apps-script/Tarea.gs) y va en el mismo proyecto que `Code.gs`. Cada hora:
+
+1. **COLORES** ← "RES · Inventario" (pestaña STOCK): gramos DISPONIBLE de cada filamento. `IDS_FILAMENTO` queda como `ID:gramos;ID:gramos` y `DISPONIBLE_G` es la suma. Los negativos cuentan como 0. ELEGIBLE no se toca.
+2. **PEDIDOS_WEB → "RES · Pedidos"**: cada pedido web nuevo se copia una sola vez a PEDIDOS (Por cobrar · Pendiente, TRANSFERENCIA en la UE y PAYPAL fuera), LINEAS (una por réplica) y CLIENTES (por email; si no existe, uno nuevo). Las columnas con fórmula se copian de la fila anterior. El SR-XXXXXX queda en ID_FORM y el RES-AAAA-NNN en la columna **W** (REGISTRADO) de PEDIDOS_WEB.
+3. **ESTADO_WEB** ← "RES · Pedidos": estado, pago, servicio y tracking; placas hechas/total según las "Bandeja N" de COMPROMETIDO (una bandeja está hecha cuando todas sus filas están CONSUMIDO). La primera vez que el pago deja de ser Pendiente se fija FECHA_PAGO y FECHA_ENVIO_ESTIMADA, y ya no cambian. El ID_APP de RES · Pedidos pasa a la columna **X**.
+4. **CONFIG**: A2 = horas que quedan por imprimir de los pedidos "En producción" (las horas de catalog.json, descontando las bandejas hechas) y D2 = fecha. **E2 (PEDIDOS_ABIERTOS) no se toca.**
+
+Equivalencias estado: Por cobrar → pendiente_pago · En producción → en_produccion · Listo y Empaquetado → listo · Enviado · Entregado · Cancelado. Pago: Pendiente · 1ª parte → parcial · Pagado y Regalo → pagado.
+
+Instalación:
+
+1. **Borra antes los pedidos de prueba** de PEDIDOS_WEB y ESTADO_WEB: si no, la tarea los copiará a "RES · Pedidos" como pedidos reales.
+2. En el editor de Apps Script: **+ (Añadir archivo) → Secuencia de comandos**, llámalo `Tarea` y pega [`apps-script/Tarea.gs`](apps-script/Tarea.gs).
+3. Sustituye `appsscript.json` por [`apps-script/appsscript.json`](apps-script/appsscript.json): ahora pide acceso a tus hojas (para abrir Inventario y Pedidos) y a los activadores.
+4. Guarda, elige **instalarTarea** y **Ejecutar**. Google volverá a pedir permisos. Crea el activador de cada hora y hace la primera pasada; el registro de ejecución muestra un resumen (`COLORES: … · Pedidos nuevos: … · Estados: … · Cola: … h`).
+5. **Implementar → Gestionar implementaciones → lápiz → Nueva versión** para que la aplicación web use los permisos nuevos. La URL no cambia.
+
+Ajustes en `TAREA`, al principio de `Tarea.gs`: los IDs de las dos hojas, la equivalencia modelo → ID_REPLICA (`krieg` → RIFLE-KRIEG, `cadia` → RIFLE-CADIA) y las horas de lo que no está en la web (STAND 8, TOKEN-BOX 10, SHELF-CASE 12, el resto 10). Para pararla: ejecuta `quitarTarea`.
 
 ### 7. Antes de abrir al público: textos legales
 
-[`privacidad.html`](privacidad.html) y [`condiciones.html`](condiciones.html) son **plantillas para revisar con vuestro asesor**.
+[`privacidad.html`](privacidad.html), [`condiciones.html`](condiciones.html) y [`aviso-legal.html`](aviso-legal.html) son **plantillas para revisar con vuestro asesor**.
 Los datos de la titular están una sola vez, en `"legal"` dentro de [`data/config.json`](data/config.json):
 `titular`, `nif`, `domicilio`, `dias_pago` (días para recibir el primer pago antes de cancelar, ahora 7),
 `dias_incidencias` (días para avisar de una pieza rota, ahora 7) y `actualizado` (fecha que se muestra).
@@ -85,7 +102,7 @@ Un color se ofrece para una parte si en COLORES tiene **ELEGIBLE = sí** y **DIS
 |---|---|
 | `index.html` | Catálogo y pedido (vista `#pedido`) |
 | `pedido.html` | "Mi pedido": estado con ID y email (`js/seguimiento.js`) |
-| `privacidad.html`, `condiciones.html` | Textos legales (`js/legal.js`, textos en `legal/<idioma>.json`) |
+| `privacidad.html`, `condiciones.html`, `aviso-legal.html` | Textos legales (`js/legal.js`, textos en `legal/<idioma>.json`) |
 | `PRUEBAS.md` | Resultado de las pruebas de la sección 11 y la primera prueba con el script real |
 | `css/styles.css` | Estilos. Oscuro por defecto, modo claro con `data-theme="light"` |
 | `js/core.js` | Idioma, carrito, colores disponibles, configuración remota |
@@ -97,9 +114,10 @@ Un color se ofrece para una parte si en COLORES tiene **ELEGIBLE = sí** y **DIS
 | `data/colores-serie.json` | Respaldo con los colores de serie, por si no se puede leer COLORES |
 | `i18n/*.json` | Todos los textos (web y correos), mismas claves en en, es, de, fr, it |
 | `img/` | Fotos reales `<id>-1.jpg` (ver `img/LEEME.md`) |
-| `apps-script/` | `Code.gs` y `appsscript.json` del backend |
+| `apps-script/` | `Code.gs` (web), `Tarea.gs` (tarea de cada hora) y `appsscript.json` del backend |
 | `tools/check_i18n.py` | Comprueba que no falta ninguna clave en ningún idioma |
 | `tools/test-backend.html` | Ejecuta `Code.gs` con Sheets y Gmail simulados y pasa las pruebas del encargo |
+| `tools/test-tarea.html` | Ejecuta `Code.gs` + `Tarea.gs` con RES · Pedidos y RES · Inventario simulados |
 | `tools/mock-config.json`, `tools/mock-config-cerrado.json` | Respuestas simuladas para probar la web sin script (abierta y con la forja cerrada) |
 
 ## Probar en local

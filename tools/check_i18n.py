@@ -65,7 +65,7 @@ def textos(doc):
         yield from s.get("ul", [])
 
 legal = {l: json.loads((ROOT / "legal" / f"{l}.json").read_text(encoding="utf-8")) for l in LANGS}
-for nombre in ("privacidad", "condiciones"):
+for nombre in ("privacidad", "condiciones", "aviso"):
     ref = legal["es"][nombre]
     vars_ref = sorted(set(re.findall(r"\{(\w+)\}", " ".join(textos(ref)))))
     for l in LANGS:

@@ -2,29 +2,192 @@
   "privacidad": {
     "titulo": "Privacy policy",
     "secciones": [
-      { "h": "Who handles your data", "p": ["Soy Resinator is the brand of {titular}, tax ID {nif}, registered at {domicilio}. We are the controller of the data you give us when you place an order. You can write to us at {email}."] },
-      { "h": "What data we collect", "p": ["Only what we need for your order:"], "ul": ["Full name, email and phone number.", "Shipping address, postcode, city and country.", "Your Instagram handle, if you choose to give it to us.", "What you order: replicas, colors, assembly, notes and payment method."] },
-      { "h": "What we use it for", "p": ["To make, charge for and ship your order, and to write to you about it: payment details, timing, shipping and tracking.", "We don't use it for advertising, we don't build profiles, and we never sell it or pass it on to anyone for their own purposes."] },
-      { "h": "Legal basis", "p": ["We process your data because it is necessary for the contract you enter into with us when you order (Article 6(1)(b) GDPR) and to meet our tax and accounting obligations (Article 6(1)(c) GDPR)."] },
-      { "h": "Who else sees it", "p": ["To run the shop we use these services, which process data on our instructions:", "To fulfil your order we also share what is strictly needed with the carrier (InPost or Correos: name, address and phone) and, if you pay with PayPal, with PayPal."], "ul": ["Google (Google Ireland Limited): we store orders in Google Sheets, process them with Google Apps Script and email you with Gmail. Google may process data outside the European Economic Area under the EU-US Data Privacy Framework and standard contractual clauses.", "GitHub (GitHub, Inc.): hosts this website. Like any web server, it receives your IP address when you visit.", "Google Fonts: this website's fonts are loaded from Google servers, which receive your IP address."] },
-      { "h": "How long we keep it", "p": ["While we handle your order and, after that, for as long as the law requires for tax and accounting records (generally up to 6 years). Then we delete it."] },
-      { "h": "Your rights", "p": ["You can ask us to access, correct or delete your data, object to or restrict its use, or take it to another service. Write to {email} with your order ID.", "If you think we haven't handled your data properly, you can complain to the Spanish Data Protection Agency (www.aepd.es) or to the data protection authority in your country."] },
-      { "h": "Cookies and storage", "p": ["This website uses no cookies and no analytics. It only stores in your browser (localStorage) the order you're putting together and your chosen language, so you don't lose them when you come back. You can delete them at any time from your browser settings."] }
+      {
+        "h": "Who handles your data",
+        "p": [
+          "Soy Resinator is the brand of {titular}, tax ID {nif}, registered at {domicilio}. We are the controller of the data you give us when you place an order. You can write to us at {email}."
+        ]
+      },
+      {
+        "h": "What data we collect",
+        "p": [
+          "Only what we need for your order:",
+          "All of them are required except Instagram and the notes. Without them we cannot make or ship your order, so we could not accept it."
+        ],
+        "ul": [
+          "Full name, email and phone number.",
+          "Shipping address, postcode, city and country.",
+          "Your Instagram handle, if you choose to give it to us.",
+          "What you order: replicas, colors, notes and payment method."
+        ]
+      },
+      {
+        "h": "What we use it for",
+        "p": [
+          "To make, charge for and ship your order, and to write to you about it: payment details, timing, shipping and tracking.",
+          "We don't use it for advertising, we don't build profiles, and we never sell it or pass it on to anyone for their own purposes."
+        ]
+      },
+      {
+        "h": "Legal basis",
+        "p": [
+          "We process your data because it is necessary for the contract you enter into with us when you order (Article 6(1)(b) GDPR) and to meet our tax and accounting obligations (Article 6(1)(c) GDPR)."
+        ]
+      },
+      {
+        "h": "Who else sees it",
+        "p": [
+          "To run the shop we use these services, which process data on our instructions:",
+          "To fulfil your order we also share what is strictly needed with the carrier (InPost or Correos: name, address and phone) and, if you pay with PayPal, with PayPal.",
+          "If your parcel goes to a country outside the European Economic Area (for example, the United States, Switzerland or the United Kingdom), the carrier and its partners at destination process your delivery details in that country. This transfer is necessary to perform the contract you make with us (Article 49(1)(b) GDPR). Switzerland and the United Kingdom also have an adequacy decision from the European Commission."
+        ],
+        "ul": [
+          "Google (Google Ireland Limited): we store orders in Google Sheets, process them with Google Apps Script and email you with Gmail. Google may process data outside the European Economic Area under the EU-US Data Privacy Framework and standard contractual clauses.",
+          "GitHub (GitHub, Inc.): hosts this website. Like any web server, it receives your IP address when you visit.",
+          "Google Fonts: this website's fonts are loaded from Google servers, which receive your IP address."
+        ]
+      },
+      {
+        "h": "How long we keep it",
+        "p": [
+          "While we handle your order and, after that, for as long as the law requires for tax and accounting records (generally up to 6 years). Then we delete it."
+        ]
+      },
+      {
+        "h": "Your rights",
+        "p": [
+          "You can ask us to access, correct or delete your data, object to or restrict its use, or take it to another service. Write to {email} with your order ID.",
+          "If you think we haven't handled your data properly, you can complain to the Spanish Data Protection Agency (www.aepd.es) or to the data protection authority in your country."
+        ]
+      },
+      {
+        "h": "Cookies and storage",
+        "p": [
+          "This website uses no cookies and no analytics. It only stores in your browser (localStorage) the order you're putting together and your chosen language, so you don't lose them when you come back. You can delete them at any time from your browser settings."
+        ]
+      }
     ]
   },
   "condiciones": {
     "titulo": "Terms of sale",
     "secciones": [
-      { "h": "Who we are", "p": ["Soy Resinator is the brand of {titular}, tax ID {nif}, registered at {domicilio}. Contact: {email}."] },
-      { "h": "What we sell", "p": ["Full-size display replicas inspired by science fiction, 3D printed to order. They are delivered disassembled and unpainted: the color of each piece is the color of the filament.", "They are decorative objects with no firing capability and no working mechanism. They are not toys: they contain small parts and are not suitable for children under 14.", "As FDM prints, visible layer lines and slight color differences between filament batches are normal. The photos on this website are real prints of ours."] },
-      { "h": "How ordering works", "p": ["You choose the replicas and colors, fill in your details and send the order, with no account needed. When you send it you get an order ID on screen and by email.", "Within 24 hours we send you the payment details. Your order goes into production when we receive the payment, or the first payment if you pay in two parts."] },
-      { "h": "Prices and taxes", "p": ["Each replica costs the same in every country.", "For shipments within the European Union, prices include VAT.", "For shipments outside the European Union, the price you see is the final price of our sale. Customs in the destination country may charge import taxes or duties when the parcel arrives. Those amounts are paid by the customer.", "Shipping is calculated per box depending on the country, and you see it before sending your order."] },
-      { "h": "Payment", "p": ["You can pay for the whole order at once or in two parts: 50% to get started and the remaining 50% before shipping.", "In Spain and the EU you pay by bank transfer; in all other countries, with PayPal. Nothing is charged on the website.", "If we don't receive the first payment within {dias_pago} days of the order, we may cancel it. If you pay in two parts, we ship the replica once we receive the second payment."] },
-      { "h": "Timing", "p": ["All timings are counted from the date of payment, or of the first payment if you pay in two parts. Our ideal shipping time is 3 weeks from then; the website gives you an estimate based on our print queue.", "The estimated date is set when your payment arrives. If anything delays it, we'll let you know."] },
-      { "h": "Assembly service", "p": ["Only for shipments within Spain, at €50 per replica. We deliver it assembled and unpainted."] },
-      { "h": "Shipping", "p": ["We ship with InPost or Correos depending on the country. Each box holds one long replica and up to two pistols.", "When the parcel leaves we give you the tracking number. Check the box when you receive it."] },
-      { "h": "Exchanges, returns and warranty", "p": ["If you choose colors other than the standard ones, the replica is made to your specifications and, as the law provides for these cases, cannot be returned under the right of withdrawal.", "If you order it in the standard colors, you have 14 calendar days from delivery to withdraw: write to us and return it unused in its box. We refund the price and standard shipping; return shipping is at your expense.", "If a piece arrives broken or defective, or something is missing, write to us within {dias_incidencias} days of delivery with photos of the parcel and the piece. We reprint it and send it to you at no cost or, if that isn't possible, refund it.", "None of this limits your legal guarantee of conformity as a consumer."] },
-      { "h": "Applicable law", "p": ["These terms are governed by Spanish law, without prejudice to the rights you have as a consumer under the law of your country of residence."] }
+      {
+        "h": "Who we are",
+        "p": [
+          "Soy Resinator is the brand of {titular}, tax ID {nif}, registered at {domicilio}. Contact: {email}."
+        ]
+      },
+      {
+        "h": "What we sell",
+        "p": [
+          "Full-size display replicas inspired by science fiction, 3D printed to order. They are delivered disassembled and unpainted: the color of each piece is the color of the filament.",
+          "They are decorative objects with no firing capability and no working mechanism. They are not toys: they contain small parts and are not suitable for children under 14.",
+          "As FDM prints, visible layer lines and slight color differences between filament batches are normal. The photos on this website are real prints of ours."
+        ]
+      },
+      {
+        "h": "How ordering works",
+        "p": [
+          "You choose the replicas and colors, fill in your details and send the order, with no account needed. When you send it you get an order ID on screen and by email.",
+          "Within 24 hours we send you the payment details. Your order goes into production when we receive the payment, or the first payment if you pay in two parts."
+        ]
+      },
+      {
+        "h": "Prices and taxes",
+        "p": [
+          "Each replica costs the same in every country.",
+          "For shipments within the European Union, prices include VAT.",
+          "For shipments outside the European Union, the price you see is the final price of our sale. Customs in the destination country may charge import taxes or duties when the parcel arrives. Those amounts are paid by the customer.",
+          "Shipping is calculated per box depending on the country, and you see it before sending your order."
+        ]
+      },
+      {
+        "h": "Payment",
+        "p": [
+          "You can pay for the whole order at once or in two parts: 50% to get started and the remaining 50% before shipping.",
+          "In Spain and the EU you pay by bank transfer; in all other countries, with PayPal. Nothing is charged on the website.",
+          "If we don't receive the first payment within {dias_pago} days of the order, we may cancel it. If you pay in two parts, we ship the replica once we receive the second payment."
+        ]
+      },
+      {
+        "h": "Timing",
+        "p": [
+          "All timings are counted from the date of payment, or of the first payment if you pay in two parts. Our ideal shipping time is 3 weeks from then; the website gives you an estimate based on our print queue.",
+          "The estimated date is set when your payment arrives. If anything delays it, we'll let you know."
+        ]
+      },
+      {
+        "h": "Shipping",
+        "p": [
+          "We ship with InPost or Correos depending on the country. Each box holds one long replica and up to two pistols.",
+          "When the parcel leaves we give you the tracking number. Check the box when you receive it."
+        ]
+      },
+      {
+        "h": "Exchanges, returns and warranty",
+        "p": [
+          "If you choose colors other than the standard ones, the replica is made to your specifications and, as the law provides for these cases, cannot be returned under the right of withdrawal.",
+          "If you order it in the standard colors, you have 14 calendar days from delivery to withdraw: write to us and return it unused in its box. We refund the price and standard shipping; return shipping is at your expense.",
+          "If a piece arrives broken or defective, or something is missing, write to us within {dias_incidencias} days of delivery with photos of the parcel and the piece. We reprint it and send it to you at no cost or, if that isn't possible, refund it.",
+          "None of this limits your legal guarantee of conformity as a consumer."
+        ]
+      },
+      {
+        "h": "Applicable law",
+        "p": [
+          "These terms are governed by Spanish law, without prejudice to the rights you have as a consumer under the law of your country of residence."
+        ]
+      }
+    ]
+  },
+  "aviso": {
+    "titulo": "Legal notice",
+    "secciones": [
+      {
+        "h": "Website owner",
+        "p": [
+          "In accordance with Spanish Law 34/2002 on information society services and electronic commerce (LSSI), this website belongs to:"
+        ],
+        "ul": [
+          "Owner: {titular}",
+          "Tax ID (NIF): {nif}",
+          "Address: {domicilio}",
+          "Email: {email}",
+          "Instagram: {instagram}"
+        ]
+      },
+      {
+        "h": "What this website offers",
+        "p": [
+          "This website lets you browse the Soy Resinator replica catalogue, place orders and track them. Purchases are governed by the terms of sale, and the handling of your data by the privacy policy."
+        ]
+      },
+      {
+        "h": "Use of the website",
+        "p": [
+          "You may use this website to find information and place orders. You may not use it for unlawful purposes, send fake orders or try to interfere with how it works."
+        ]
+      },
+      {
+        "h": "Intellectual property",
+        "p": [
+          "The texts, photographs, design and code of this website belong to the owner or are used with permission. You may not copy or reuse them without authorisation, except for personal use.",
+          "The replicas are designs inspired by science fiction. Soy Resinator is not affiliated with any studio, publisher or game maker, and does not use their trademarks."
+        ]
+      },
+      {
+        "h": "Liability and links",
+        "p": [
+          "We try to keep the information on this website accurate and up to date, but it may occasionally contain errors. The amount and terms that apply are those in your order confirmation email.",
+          "This website links to Instagram and other third-party services. We are not responsible for their content or policies."
+        ]
+      },
+      {
+        "h": "Applicable law",
+        "p": [
+          "This legal notice is governed by Spanish law."
+        ]
+      }
     ]
   }
 }
