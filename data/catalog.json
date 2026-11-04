@@ -160,6 +160,7 @@
       "nombre": "Plague Bolt",
       "modelo": "bolter-plague",
       "id_replica": "BOLTER-PLAGUE",
+      "oculto": true,
       "coleccion": "xenos-and-hereticus",
       "pvp": 220,
       "especial": true,
