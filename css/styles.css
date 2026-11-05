@@ -278,8 +278,42 @@ body.has-float .toast { bottom: 80px; }
   background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
   padding: 16px; margin-bottom: 16px; display: grid; gap: 14px; min-width: 0;
 }
-.unit-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.unit-title { font-size: 1.6rem; text-transform: uppercase; margin: 0; }
+.unit-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.unit-thumb {
+  width: 96px; height: 54px; flex: none; object-fit: cover; border-radius: 6px;
+  background: #000; border: 1px solid var(--line);
+}
+.unit-title { font-size: 1.6rem; text-transform: uppercase; margin: 0; margin-right: auto; min-width: 0; overflow-wrap: anywhere; }
+@media (min-width: 640px) { .unit-thumb { width: 128px; height: 72px; } }
+@media (max-width: 420px) { .unit-title { font-size: 1.25rem; } .unit .price { font-size: 1.2rem; } }
+
+/* Extras (balas, cargadores, stand) dentro de cada unidad */
+.extras { display: grid; gap: 6px; }
+.extra-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.extra-name { min-width: 0; }
+.extra-price { color: var(--muted); font-size: .9rem; white-space: nowrap; }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 6px; }
+.step {
+  width: 44px; height: 44px; border: 0; background: transparent; color: var(--gold);
+  font: inherit; font-size: 1.3rem; cursor: pointer;
+}
+.step:disabled { color: var(--muted); opacity: .45; cursor: default; }
+.step-n { min-width: 2.2em; text-align: center; font-variant-numeric: tabular-nums; }
+.extras-line { font-size: .95rem; color: var(--gold-hi); margin: 0; }
+.sum-extra { padding-top: 4px; border-bottom-style: dashed; }
+.sum-extra > div > span:first-child { color: var(--muted); padding-left: 12px; }
+
+/* Buscador de país */
+.combo { position: relative; }
+.combo-input { width: 100%; cursor: text; }
+.combo-list {
+  position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px 0;
+  list-style: none; max-height: 280px; overflow-y: auto; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--shadow);
+}
+.combo-list li { padding: 10px 12px; cursor: pointer; }
+.combo-list li.active { background: var(--surface-2); color: var(--gold-hi); }
+.combo-list .combo-empty { color: var(--muted); cursor: default; }
 .unit .price { font-size: 1.5rem; white-space: nowrap; }
 
 fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }

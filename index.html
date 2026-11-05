@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Saira+Condensed:wght@500;600;700&display=swap">
   <link rel="icon" type="image/png" sizes="32x32" href="img/logo/favicon-32.png">
   <link rel="apple-touch-icon" href="img/logo/apple-touch-icon.png">
-  <link rel="stylesheet" href="css/styles.css">
-  <script type="module" src="js/catalogo.js"></script>
+  <link rel="stylesheet" href="css/styles.css?v=20261105">
+  <script type="module" src="js/catalogo.js?v=20261105"></script>
 </head>
 <body>
   <a class="skip" href="#main" data-i18n="nav.saltar"></a>
@@ -75,17 +75,12 @@
         <h2 class="section-title" data-i18n="cat.titulo"></h2>
         <div class="ship-to">
           <label for="pais" data-i18n="envio.label"></label>
-          <select id="pais" class="select"></select>
+          <div class="combo">
+            <input id="pais" class="select combo-input" autocomplete="off">
+          </div>
         </div>
       </div>
       <p id="precio-nota" class="price-note"></p>
-      <div id="otro-pais" class="notice" hidden>
-        <p data-i18n="envio.otro_texto"></p>
-        <p class="contact-row">
-          <a class="contact-email" href="#"></a>
-          <a class="contact-ig" href="#" rel="noopener" target="_blank"></a>
-        </p>
-      </div>
 
       <div id="cerrado" class="notice notice-forge" hidden>
         <h3 data-i18n="cerrado.titulo"></h3>
@@ -152,15 +147,11 @@
             </div>
             <div class="field">
               <label for="f-pais" data-i18n="datos.pais"></label>
-              <select id="f-pais" name="pais" class="select" autocomplete="country" required aria-describedby="e-f-pais"></select>
+              <div class="combo">
+                <input id="f-pais" name="pais" class="select combo-input" autocomplete="country-name" required aria-describedby="h-f-pais e-f-pais">
+              </div>
+              <p class="help" id="h-f-pais" data-i18n="envio.otro_texto"></p>
               <p class="field-err" id="e-f-pais"></p>
-            </div>
-            <div id="f-otro" class="notice" hidden>
-              <p data-i18n="envio.otro_texto"></p>
-              <p class="contact-row">
-                <a class="contact-email" href="#"></a>
-                <a class="contact-ig" href="#" rel="noopener" target="_blank"></a>
-              </p>
             </div>
             <div class="field">
               <label for="f-direccion" data-i18n="datos.direccion"></label>

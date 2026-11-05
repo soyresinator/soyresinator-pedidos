@@ -29,7 +29,7 @@ const AJUSTES = {
 };
 // ===================================================================================
 
-const IDIOMAS = ['en', 'es', 'de', 'fr', 'it'];
+const IDIOMAS = ['en', 'es', 'pt', 'de', 'fr', 'it'];
 const ALFABETO_ID = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const RE_ID = /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/;
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -40,8 +40,9 @@ const ENCABEZADOS = {
   PEDIDOS_WEB: ['ID_WEB', 'FECHA', 'IDIOMA', 'NOMBRE', 'EMAIL', 'TELEFONO', 'DIRECCION', 'CP', 'CIUDAD', 'PAIS',
     'INSTAGRAM', 'ITEMS_JSON', 'RESUMEN_ES', 'NOTAS_ORIGINAL', 'SUBTOTAL', 'MONTAJE', 'ENVIO', 'TOTAL',
     'MODO_PAGO', 'SERVICIO_ENVIO', 'CAJAS', 'CONSENTIMIENTO', 'REGISTRADO', 'ID_APP'],
+  // ID_PEDIDO (L) = RES-AAAA-NNN. Lo rellena la tarea; en los pedidos del formulario antiguo lo pone asignarSRFormulario().
   ESTADO_WEB: ['ID_WEB', 'EMAIL_HASH', 'ESTADO', 'PLACAS_HECHAS', 'PLACAS_TOTAL', 'PAGO', 'FECHA_PAGO',
-    'FECHA_ENVIO_ESTIMADA', 'SERVICIO', 'TRACKING', 'ACTUALIZADO'],
+    'FECHA_ENVIO_ESTIMADA', 'SERVICIO', 'TRACKING', 'ACTUALIZADO', 'ID_PEDIDO'],
   CONFIG: ['HORAS_COLA', 'HORAS_DIA', 'DIAS_PREPARACION', 'ACTUALIZADO', 'PEDIDOS_ABIERTOS'],
   COLORES: ['COLOR_ID', 'NOMBRE_ES', 'NOMBRE_EN', 'NOMBRE_DE', 'NOMBRE_FR', 'NOMBRE_IT', 'HEX',
     'IDS_FILAMENTO', 'DISPONIBLE_G', 'ELEGIBLE', 'ACTUALIZADO']
@@ -50,7 +51,7 @@ const ENCABEZADOS = {
 // Formato de cada columna al escribir una fila: '@' = texto (evita fórmulas y que se pierdan ceros), '0.00' = número.
 const FORMATO_PEDIDOS = ['@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@',
   '0.00', '0.00', '0.00', '0.00', '@', '@', '0', '@', '@', '@'];
-const FORMATO_ESTADO = ['@', '@', '@', '0', '0', '@', '@', '@', '@', '@', '@'];
+const FORMATO_ESTADO = ['@', '@', '@', '0', '0', '@', '@', '@', '@', '@', '@', '@'];
 
 // Filas iniciales de COLORES (foto del 04/11/2026). Luego las mantiene la tarea programada.
 const COLORES_INICIALES = [
@@ -264,11 +265,32 @@ function crearPedido(b) {
       });
     }
     const nota = limpiar(it.nota, notaMax, true);
-    unidades.push({ prod: prod, montaje: montaje, colores: elegidos, nota: nota });
+
+    // Extras: { tipo: cantidad }. Solo tipos que tiene el producto, enteros entre 0 y el máximo.
+    const pedidosEx = it.extras === undefined || it.extras === null ? {} : it.extras;
+    if (typeof pedidosEx !== 'object' || Array.isArray(pedidosEx)) return { ok: false, error: 'datos_invalidos' };
+    const tiposProd = (prod.extras || []).map(function (x) { return x.tipo; });
+    const tiposMal = Object.keys(pedidosEx).filter(function (k) {
+      const v = pedidosEx[k];
+      const max = ((cat.extras_def || {})[k] || {}).max || 0;
+      return tiposProd.indexOf(k) < 0 || typeof v !== 'number' || v !== Math.floor(v) || v < 0 || v > max;
+    });
+    if (tiposMal.length) return { ok: false, error: 'datos_invalidos' };
+    const extras = extrasDe({ extras: pedidosEx }, prod, cat).map(function (e) {
+      const def = cat.extras_def[e.tipo];
+      e.nombre_es = es[def.etiqueta] || e.tipo;
+      e.etiqueta_key = def.etiqueta;
+      return e;
+    });
+    unidades.push({ prod: prod, montaje: montaje, colores: elegidos, extras: extras, nota: nota });
   }
 
   // 6. Recalculamos todo con nuestros ficheros. Lo que diga el navegador no cuenta.
-  const tot = totales(unidades.map(function (u) { return { pid: u.prod.id, montaje: u.montaje }; }), cat, pais);
+  const tot = totales(unidades.map(function (u) {
+    const ex = {};
+    u.extras.forEach(function (e) { ex[e.tipo] = e.cantidad; });
+    return { pid: u.prod.id, montaje: u.montaje, extras: ex };
+  }), cat, pais, ship);
 
   // 7. Escritura con bloqueo: límite por email, ID único y las dos filas.
   const lock = LockService.getScriptLock();
@@ -291,6 +313,11 @@ function crearPedido(b) {
             id_filamento: c.id_filamento, gramos: c.gramos, de_serie: c.de_serie,
             placas: c.placas, filamento_serie: c.filamento_serie };
         }),
+        // Extras de esta unidad (van con su arma). Balas: cantidad = balas sueltas, bandejas = ⌈balas / 4⌉ de BALAS-X4.
+        extras: u.extras.map(function (e) {
+          return { tipo: e.tipo, id_replica: e.id_replica, nombre_es: e.nombre_es, cantidad: e.cantidad,
+            bandejas: e.bandejas, precio_ud: e.pvp, importe: e.importe };
+        }),
         nota: u.nota
       };
     });
@@ -298,12 +325,13 @@ function crearPedido(b) {
     const fila = [
       id, fechaIso, idioma, cliente.nombre, cliente.email, cliente.telefono, cliente.direccion, cliente.cp,
       cliente.ciudad, pais.nombre_es, cliente.instagram, JSON.stringify(itemsJson), resumenEs(unidades),
-      notasOriginal(unidades), tot.subtotal, tot.montaje, tot.envio, tot.total, modo, pais.servicio,
+      // SUBTOTAL incluye los extras (precio de réplicas + extras).
+      notasOriginal(unidades), tot.subtotal + tot.extras, tot.montaje, tot.envio, tot.total, modo, pais.servicio,
       tot.cajas, fechaIso, '', ''
     ];
     escribirFila(hoja(H.PEDIDOS), fila, FORMATO_PEDIDOS);
     escribirFila(hoja(H.ESTADO),
-      [id, hashEmail(cliente.email), 'recibido', '', '', 'pendiente', '', '', '', '', fechaIso], FORMATO_ESTADO);
+      [id, hashEmail(cliente.email), 'recibido', '', '', 'pendiente', '', '', '', '', fechaIso, ''], FORMATO_ESTADO);
     SpreadsheetApp.flush();
   } finally {
     lock.releaseLock();
@@ -359,31 +387,75 @@ function consultarEstado(b) {
  * REGLAS (idénticas a js/calc.js y coloresParaParte de js/core.js)
  * ===================================================================== */
 
-/** cajas = máx(nº de réplicas largas, ⌈nº de pistolas / 2⌉) */
-function contarCajas(items, cat) {
-  let largas = 0, pistolas = 0;
-  items.forEach(function (it) {
-    const p = cat.productos.filter(function (x) { return x.id === it.pid; })[0];
-    if (!p) return;
-    if (p.caja === 'pistola') pistolas++; else largas++;
+/** Extras de una unidad como lista (igual que extrasDe de js/calc.js). */
+function extrasDe(it, prod, cat) {
+  const elegidos = (it && it.extras) || {};
+  const out = [];
+  (prod.extras || []).forEach(function (ex) {
+    const def = (cat.extras_def || {})[ex.tipo] || {};
+    const n = Math.min(Math.max(Math.floor(Number(elegidos[ex.tipo]) || 0), 0), def.max || 0);
+    if (!n) return;
+    const bandejas = def.por_bandeja ? Math.ceil(n / def.por_bandeja) : n;
+    out.push({ tipo: ex.tipo, id_replica: ex.id_replica, cantidad: n, pvp: ex.pvp, importe: n * ex.pvp,
+      horas: bandejas * ex.horas, bandejas: bandejas });
   });
-  return Math.max(largas, Math.ceil(pistolas / 2));
+  return out;
 }
 
-function totales(items, cat, pais) {
-  let subtotal = 0, horas = 0;
+/**
+ * Cajas de envío (igual que cajasEnvio de js/calc.js): cada réplica ocupa `volumen`; se llenan cajas de
+ * hasta volumen_caja_5kg, de mayor a menor. 1 artículo: precio_1; más: precio_4kg si no pasa de
+ * volumen_caja_4kg, si no precio_5kg. Los extras no suman volumen.
+ */
+function cajasEnvio(items, cat, ship) {
+  const max5 = ship.volumen_caja_5kg;
+  const vols = [];
+  items.forEach(function (it) {
+    const p = cat.productos.filter(function (x) { return x.id === it.pid; })[0];
+    if (p) vols.push(Number(p.volumen) || 0);
+  });
+  vols.sort(function (a, b) { return b - a; });
+  const cajas = [];
+  vols.forEach(function (v) {
+    const c = cajas.filter(function (x) { return x.volumen + v <= max5 + 1e-9; })[0];
+    if (c) { c.volumen += v; c.n++; } else cajas.push({ volumen: v, n: 1 });
+  });
+  return cajas.map(function (c) {
+    c.tipo = c.n === 1 ? '1' : (c.volumen <= ship.volumen_caja_4kg + 1e-9 ? '4kg' : '5kg');
+    return c;
+  });
+}
+
+function precioCaja(caja, pais) {
+  return caja.tipo === '1' ? pais.precio_1 : (caja.tipo === '4kg' ? pais.precio_4kg : pais.precio_5kg);
+}
+
+function totales(items, cat, pais, ship) {
+  let subtotal = 0, extras = 0, horas = 0;
   items.forEach(function (it) {
     const p = cat.productos.filter(function (x) { return x.id === it.pid; })[0];
     if (!p) return;
     subtotal += p.pvp;
     horas += p.horas;
+    extrasDe(it, p, cat).forEach(function (e) { extras += e.importe; horas += e.horas; });
   });
   const montajeUds = pais && pais.montaje ? items.filter(function (i) { return i.montaje; }).length : 0;
   const montaje = montajeUds * cat.montaje_pvp;
-  const cajas = contarCajas(items, cat);
-  const envio = pais ? cajas * pais.por_caja : 0;
-  return { subtotal: subtotal, montajeUds: montajeUds, montaje: montaje, cajas: cajas, envio: envio,
-    total: subtotal + montaje + envio, horas: horas };
+  const lista = cajasEnvio(items, cat, ship);
+  const envio = pais ? lista.reduce(function (s, c) { return s + precioCaja(c, pais); }, 0) : 0;
+  return { subtotal: subtotal, extras: extras, montajeUds: montajeUds, montaje: montaje, cajas: lista.length,
+    listaCajas: lista, envio: envio, total: subtotal + extras + montaje + envio, horas: horas };
+}
+
+/** "1 × caja grande (5 kg) + 1 × caja individual" en el idioma del diccionario. */
+function textoCajas(lista, d) {
+  const cuenta = { '1': 0, '4kg': 0, '5kg': 0 };
+  lista.forEach(function (c) { cuenta[c.tipo]++; });
+  const partes = [];
+  if (cuenta['5kg']) partes.push(tr(d, 'res.caja_5kg', { n: cuenta['5kg'] }));
+  if (cuenta['4kg']) partes.push(tr(d, 'res.caja_4kg', { n: cuenta['4kg'] }));
+  if (cuenta['1']) partes.push(tr(d, 'res.caja_1', { n: cuenta['1'] }));
+  return partes.join(' + ');
 }
 
 /**
@@ -418,7 +490,9 @@ function resumenEs(unidades) {
     const partes = u.colores.length
       ? u.colores.map(function (c) { return c.etiqueta_es + ': ' + c.color_es + (c.de_serie ? ' (de serie)' : ''); }).join(' · ')
       : 'colores de serie';
-    return (i + 1) + '. ' + u.prod.nombre + ' · ' + partes + ' · Montaje: ' + (u.montaje ? 'sí' : 'no');
+    const ex = u.extras.length
+      ? ' · Extras: ' + u.extras.map(function (e) { return e.nombre_es + ' × ' + e.cantidad; }).join(', ') : '';
+    return (i + 1) + '. ' + u.prod.nombre + ' · ' + partes + ex + ' · Montaje: ' + (u.montaje ? 'sí' : 'no');
   }).join(' | ');
 }
 
@@ -508,7 +582,7 @@ function correoTienda(ctx) {
     .concat([
       'Total: ' + dinero(ctx.tot.total, 'es'),
       'Pago: ' + (ctx.modo === 'dos_partes' ? 'en dos partes' : 'completo') + ' · ' + (ctx.pais.ue ? 'transferencia' : 'PayPal'),
-      'Envío: ' + ctx.pais.servicio + ', ' + ctx.tot.cajas + ' caja(s)', '',
+      'Envío (aproximado): ' + ctx.pais.servicio + ', ' + textoCajas(ctx.tot.listaCajas, es) + ' = ' + dinero(ctx.tot.envio, 'es'), '',
       'CLIENTE',
       'Nombre: ' + c.nombre,
       'Email: ' + c.email,
@@ -531,20 +605,26 @@ function correoTienda(ctx) {
 /** Líneas del resumen en un idioma: unidades, montaje y envío. */
 function lineasResumen(ctx, L, d) {
   const t = function (k, v) { return tr(d, k, v); };
-  const out = ctx.unidades.map(function (u, i) {
+  const out = [];
+  ctx.unidades.forEach(function (u, i) {
     const det = (u.colores.length
       ? u.colores.map(function (c) {
-          return t(c.etiqueta_key) + ': ' + (c.nombres[L] || c.nombres.es || c.color_id) + (c.de_serie ? ' (' + t('cat.de_serie') + ')' : '');
+          // COLORES no tiene portugués: el nombre va en i18n/pt.json como "color.<id>".
+          const nombre = c.nombres[L] || d['color.' + c.color_id] || c.nombres.es || c.color_id;
+          return t(c.etiqueta_key) + ': ' + nombre + (c.de_serie ? ' (' + t('cat.de_serie') + ')' : '');
         }).join(' · ')
       : t('cat.colores_serie')) + (u.montaje ? ' · ' + t('res.montaje') : '') + (u.nota ? ' · ' + t('ped.notas') + ': ' + u.nota : '');
-    return { a: (i + 1) + '. ' + u.prod.nombre, det: det, b: dinero(u.prod.pvp, L) };
+    out.push({ a: (i + 1) + '. ' + u.prod.nombre, det: det, b: dinero(u.prod.pvp, L) });
+    u.extras.forEach(function (e) {
+      out.push({ a: '+ ' + t('extra.linea', { nombre: t(e.etiqueta_key), n: e.cantidad }), det: '', b: dinero(e.importe, L) });
+    });
   });
   if (ctx.tot.montajeUds) {
     out.push({ a: t('res.montaje'), det: t('res.montaje_detalle', { n: ctx.tot.montajeUds, precio: dinero(ctx.cat.montaje_pvp, L) }),
       b: dinero(ctx.tot.montaje, L) });
   }
-  out.push({ a: t('res.envio'),
-    det: t('res.envio_detalle', { servicio: ctx.pais.servicio, cajas: ctx.tot.cajas, tarifa: dinero(ctx.pais.por_caja, L) }),
+  out.push({ a: t('res.envio_aprox'),
+    det: t('res.envio_detalle', { servicio: ctx.pais.servicio, cajas: textoCajas(ctx.tot.listaCajas, d) }) + ' · ' + t('res.envio_nota'),
     b: dinero(ctx.tot.envio, L) });
   return out;
 }

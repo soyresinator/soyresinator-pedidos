@@ -18,7 +18,7 @@
           "Full name, email and phone number.",
           "Shipping address, postcode, city and country.",
           "Your Instagram handle, if you choose to give it to us.",
-          "What you order: replicas, colors, notes and payment method."
+          "What you order: replicas, colors, extras, notes and payment method."
         ]
       },
       {
@@ -82,13 +82,13 @@
         "p": [
           "Full-size display replicas inspired by science fiction, 3D printed to order. They are delivered disassembled and unpainted: the color of each piece is the color of the filament.",
           "They are decorative objects with no firing capability and no working mechanism. They are not toys: they contain small parts and are not suitable for children under 14.",
-          "As FDM prints, visible layer lines and slight color differences between filament batches are normal. The photos on this website are real prints of ours."
+          "Because they are FDM prints, layer lines and small shade differences between filament batches are normal. The photos on the website are our own real prints or renders of our models."
         ]
       },
       {
         "h": "How ordering works",
         "p": [
-          "You choose the replicas and colors, fill in your details and send the order, with no account needed. When you send it you get an order ID on screen and by email.",
+          "You choose the replicas, colors and extras, fill in your details and send the order, without creating an account. When you send it, you get an order ID on screen and by email.",
           "Within 24 hours we send you the payment details. Your order goes into production when we receive the payment, or the first payment if you pay in two parts."
         ]
       },
@@ -98,7 +98,7 @@
           "Each replica costs the same in every country.",
           "For shipments within the European Union, prices include VAT.",
           "For shipments outside the European Union, the price you see is the final price of our sale. Customs in the destination country may charge import taxes or duties when the parcel arrives. Those amounts are paid by the customer.",
-          "Shipping is calculated per box depending on the country, and you see it before sending your order."
+          "Shipping depends on the country and the size of the parcel: we pack the replicas in as few boxes as possible. The amount you see before sending the order is an estimate; we confirm the final amount with the payment link."
         ]
       },
       {
@@ -119,7 +119,7 @@
       {
         "h": "Shipping",
         "p": [
-          "We ship with InPost or Correos depending on the country. Each box holds one long replica and up to two pistols.",
+          "We ship with InPost or Correos depending on the country, in single, medium (4 kg) or large (5 kg) boxes depending on what you order.",
           "When the parcel leaves we give you the tracking number. Check the box when you receive it."
         ]
       },

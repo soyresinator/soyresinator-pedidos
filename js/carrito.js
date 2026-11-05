@@ -1,7 +1,7 @@
 // Soy Resinator · vista de pedido (#pedido en index.html)
 // Tarjeta por unidad, datos y envío, pago, resumen, envío al Apps Script y confirmación.
-import * as C from './core.js';
-import { totales, plazoDias } from './calc.js';
+import * as C from './core.js?v=20261105';
+import { totales, plazoDias, extrasDe } from './calc.js?v=20261105';
 
 const $ = id => document.getElementById(id);
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -11,17 +11,18 @@ let S = null;              // estado compartido con catalogo.js
 let prefijoTocado = false; // si el cliente escribe su prefijo, ya no lo cambiamos al cambiar de país
 let enviando = false;
 let notaTimer = null;
+let picker = null;         // buscador de país del formulario
 
 /* =================== Arranque y navegación =================== */
 
 export function initPedido(state) {
   S = state;
-  C.fillCountrySelect($('f-pais'), S.ship.paises, C.loadCart().pais);
+  picker = C.countryPicker($('f-pais'), S.ship.paises, () => C.loadCart().pais, code => { clearErr($('f-pais')); setPais(code); });
   wire();
   paintLegalLabels();
   window.addEventListener('hashchange', route);
   document.addEventListener('sr:lang', () => {
-    C.fillCountrySelect($('f-pais'), S.ship.paises, C.loadCart().pais);
+    picker.paint();
     paintLegalLabels();
     if (!$('pedido').hidden && !$('ped-main').hidden) refresh();
   });
@@ -108,6 +109,11 @@ function validarCarrito() {
     if (!it.colores || typeof it.colores !== 'object') { it.colores = {}; cambiado = true; }
     if (typeof it.nota !== 'string') { it.nota = ''; cambiado = true; }
     if (it.nota.length > S.cfg.nota_max) { it.nota = it.nota.slice(0, S.cfg.nota_max); cambiado = true; }
+    // Extras: solo los que tiene el producto, enteros y dentro del máximo.
+    if (!it.extras || typeof it.extras !== 'object') { it.extras = {}; cambiado = true; }
+    const validos = {};
+    extrasDe(it, prod, S.cat).forEach(e => { validos[e.tipo] = e.cantidad; });
+    if (JSON.stringify(validos) !== JSON.stringify(it.extras)) { it.extras = validos; cambiado = true; }
     const grupos = prod.partes.map(p => p.grupo);
     Object.keys(it.colores).forEach(g => { if (!grupos.includes(g)) { delete it.colores[g]; cambiado = true; } });
     for (const part of prod.partes) {
@@ -198,11 +204,13 @@ function itemCard(it, i, pais) {
   return `
     <article class="unit" data-uid="${it.uid}">
       <div class="unit-head">
+        <img class="unit-thumb" src="img/${C.esc(prod.id)}-1.webp" alt="" width="160" height="90" loading="lazy" decoding="async" onerror="this.remove()">
         <h3 class="unit-title" id="u-${it.uid}" tabindex="-1">${n}. ${C.esc(prod.nombre)}</h3>
         <span class="price">${C.esc(C.money(prod.pvp))}</span>
       </div>
       ${partes || `<p class="colors-line">${C.esc(C.t('cat.colores_serie'))}</p>`}
       ${offline}
+      ${extrasHtml(it, prod)}
       <div class="field">
         <label for="n-${it.uid}">${C.esc(C.t('ped.notas'))}</label>
         <textarea id="n-${it.uid}" class="nota" data-uid="${it.uid}" rows="2" maxlength="${max}" aria-describedby="nc-${it.uid}">${C.esc(it.nota)}</textarea>
@@ -214,6 +222,31 @@ function itemCard(it, i, pais) {
         <button type="button" class="btn btn-ghost btn-sm btn-danger" data-act="del" data-uid="${it.uid}" aria-label="${C.esc(C.t('ped.quitar_aria', { n, nombre: prod.nombre }))}">${C.esc(C.t('ped.quitar'))}</button>
       </div>
     </article>`;
+}
+
+/** Bloque "Extras" de una unidad: un contador (− n +) por cada extra que admite el producto. */
+function extrasHtml(it, prod) {
+  if (!(prod.extras || []).length) return '';
+  const filas = prod.extras.map(ex => {
+    const def = S.cat.extras_def[ex.tipo] || {};
+    const n = Number((it.extras || {})[ex.tipo]) || 0;
+    const nombre = C.t(def.etiqueta);
+    const id = `x-${it.uid}-${ex.tipo}`;
+    return `
+      <div class="extra-row">
+        <span class="extra-name" id="${id}-l">${C.esc(nombre)} <span class="extra-price">${C.esc(C.t('extra.precio_ud', { precio: C.money(ex.pvp) }))}</span></span>
+        <span class="stepper" role="group" aria-labelledby="${id}-l">
+          <button type="button" class="step" data-act="extra" data-uid="${it.uid}" data-tipo="${ex.tipo}" data-d="-1" ${n <= 0 ? 'disabled' : ''} aria-label="${C.esc(C.t('extra.menos', { nombre }))}">−</button>
+          <output id="${id}" class="step-n" aria-live="polite">${n}</output>
+          <button type="button" class="step" data-act="extra" data-uid="${it.uid}" data-tipo="${ex.tipo}" data-d="1" ${n >= (def.max || 0) ? 'disabled' : ''} aria-label="${C.esc(C.t('extra.mas', { nombre }))}">+</button>
+        </span>
+      </div>`;
+  }).join('');
+  return `
+      <fieldset class="part extras">
+        <legend>${C.esc(C.t('extra.titulo'))}</legend>
+        ${filas}
+      </fieldset>`;
 }
 
 /** Guarda en el carrito las notas que aún estén pendientes del temporizador. */
@@ -235,7 +268,7 @@ function flushNotas() {
 export function setPais(code) {
   const cart = C.loadCart();
   const pais = paisDe(code);
-  cart.pais = code === 'OTRO' ? 'OTRO' : (pais ? code : '');
+  cart.pais = pais ? code : '';
   let quitado = false;
   if (!pais || !pais.montaje) {
     cart.items.forEach(it => { if (it.montaje) { it.montaje = false; quitado = true; } });
@@ -243,8 +276,7 @@ export function setPais(code) {
   C.saveCart(cart);
   if (quitado) C.toast(C.t('ped.montaje_quitado'));
   if (pais && !prefijoTocado) $('f-prefijo').value = pais.prefijo;
-  $('f-pais').value = cart.pais;
-  $('f-otro').hidden = cart.pais !== 'OTRO';
+  if (picker) picker.paint();
   document.dispatchEvent(new CustomEvent('sr:pais'));
   if (!$('pedido').hidden && !$('ped-main').hidden) {
     renderItems();
@@ -256,8 +288,7 @@ export function setPais(code) {
 function renderPago() {
   const cart = C.loadCart();
   const pais = paisDe(cart.pais);
-  $('f-pais').value = cart.pais || '';
-  $('f-otro').hidden = cart.pais !== 'OTRO';
+  if (document.activeElement !== $('f-pais')) picker.paint();
   if (pais && !prefijoTocado && !$('f-prefijo').value) $('f-prefijo').value = pais.prefijo;
   const modo = cart.modo === 'dos_partes' ? 'dos_partes' : 'completo';
   document.querySelectorAll('input[name="modo"]').forEach(r => { r.checked = r.value === modo; });
@@ -287,27 +318,44 @@ function plazoTexto(horas) {
   return C.t('res.plazo', { n, fecha }) + ' ' + C.t('res.plazo_fijo');
 }
 
+/** Texto de un extra: "Cargador extra × 2". */
+function textoExtra(e) {
+  return C.t('extra.linea', { nombre: C.t(S.cat.extras_def[e.tipo].etiqueta), n: e.cantidad });
+}
+
+/** "InPost · 1 caja grande (5 kg) + 1 caja": cuántas cajas de cada tipo. */
+function textoCajas(tot, pais) {
+  const cuenta = { '1': 0, '4kg': 0, '5kg': 0 };
+  tot.listaCajas.forEach(c => { cuenta[c.tipo]++; });
+  const partes = [];
+  if (cuenta['5kg']) partes.push(C.t('res.caja_5kg', { n: cuenta['5kg'] }));
+  if (cuenta['4kg']) partes.push(C.t('res.caja_4kg', { n: cuenta['4kg'] }));
+  if (cuenta['1']) partes.push(C.t('res.caja_1', { n: cuenta['1'] }));
+  return C.t('res.envio_detalle', { servicio: pais.servicio, cajas: partes.join(' + ') });
+}
+
 function resumenHtml(cart) {
   const pais = paisDe(cart.pais);
-  const tot = totales(cart.items, S.cat, pais);
-  const row = (a, b, det) => `
-    <div class="sum-row">
+  const tot = totales(cart.items, S.cat, pais, S.ship);
+  const row = (a, b, det, cls = '') => `
+    <div class="sum-row${cls ? ' ' + cls : ''}">
       <div><span>${C.esc(a)}</span>${det ? `<span class="sum-det">${C.esc(det)}</span>` : ''}</div>
       <span class="sum-val">${C.esc(b)}</span>
     </div>`;
 
-  const rows = cart.items.map((it, i) => {
+  const rows = [];
+  cart.items.forEach((it, i) => {
     const p = prodDe(it.pid);
     const det = textoColores(it, p) + (it.montaje && pais && pais.montaje ? ' · ' + C.t('res.montaje') : '');
-    return row(`${i + 1}. ${p.nombre}`, C.money(p.pvp), det);
+    rows.push(row(`${i + 1}. ${p.nombre}`, C.money(p.pvp), det));
+    extrasDe(it, p, S.cat).forEach(e => rows.push(row('+ ' + textoExtra(e), C.money(e.importe), '', 'sum-extra')));
   });
   if (tot.montajeUds) {
     rows.push(row(C.t('res.montaje'), C.money(tot.montaje),
       C.t('res.montaje_detalle', { n: tot.montajeUds, precio: C.money(S.cat.montaje_pvp) })));
   }
   rows.push(pais
-    ? row(C.t('res.envio'), C.money(tot.envio),
-        C.t('res.envio_detalle', { servicio: pais.servicio, cajas: tot.cajas, tarifa: C.money(pais.por_caja) }))
+    ? row(C.t('res.envio_aprox'), C.money(tot.envio), textoCajas(tot, pais) + ' · ' + C.t('res.envio_nota'))
     : row(C.t('res.envio'), '…', C.t('res.envio_pendiente')));
 
   const modo = cart.modo === 'dos_partes' ? 'dos_partes' : 'completo';
@@ -339,17 +387,18 @@ function renderResumen() {
 function resumenTexto() {
   const cart = C.loadCart();
   const pais = paisDe(cart.pais);
-  const tot = totales(cart.items, S.cat, pais);
+  const tot = totales(cart.items, S.cat, pais, S.ship);
   const v = id => $(id).value.trim();
   const lines = ['Soy Resinator', ''];
   cart.items.forEach((it, i) => {
     const p = prodDe(it.pid);
     lines.push(`${i + 1}. ${p.nombre} (${C.money(p.pvp)}) · ${textoColores(it, p)}${it.montaje ? ' · ' + C.t('res.montaje') : ''}`);
+    extrasDe(it, p, S.cat).forEach(e => lines.push(`   + ${textoExtra(e)} (${C.money(e.importe)})`));
     if (it.nota.trim()) lines.push(`   ${C.t('ped.notas')}: ${it.nota.trim()}`);
   });
   lines.push('');
   if (tot.montajeUds) lines.push(`${C.t('res.montaje')}: ${C.money(tot.montaje)}`);
-  if (pais) lines.push(`${C.t('res.envio')}: ${C.money(tot.envio)} (${pais.servicio}, ${tot.cajas} × ${C.money(pais.por_caja)})`);
+  if (pais) lines.push(`${C.t('res.envio_aprox')}: ${C.money(tot.envio)} (${textoCajas(tot, pais)})`);
   lines.push(`${C.t('res.total')}: ${C.money(tot.total)}`);
   lines.push(`${C.t('res.pago')}: ${C.t(cart.modo === 'dos_partes' ? 'pago.dos_partes' : 'pago.completo')}`);
   lines.push('');
@@ -411,6 +460,23 @@ function wire() {
     const cart = C.loadCart();
     const idx = cart.items.findIndex(i => i.uid === b.dataset.uid);
     if (idx < 0) return;
+    if (b.dataset.act === 'extra') {
+      const it = cart.items[idx];
+      const tipo = b.dataset.tipo;
+      const max = (S.cat.extras_def[tipo] || {}).max || 0;
+      it.extras = it.extras || {};
+      const n = Math.min(Math.max((Number(it.extras[tipo]) || 0) + Number(b.dataset.d), 0), max);
+      if (n) it.extras[tipo] = n; else delete it.extras[tipo];
+      C.saveCart(cart);
+      const focusSel = `button[data-act="extra"][data-uid="${it.uid}"][data-tipo="${tipo}"][data-d="${b.dataset.d}"]`;
+      renderItems();
+      renderResumen();
+      const again = document.querySelector(focusSel);
+      // Si el botón queda desactivado (0 o máximo), el foco pasa al otro del mismo contador.
+      (again && !again.disabled ? again
+        : document.querySelector(`button[data-act="extra"][data-uid="${it.uid}"][data-tipo="${tipo}"]:not([disabled])`) || again)?.focus();
+      return;
+    }
     const nombre = prodDe(cart.items[idx].pid).nombre;
     let focusId = null;
     if (b.dataset.act === 'dup') {
@@ -432,7 +498,6 @@ function wire() {
     if (f) f.focus();
   });
 
-  $('f-pais').addEventListener('change', e => setPais(e.target.value));
   $('f-prefijo').addEventListener('input', () => { prefijoTocado = true; });
 
   document.querySelectorAll('input[name="modo"]').forEach(r => r.addEventListener('change', () => {
@@ -530,11 +595,12 @@ function payload() {
     items: cart.items.map(it => ({
       pid: it.pid,
       colores: prodDe(it.pid).partes.map(p => ({ grupo: p.grupo, color_id: it.colores[p.grupo] || p.de_serie })),
+      extras: Object.fromEntries(extrasDe(it, prodDe(it.pid), S.cat).map(e => [e.tipo, e.cantidad])),
       montaje: !!it.montaje,
       nota: (it.nota || '').trim().slice(0, S.cfg.nota_max)
     })),
     // Solo informativo: el servidor recalcula todo con catalog.json y shipping.json.
-    total_cliente: totales(cart.items, S.cat, paisDe(cart.pais)).total,
+    total_cliente: totales(cart.items, S.cat, paisDe(cart.pais), S.ship).total,
     consentimiento: true
   };
 }
@@ -619,7 +685,7 @@ function confirmar(res, body) {
   cart.items = [];
   C.saveCart(cart);
   $('ped-form').reset();
-  $('f-pais').value = cart.pais;
+  picker.paint();
   $('err-resumen').hidden = true;
 
   $('ped-main').hidden = true;

@@ -18,7 +18,7 @@
           "Nombre completo, correo electrónico y teléfono.",
           "Dirección de envío, código postal, ciudad y país.",
           "Tu usuario de Instagram, si decides dárnoslo.",
-          "Lo que pides: réplicas, colores, notas y modo de pago."
+          "Lo que pides: réplicas, colores, extras, notas y modo de pago."
         ]
       },
       {
@@ -82,13 +82,13 @@
         "p": [
           "Réplicas de exposición a tamaño real, inspiradas en la ciencia ficción e impresas en 3D bajo pedido. Se entregan desmontadas y sin pintar: el color de cada pieza es el del filamento.",
           "Son objetos decorativos, sin capacidad de disparo ni mecanismo funcional. No son juguetes: contienen piezas pequeñas y no son aptas para menores de 14 años.",
-          "Al ser impresiones FDM, es normal que se vean las líneas de capa y pequeñas diferencias de tono entre lotes de filamento. Las fotos de la web son impresiones reales nuestras."
+          "Al ser impresiones FDM, es normal que se vean las líneas de capa y pequeñas diferencias de tono entre lotes de filamento. Las fotos de la web son impresiones reales nuestras o renders de nuestros modelos."
         ]
       },
       {
         "h": "Cómo se hace un pedido",
         "p": [
-          "Eliges las réplicas y los colores, rellenas tus datos y envías el pedido, sin crear cuenta. Al enviarlo recibes un ID de pedido en pantalla y por correo.",
+          "Eliges las réplicas, los colores y los extras, rellenas tus datos y envías el pedido, sin crear cuenta. Al enviarlo recibes un ID de pedido en pantalla y por correo.",
           "En 24 horas te enviamos los datos de pago. El pedido entra en producción cuando recibimos el pago, o el primer pago si pagas en dos partes."
         ]
       },
@@ -98,7 +98,7 @@
           "El precio de cada réplica es el mismo en todos los países.",
           "En los envíos a la Unión Europea, los precios incluyen el IVA.",
           "En los envíos fuera de la Unión Europea, el precio que ves es el precio final de nuestra venta. La aduana del país de destino puede cobrar impuestos o tasas de importación al recibir el paquete. Esos importes corren a cargo del cliente.",
-          "Los gastos de envío se calculan por cajas según el país y los ves antes de enviar el pedido."
+          "Los gastos de envío dependen del país y del tamaño del paquete: agrupamos las réplicas en el menor número de cajas posible. El importe que ves antes de enviar el pedido es aproximado; te confirmamos el definitivo con el enlace de pago."
         ]
       },
       {
@@ -119,7 +119,7 @@
       {
         "h": "Envío",
         "p": [
-          "Enviamos con InPost o Correos según el país. Cada caja admite una réplica larga y hasta dos pistolas.",
+          "Enviamos con InPost o Correos según el país, en cajas individuales, medianas (4 kg) o grandes (5 kg) según lo que pidas.",
           "Cuando sale el paquete te damos el número de seguimiento. Revisa la caja al recibirla."
         ]
       },

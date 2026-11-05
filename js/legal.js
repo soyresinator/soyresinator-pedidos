@@ -1,6 +1,6 @@
 // Soy Resinator · privacidad.html, condiciones.html y aviso-legal.html
 // Los textos salen de legal/<idioma>.json; los datos de la titular, de data/config.json ("legal").
-import * as C from './core.js';
+import * as C from './core.js?v=20261105';
 
 let cfg = null;
 const doc = document.body.dataset.legal; // "privacidad" | "condiciones" | "aviso"

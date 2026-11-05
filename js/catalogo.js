@@ -1,6 +1,6 @@
 // Soy Resinator · catálogo (index.html). Arranca también la vista de pedido.
-import * as C from './core.js';
-import * as P from './carrito.js';
+import * as C from './core.js?v=20261105';
+import * as P from './carrito.js?v=20261105';
 
 const state = {
   cfg: null, cat: null, ship: null, serie: [],
@@ -61,13 +61,13 @@ function setupCountry() {
       C.saveCart(cart);
     }
   }
-  fillCountries();
-  document.getElementById('pais').addEventListener('change', e => P.setPais(e.target.value));
+  picker = C.countryPicker(document.getElementById('pais'), state.ship.paises, () => C.loadCart().pais, P.setPais);
   paintPriceNote();
 }
 
+let picker = null;
 function fillCountries() {
-  C.fillCountrySelect(document.getElementById('pais'), state.ship.paises, C.loadCart().pais);
+  if (picker) picker.paint();
 }
 
 function paisActual() {
@@ -76,11 +76,9 @@ function paisActual() {
 }
 
 function paintPriceNote() {
-  const code = C.loadCart().pais;
   const p = paisActual();
   const note = document.getElementById('precio-nota');
-  document.getElementById('otro-pais').hidden = code !== 'OTRO';
-  if (!p) note.textContent = code === 'OTRO' ? '' : C.t('precio.sin_pais');
+  if (!p) note.textContent = C.t('precio.sin_pais');
   else if (p.ue) note.textContent = '';
   else note.textContent = C.t('precio.aduanas');
 }
@@ -137,6 +135,8 @@ function card(p, tax) {
   } else {
     colors = `<p class="colors-line">${C.esc(C.t('cat.colores_serie'))}</p>`;
   }
+  const extras = (p.extras || []).length
+    ? `<p class="extras-line">${C.esc(C.t('cat.extras', { precio: C.money(Math.min(...p.extras.map(e => e.pvp))) }))}</p>` : '';
   const action = state.abiertos
     ? `<button class="btn btn-primary btn-block" type="button" data-add="${p.id}" aria-label="${C.esc(C.t('cat.anadir') + ': ' + p.nombre)}">${C.esc(C.t('cat.anadir'))}</button>`
     : `<p class="closed-inline">${C.esc(C.t('cerrado.texto'))}</p>`;
@@ -159,6 +159,7 @@ function card(p, tax) {
           <ul class="includes">${includes}</ul>
         </div>
         ${colors}
+        ${extras}
         <div class="card-actions">${action}</div>
       </div>
     </article>`;

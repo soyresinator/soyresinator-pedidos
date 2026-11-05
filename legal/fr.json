@@ -18,7 +18,7 @@
           "Nom complet, e-mail et téléphone.",
           "Adresse de livraison, code postal, ville et pays.",
           "Ton compte Instagram, si tu choisis de nous le donner.",
-          "Ce que tu commandes : répliques, couleurs, notes et mode de paiement."
+          "Ce que tu commandes : répliques, couleurs, extras, notes et mode de paiement."
         ]
       },
       {
@@ -82,13 +82,13 @@
         "p": [
           "Des répliques d'exposition grandeur nature, inspirées de la science-fiction et imprimées en 3D à la commande. Elles sont livrées démontées et non peintes : la couleur de chaque pièce est celle du filament.",
           "Ce sont des objets décoratifs, sans capacité de tir ni mécanisme fonctionnel. Ce ne sont pas des jouets : elles contiennent de petites pièces et ne conviennent pas aux enfants de moins de 14 ans.",
-          "S'agissant d'impressions FDM, il est normal de voir les lignes de couche et de légères différences de teinte entre lots de filament. Les photos du site sont de vraies impressions réalisées par nous."
+          "Comme ce sont des impressions FDM, il est normal de voir les lignes de couche et de légères différences de teinte entre lots de filament. Les photos du site sont nos propres impressions réelles ou des rendus de nos modèles."
         ]
       },
       {
         "h": "Comment passer commande",
         "p": [
-          "Tu choisis les répliques et les couleurs, tu saisis tes coordonnées et tu envoies la commande, sans créer de compte. Tu reçois alors un identifiant de commande à l'écran et par e-mail.",
+          "Tu choisis les répliques, les couleurs et les extras, tu remplis tes coordonnées et tu envoies la commande, sans créer de compte. À l'envoi, tu reçois un identifiant de commande à l'écran et par e-mail.",
           "Sous 24 heures, nous t'envoyons les informations de paiement. La commande passe en production dès réception du paiement, ou du premier paiement si tu paies en deux fois."
         ]
       },
@@ -98,7 +98,7 @@
           "Chaque réplique coûte le même prix dans tous les pays.",
           "Pour les livraisons dans l'Union européenne, les prix incluent la TVA.",
           "Pour les livraisons hors de l'Union européenne, le prix affiché est le prix final de notre vente. La douane du pays de destination peut percevoir des taxes ou droits d'importation à l'arrivée du colis. Ces montants sont à la charge du client.",
-          "Les frais de livraison sont calculés par carton selon le pays et s'affichent avant l'envoi de la commande."
+          "Les frais de port dépendent du pays et de la taille du colis : on regroupe les répliques dans le moins de cartons possible. Le montant affiché avant l'envoi de la commande est une estimation ; on te confirme le montant final avec le lien de paiement."
         ]
       },
       {
@@ -119,7 +119,7 @@
       {
         "h": "Livraison",
         "p": [
-          "Nous expédions avec InPost ou Correos selon le pays. Chaque carton contient une réplique longue et jusqu'à deux pistolets.",
+          "On expédie avec InPost ou Correos selon le pays, en colis simple, moyen (4 kg) ou grand (5 kg) selon ta commande.",
           "Quand le colis part, nous te donnons le numéro de suivi. Vérifie le carton à la réception."
         ]
       },

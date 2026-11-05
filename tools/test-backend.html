@@ -116,7 +116,7 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
 
 (async () => {
   const rutas = ['data/catalog.json', 'data/shipping.json', 'data/config.json', 'data/colores-serie.json',
-    'i18n/en.json', 'i18n/es.json', 'i18n/de.json', 'i18n/fr.json', 'i18n/it.json'];
+    'i18n/en.json', 'i18n/es.json', 'i18n/pt.json', 'i18n/de.json', 'i18n/fr.json', 'i18n/it.json'];
   for (const r of rutas) ficheros[r] = await (await fetch('../' + r, { cache: 'no-cache' })).text();
   // El montaje está desactivado en todos los países; para seguir probando la regla, simulamos que España lo tiene.
   const shipReal = JSON.parse(ficheros['data/shipping.json']);
@@ -137,9 +137,11 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     cliente: { nombre: 'Ana Prueba', email: `ana${++n}@example.com`, telefono: '+34 612 345 678', direccion: 'Calle Mayor 1', cp: '08001', ciudad: 'Barcelona', instagram: '' },
     pais: 'ES', modo_pago: 'completo', items, total_cliente: 1, consentimiento: true, ...over
   });
-  const item = (pid, colores = {}, montaje = false, nota = '') => {
+  const item = (pid, colores = {}, montaje = false, nota = '', extras) => {
     const p = cat.productos.find(x => x.id === pid);
-    return { pid, montaje, nota, colores: (p ? p.partes : []).map(pt => ({ grupo: pt.grupo, color_id: colores[pt.grupo] || pt.de_serie })) };
+    const o = { pid, montaje, nota, colores: (p ? p.partes : []).map(pt => ({ grupo: pt.grupo, color_id: colores[pt.grupo] || pt.de_serie })) };
+    if (extras !== undefined) o.extras = extras;
+    return o;
   };
   const ped = () => ss.getSheetByName('PEDIDOS_WEB');
   const ultima = () => { const s = ped(); return s.data[s.getLastRow() - 1]; };
@@ -162,7 +164,8 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     // Precio correcto aunque el navegador mande otro
     let r = post(pedido([item('founders-bolt', { rojo: 'azul-marino' }, true), item('las-pistol', {}, true)], { total_cliente: 1 }));
     let f = ultima();
-    check('Founders Bolt azul marino + Las Pistol + montaje a España = 370 € (total_cliente manipulado a 1)', r.ok && r.total === 370 && f[col('TOTAL')] === 370 && f[col('SUBTOTAL')] === 260 && f[col('MONTAJE')] === 100 && f[col('ENVIO')] === 10, JSON.stringify(r));
+    check('Founders Bolt azul marino + Las Pistol + montaje a España = 375 € (caja de 4 kg 15 €; total_cliente manipulado a 1)', r.ok && r.total === 375 && f[col('TOTAL')] === 375 && f[col('SUBTOTAL')] === 260 && f[col('MONTAJE')] === 100 && f[col('ENVIO')] === 15 && f[col('CAJAS')] === 1, JSON.stringify(r));
+    check('Encabezados de ESTADO_WEB: 12 columnas, L = ID_PEDIDO', ss.getSheetByName('ESTADO_WEB').data[0].length === 12 && ss.getSheetByName('ESTADO_WEB').data[0][11] === 'ID_PEDIDO');
     check('ID con formato SR-XXXXXX', /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/.test(r.id), r.id);
     check('RESUMEN_ES correcto', f[col('RESUMEN_ES')] === '1. Founders Bolt · Detalles rojos: Azul marino · Montaje: sí | 2. Las Pistol · Cuerpo verde: Verde oscuro (de serie) · Montaje: sí', f[col('RESUMEN_ES')]);
     const items = JSON.parse(f[col('ITEMS_JSON')]);
@@ -183,13 +186,55 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     document.getElementById('correo').textContent = mailDe.subject + '\n\n' + mailDe.body;
     check('PAIS en español y servicio', f[col('PAIS')] === 'Alemania' && f[col('SERVICIO_ENVIO')] === 'InPost');
 
-    // Cajas
-    r = post(pedido([item('las-pistol'), item('las-pistol'), item('founders-bolt-pistol')], { pais: 'DE' }));
+    // Cajas: volumen bólter 3, rifle láser 2,5, pistola bólter 1,5, pistola láser 1; caja de 4 kg hasta 4, de 5 kg hasta 8
+    const envio = (items, pais) => { post(pedido(items, { pais })); const x = ultima(); return `${x[col('CAJAS')]} cajas, ${x[col('ENVIO')]} €`; };
+    let s = envio([item('founders-bolt')], 'ES');
+    check('1 bólter a España = 1 caja individual = 10 €', s === '1 cajas, 10 €', s);
+    s = envio([item('founders-bolt-pistol'), item('heavybolt-pistol')], 'ES');
+    check('2 pistolas bólter a España = caja de 4 kg = 15 €', s === '1 cajas, 15 €', s);
+    s = envio([item('trench-las-rifle'), item('founders-bolt-pistol')], 'ES');
+    check('Rifle Krieg + pistola a España = caja de 4 kg = 15 €', s === '1 cajas, 15 €', s);
+    s = envio([item('founders-bolt'), item('las-pistol')], 'PT');
+    check('Bólter + Las Pistol a Portugal = caja de 4 kg = 15 €', s === '1 cajas, 15 €', s);
+    s = envio([item('founders-bolt'), item('founders-bolt-pistol')], 'ES');
+    check('Bólter + pistola bólter a España = caja de 5 kg = 20 €', s === '1 cajas, 20 €', s);
+    s = envio([item('trench-las-rifle'), item('trooper-las-rifle')], 'DE');
+    check('2 rifles a Alemania = caja de 5 kg = 20 €', s === '1 cajas, 20 €', s);
+    s = envio([item('trench-las-rifle'), item('trooper-las-rifle'), item('founders-bolt-pistol'), item('las-pistol')], 'US');
+    check('2 rifles + 2 pistolas a EE. UU. = una caja de 5 kg = 99 €', s === '1 cajas, 99 €', s);
+    s = envio([item('founders-bolt'), item('heavy-bolt'), item('renegade-bolt')], 'DE');
+    check('3 bólters a Alemania = caja de 5 kg + individual = 35 €', s === '2 cajas, 35 €', s);
+    s = envio([item('las-pistol'), item('las-pistol'), item('founders-bolt-pistol')], 'GB');
+    check('3 pistolas a Reino Unido = caja de 4 kg = 20 €', s === '1 cajas, 20 €', s);
+    s = envio([item('founders-bolt')], 'SE');
+    check('País nuevo (Suecia, zona EU1) = 35 €', s === '1 cajas, 35 €', s);
+    const shipJ = JSON.parse(ficheros['data/shipping.json']);
+    check('shipping.json: más de 200 países, todos con precio y prefijo; sin Rusia', shipJ.paises.length > 200 && shipJ.paises.every(p => p.precio_1 > 0 && p.precio_4kg >= p.precio_1 && p.precio_5kg >= p.precio_4kg && /^\+\d{1,4}$/.test(p.prefijo) && p.nombre_es) && !shipJ.paises.some(p => p.code === 'RU'), shipJ.paises.length);
+
+    // Extras
+    r = post(pedido([item('founders-bolt', {}, false, '', { bala: 5, cargador: 1, stand: 1 })]));
     f = ultima();
-    check('3 pistolas a Alemania = 2 cajas = 30 €', f[col('CAJAS')] === 2 && f[col('ENVIO')] === 30, `${f[col('CAJAS')]} cajas, ${f[col('ENVIO')]} €`);
-    r = post(pedido([item('founders-bolt'), item('heavy-bolt'), item('las-pistol')], { pais: 'US' }));
+    const itx = JSON.parse(f[col('ITEMS_JSON')])[0];
+    const bala = itx.extras.find(x => x.tipo === 'bala');
+    check('Founders Bolt + 5 balas + cargador + stand = 235 € + 10 € de envío', r.ok && f[col('SUBTOTAL')] === 235 && f[col('TOTAL')] === 245, JSON.stringify(r));
+    check('ITEMS_JSON: extras con su réplica, cantidad e importe; 5 balas = 2 bandejas de BALAS-X4', itx.extras.length === 3 && bala.id_replica === 'BALAS-X4' && bala.cantidad === 5 && bala.bandejas === 2 && bala.importe === 15 && itx.extras.find(x => x.tipo === 'cargador').id_replica === 'CARGADOR-BOLTER-PF', JSON.stringify(itx.extras));
+    check('RESUMEN_ES con extras', f[col('RESUMEN_ES')].includes('Extras: Balas extra × 5, Cargador extra × 1, Soporte de exposición × 1'), f[col('RESUMEN_ES')]);
+    const mailEx = correos[correos.length - 2];
+    check('Correo al cliente con una línea por extra', mailEx.body.includes('+ Cargador extra × 1: 30 €') && mailEx.body.includes('Envío aproximado'), mailEx.body.split('\n').filter(l => l.startsWith('-')).join(' / '));
+    r = post(pedido([item('las-pistol', {}, false, '', { stand: 1 })]));
+    check('Extra que no tiene el producto (stand en Las Pistol): rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(pedido([item('founders-bolt', {}, false, '', { bala: 21 })]));
+    check('Más balas que el máximo (21): rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(pedido([item('founders-bolt', {}, false, '', { cargador: 1.5 })]));
+    check('Cantidad no entera: rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(pedido([item('trench-las-rifle', {}, false, '', { cargador: 2, stand: 1 })]));
     f = ultima();
-    check('2 bólters + 1 pistola a EE. UU. = 2 cajas = 180 €', f[col('CAJAS')] === 2 && f[col('ENVIO')] === 180, `${f[col('CAJAS')]} cajas, ${f[col('ENVIO')]} €`);
+    check('Trench Las Rifle + 2 cargadores (10 €) + stand = 210 €', r.ok && f[col('SUBTOTAL')] === 210, f[col('SUBTOTAL')]);
+
+    // Portugués
+    r = post(pedido([item('founders-bolt')], { idioma: 'pt', pais: 'BR' }));
+    const mailPt = correos[correos.length - 2];
+    check('Pedido en portugués: correo en portugués con el color traducido', r.ok && ultima()[col('IDIOMA')] === 'pt' && mailPt.subject.startsWith('Seu pedido') && mailPt.body.includes('Detalhes vermelhos: Vermelho escuro'), mailPt.subject);
 
     // Colores
     r = post(pedido([item('founders-bolt', { rojo: 'azul-ultramar' })]));

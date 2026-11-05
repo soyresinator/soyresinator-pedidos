@@ -24,6 +24,7 @@ class Rango {
   getValues() { return Array.from({ length: this.nr }, (_, i) => Array.from({ length: this.nc }, (_, j) => (this.sh.data[this.r - 1 + i] || [])[this.c - 1 + j] ?? '')); }
   setValues(v) { v.forEach((row, i) => row.forEach((val, j) => { const [a, b] = this.cell(i, j); this.sh.data[a][b] = val; })); return this; }
   setValue(v) { return this.setValues([[v]]); }
+  getValue() { return this.getValues()[0][0]; }
   getFormulasR1C1() { return Array.from({ length: this.nr }, (_, i) => Array.from({ length: this.nc }, (_, j) => this.sh.f[(this.r + i) + ':' + (this.c + j)] || '')); }
   setFormulaR1C1(f) { this.sh.f[this.r + ':' + this.c] = f; const [a, b] = this.cell(0, 0); this.sh.data[a][b] = '=' ; return this; }
   setNumberFormat(fm) { for (let i = 0; i < this.nr; i++) for (let j = 0; j < this.nc; j++) this.sh.fmt[(this.r + i) + ':' + (this.c + j)] = fm; return this; }
@@ -107,7 +108,7 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
   const codigo = await (await fetch('../apps-script/Code.gs', { cache: 'no-cache' })).text();
   const tarea = await (await fetch('../apps-script/Tarea.gs', { cache: 'no-cache' })).text();
   const G = new Function('SpreadsheetApp', 'CacheService', 'LockService', 'MailApp', 'UrlFetchApp', 'Utilities', 'ContentService', 'ScriptApp',
-    codigo + '\n' + tarea + '\nreturn { instalar, doGet, doPost, instalarTarea, tareaHoraria, quitarTarea };')(
+    codigo + '\n' + tarea + '\nreturn { instalar, doGet, doPost, instalarTarea, tareaHoraria, quitarTarea, asignarSRFormulario };')(
     SpreadsheetApp, CacheService, LockService, MailApp, UrlFetchApp, Utilities, ContentService, ScriptApp);
   const cat = JSON.parse(ficheros['data/catalog.json']);
   const post = b => JSON.parse(G.doPost({ postData: { contents: JSON.stringify(b) } }).content);
@@ -174,14 +175,35 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     f029[c('ID_FORM')] = 'SR-PLACAS';
     H('PEDIDOS_WEB').data.push(['SR-PLACAS']); H('PEDIDOS_WEB').data[H('PEDIDOS_WEB').data.length - 1][22] = 'RES-2026-029';
     H('ESTADO_WEB').data.push(['SR-PLACAS', 'h', 'recibido', '', '', 'pendiente', '', '', '', '', '']);
+    // Extra de balas como lo escribe la app: CANTIDAD = 5 balas sueltas = 2 bandejas de BALAS-X4 (1,7 h cada una)
+    shLin.data.push(['RES-2026-030', 3, 'BALAS-X4', 'Balas extra', 5, 'Balas extra 15 €', 1]);
     G.tareaHoraria();
     e = H('ESTADO_WEB').data.find(r => r[0] === 'SR-PLACAS');
     check('Placas: 1 de 3 bandejas terminadas (la 2 tiene una parte pendiente; tornillería no cuenta)', e[3] === 1 && e[4] === 3, e[3] + ' / ' + e[4]);
     const cola = H('CONFIG').data[1][0];
-    const esperado = Math.round((50.8 * 2 / 3 + 34.2 + 8) * 10) / 10;
-    check('HORAS_COLA = lo que queda de los pedidos en producción', cola === esperado, cola + ' (esperado ' + esperado + ')');
+    // STAND: 6,97 h (2 bandejas de 3 h 29 min), sacado de los extras de catalog.json
+    const esperado = Math.round((50.8 * 2 / 3 + 34.2 + 6.97 + 2 * 1.7) * 10) / 10;
+    check('HORAS_COLA = lo que queda en producción (STAND del catálogo; 5 balas = 2 bandejas)', cola === esperado, cola + ' (esperado ' + esperado + ')');
     check('PEDIDOS_ABIERTOS (E2) intacto', H('CONFIG').data[1][4] === 'sí');
     check('?accion=config ya devuelve la cola', JSON.parse(G.doGet({ parameter: { accion: 'config' } }).content).horas_cola === cola);
+
+    // 4. Códigos SR para el formulario antiguo
+    filaRes('RES-2026-030')[c('ENVIO_IDEAL')] = '28/11/2026';
+    shPed.data.push(filaP('RES-2026-020', 'CLI-020', 'Enviado', 'Pagado'));
+    shPed.data.push(filaP('RES-2026-033', 'CLI-099', 'Empaquetado', 'Pagado', { CLAVE_FORM: '4/11/2026 20:46:05|sinficha@example.com||TRENCH LASRIFLE' }));
+    const nEst = H('ESTADO_WEB').getLastRow();
+    log = G.asignarSRFormulario();
+    const av = H('AVISOS_SR').data;
+    check('asignarSRFormulario: 2 pedidos en curso (no el enviado ni los que ya tienen SR)', /Códigos SR creados: 2/.test(log) && av.length === 3 && av.slice(1).map(r => r[3]).sort().join(',') === 'RES-2026-030,RES-2026-033', log + ' · ' + av.slice(1).map(r => r.join(' | ')).join(' / '));
+    check('AVISOS_SR: email de CLIENTES o, si falta, el de CLAVE_FORM', av.find(r => r[3] === 'RES-2026-030')[1] === 'repite@example.com' && av.find(r => r[3] === 'RES-2026-033')[1] === 'sinficha@example.com', av.slice(1).map(r => r[1]).join(', '));
+    const sr = av.find(r => r[3] === 'RES-2026-030')[2];
+    e = H('ESTADO_WEB').data.find(r => r[0] === sr);
+    check('ESTADO_WEB del migrado: SR nuevo, RES en L, estado y pago de la app, fecha = ENVIO_IDEAL', /^SR-[A-Z2-9]{6}$/.test(sr) && e[11] === 'RES-2026-030' && e[2] === 'en_produccion' && e[5] === 'parcial' && e[7] === '2026-11-28', e.join(' | '));
+    const est = JSON.parse(G.doPost({ postData: { contents: JSON.stringify({ accion: 'estado', id: sr, email: 'repite@example.com' }) } }).content);
+    check('El cliente migrado puede consultar su pedido en la web', est.ok && est.estado === 'en_produccion' && est.fecha_envio_estimada === '2026-11-28', JSON.stringify(est));
+    G.asignarSRFormulario();
+    check('Repetir asignarSRFormulario no duplica', H('ESTADO_WEB').getLastRow() === nEst + 2 && H('AVISOS_SR').data.length === 3, H('ESTADO_WEB').getLastRow() - nEst);
+    check('No toca RES · Pedidos ni PEDIDOS_WEB', !shPed.data.some(r => String(r[c('ID_FORM')]).startsWith('SR-') && !['RES-2026-031', 'RES-2026-029'].includes(r[0])) && H('PEDIDOS_WEB').getLastRow() === 4);
 
     G.quitarTarea();
     check('quitarTarea borra el activador', triggers.length === 0);

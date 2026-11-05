@@ -2,6 +2,11 @@
   "version": 1,
   "moneda": "EUR",
   "montaje_pvp": 50,
+  "extras_def": {
+    "bala": { "etiqueta": "extra.bala", "max": 20, "por_bandeja": 4 },
+    "cargador": { "etiqueta": "extra.cargador", "max": 5 },
+    "stand": { "etiqueta": "extra.stand", "max": 1 }
+  },
   "colecciones": [
     { "id": "imperium-arsenal", "nombre": "Imperium Arsenal" },
     { "id": "guard-legions", "nombre": "Guard Legions" },
@@ -18,6 +23,12 @@
       "especial": false,
       "incluye": ["inc.kit", "inc.balas4"],
       "horas": 50.8,
+      "volumen": 3,
+      "extras": [
+        { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
+        { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PF", "pvp": 30, "horas": 7.97 },
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+      ],
       "caja": "larga",
       "partes": [
         { "grupo": "rojo", "etiqueta": "parte.detalles_rojos", "gramos": 296, "de_serie": "rojo-oscuro", "opciones": "stock",
@@ -34,6 +45,12 @@
       "especial": false,
       "incluye": ["inc.kit", "inc.balas4"],
       "horas": 59.1,
+      "volumen": 3,
+      "extras": [
+        { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
+        { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PRIMARIS", "pvp": 30, "horas": 9.25 },
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+      ],
       "caja": "larga",
       "partes": [
         { "grupo": "rojo", "etiqueta": "parte.partes_rojas", "gramos": 728, "de_serie": "rojo-oscuro", "opciones": "stock",
@@ -50,6 +67,12 @@
       "especial": true,
       "incluye": ["inc.kit", "inc.balas4"],
       "horas": 66.0,
+      "volumen": 3,
+      "extras": [
+        { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
+        { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PRIMARIS", "pvp": 30, "horas": 9.25 },
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+      ],
       "caja": "larga",
       "partes": [
         { "grupo": "principal", "etiqueta": "parte.color_principal", "gramos": 754, "de_serie": "amarillo", "opciones": ["amarillo", "azul-marino"],
@@ -68,6 +91,11 @@
       "especial": false,
       "incluye": ["inc.kit", "inc.balas4"],
       "horas": 31.3,
+      "volumen": 1.5,
+      "extras": [
+        { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
+        { "tipo": "cargador", "id_replica": "CARGADOR-PISTOLA-PF", "pvp": 30, "horas": 6.02 }
+      ],
       "caja": "pistola",
       "partes": [
         { "grupo": "rojo", "etiqueta": "parte.detalle_rojo", "gramos": 145, "de_serie": "rojo-oscuro", "opciones": "stock",
@@ -84,6 +112,11 @@
       "especial": false,
       "incluye": ["inc.kit", "inc.balas4"],
       "horas": 39.1,
+      "volumen": 1.5,
+      "extras": [
+        { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
+        { "tipo": "cargador", "id_replica": "CARGADOR-PISTOLA-PRIMARIS", "pvp": 30, "horas": 5.55 }
+      ],
       "caja": "pistola",
       "partes": [
         { "grupo": "rojo", "etiqueta": "parte.partes_rojas", "gramos": 404, "de_serie": "rojo-oscuro", "opciones": "stock",
@@ -100,6 +133,11 @@
       "especial": false,
       "incluye": ["inc.kit", "inc.bayoneta"],
       "horas": 34.2,
+      "volumen": 2.5,
+      "extras": [
+        { "tipo": "cargador", "id_replica": "CARGADOR-RIFLE-KRIEG", "pvp": 10, "horas": 1.72 },
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+      ],
       "caja": "larga",
       "partes": []
     },
@@ -113,6 +151,11 @@
       "especial": false,
       "incluye": ["inc.kit", "inc.bayoneta"],
       "horas": 33.9,
+      "volumen": 2.5,
+      "extras": [
+        { "tipo": "cargador", "id_replica": "CARGADOR-RIFLE-CADIA", "pvp": 10, "horas": 2.1 },
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+      ],
       "caja": "larga",
       "partes": [
         { "grupo": "verde", "etiqueta": "parte.cuerpo_verde", "gramos": 331, "de_serie": "verde-oscuro", "opciones": "stock",
@@ -131,6 +174,10 @@
       "especial": false,
       "incluye": ["inc.kit"],
       "horas": 17.0,
+      "volumen": 1,
+      "extras": [
+        { "tipo": "cargador", "id_replica": "CARGADOR-PISTOLA-LASER", "pvp": 10, "horas": 2.15 }
+      ],
       "caja": "pistola",
       "partes": [
         { "grupo": "verde", "etiqueta": "parte.cuerpo_verde", "gramos": 156, "de_serie": "verde-oscuro", "opciones": ["verde-oscuro", "negro"],
@@ -147,6 +194,12 @@
       "especial": false,
       "incluye": ["inc.kit", "inc.balas4"],
       "horas": 51.1,
+      "volumen": 3,
+      "extras": [
+        { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
+        { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PF", "pvp": 30, "horas": 7.97 },
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+      ],
       "caja": "larga",
       "partes": [
         { "grupo": "principal", "etiqueta": "parte.pieza_principal", "gramos": 315, "de_serie": "negro", "opciones": "stock",
@@ -166,6 +219,8 @@
       "especial": true,
       "incluye": ["inc.kit", "inc.balas4"],
       "horas": 54.6,
+      "volumen": 3,
+      "extras": [],
       "caja": "larga",
       "partes": []
     }

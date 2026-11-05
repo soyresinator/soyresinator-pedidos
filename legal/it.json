@@ -18,7 +18,7 @@
           "Nome e cognome, email e telefono.",
           "Indirizzo di spedizione, CAP, città e paese.",
           "Il tuo nome utente Instagram, se decidi di darcelo.",
-          "Cosa ordini: repliche, colori, note e modalità di pagamento."
+          "Cosa ordini: repliche, colori, extra, note e metodo di pagamento."
         ]
       },
       {
@@ -82,13 +82,13 @@
         "p": [
           "Repliche da esposizione a grandezza naturale, ispirate alla fantascienza e stampate in 3D su ordinazione. Vengono consegnate smontate e non verniciate: il colore di ogni pezzo è quello del filamento.",
           "Sono oggetti decorativi, senza capacità di sparo né meccanismi funzionanti. Non sono giocattoli: contengono piccole parti e non sono adatte ai minori di 14 anni.",
-          "Trattandosi di stampe FDM, è normale vedere le linee di strato e lievi differenze di tonalità tra lotti di filamento. Le foto del sito sono vere stampe nostre."
+          "Trattandosi di stampe FDM, è normale vedere le linee dei layer e piccole differenze di tonalità tra lotti di filamento. Le foto del sito sono nostre stampe reali o render dei nostri modelli."
         ]
       },
       {
         "h": "Come si fa un ordine",
         "p": [
-          "Scegli repliche e colori, inserisci i tuoi dati e invii l'ordine, senza creare un account. All'invio ricevi un ID ordine sullo schermo e via email.",
+          "Scegli le repliche, i colori e gli extra, inserisci i tuoi dati e invii l'ordine, senza creare un account. All'invio ricevi un ID ordine sullo schermo e via e-mail.",
           "Entro 24 ore ti inviamo i dati di pagamento. L'ordine entra in produzione quando riceviamo il pagamento, o la prima rata se paghi in due rate."
         ]
       },
@@ -98,7 +98,7 @@
           "Ogni replica ha lo stesso prezzo in tutti i paesi.",
           "Per le spedizioni nell'Unione europea, i prezzi includono l'IVA.",
           "Per le spedizioni fuori dall'Unione europea, il prezzo indicato è il prezzo finale della nostra vendita. La dogana del paese di destinazione può applicare imposte o dazi di importazione all'arrivo del pacco. Tali importi sono a carico del cliente.",
-          "Le spese di spedizione si calcolano per scatola in base al paese e le vedi prima di inviare l'ordine."
+          "Le spese di spedizione dipendono dal paese e dalle dimensioni del pacco: raggruppiamo le repliche nel minor numero di scatole possibile. L'importo che vedi prima di inviare l'ordine è una stima; ti confermiamo quello definitivo con il link di pagamento."
         ]
       },
       {
@@ -119,7 +119,7 @@
       {
         "h": "Spedizione",
         "p": [
-          "Spediamo con InPost o Correos a seconda del paese. Ogni scatola contiene una replica lunga e fino a due pistole.",
+          "Spediamo con InPost o Correos a seconda del paese, in scatole singole, medie (4 kg) o grandi (5 kg) secondo l'ordine.",
           "Quando il pacco parte ti diamo il numero di tracking. Controlla la scatola al ricevimento."
         ]
       },

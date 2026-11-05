@@ -1,0 +1,193 @@
+{
+  "privacidad": {
+    "titulo": "Política de privacidade",
+    "secciones": [
+      {
+        "h": "Quem trata os seus dados",
+        "p": [
+          "Soy Resinator é a marca de {titular}, com NIF {nif} e domicílio em {domicilio}. Somos responsáveis pelos dados que você nos dá ao fazer um pedido. Você pode escrever para {email}."
+        ]
+      },
+      {
+        "h": "Que dados recolhemos",
+        "p": [
+          "Só os que precisamos para o seu pedido:",
+          "Todos são obrigatórios, exceto o Instagram e as observações. Sem eles não podemos fabricar nem enviar o seu pedido, então não poderíamos aceitá-lo."
+        ],
+        "ul": [
+          "Nome completo, e-mail e telefone.",
+          "Endereço de entrega, código postal, cidade e país.",
+          "Seu usuário do Instagram, se decidir nos dar.",
+          "O que você pede: réplicas, cores, extras, observações e forma de pagamento."
+        ]
+      },
+      {
+        "h": "Para que os usamos",
+        "p": [
+          "Para fabricar, cobrar e enviar o seu pedido, e para escrever para você sobre ele: dados de pagamento, prazos, envio e acompanhamento.",
+          "Não os usamos para publicidade, não fazemos perfis e não os vendemos nem cedemos a ninguém para fins próprios."
+        ]
+      },
+      {
+        "h": "Base legal",
+        "p": [
+          "Tratamos os seus dados porque são necessários para o contrato que você celebra conosco ao fazer o pedido (artigo 6.1.b do RGPD) e para cumprir as nossas obrigações fiscais e contábeis (artigo 6.1.c do RGPD)."
+        ]
+      },
+      {
+        "h": "Quem mais os vê",
+        "p": [
+          "Para funcionar usamos estes serviços, que tratam os dados seguindo as nossas instruções:",
+          "Além disso, para cumprir o pedido compartilhamos o indispensável com a transportadora (InPost ou Correos: nome, endereço e telefone) e, se você pagar com PayPal, com o PayPal.",
+          "Se o envio for para um país fora do Espaço Econômico Europeu (por exemplo, Brasil, Estados Unidos, Suíça ou Reino Unido), a transportadora e os seus parceiros no destino tratam os seus dados de entrega nesse país. Essa transferência é necessária para cumprir o contrato que você celebra conosco (artigo 49.1.b do RGPD). A Suíça e o Reino Unido contam além disso com uma decisão de adequação da Comissão Europeia."
+        ],
+        "ul": [
+          "Google (Google Ireland Limited): guardamos os pedidos no Google Sheets, processamos com o Google Apps Script e escrevemos para você com o Gmail. O Google pode tratar dados fora do Espaço Econômico Europeu com as garantias do Quadro de Privacidade de Dados UE-EUA e das cláusulas contratuais-tipo.",
+          "GitHub (GitHub, Inc.): hospeda este site. Como qualquer servidor web, recebe o seu endereço IP quando você o visita.",
+          "Google Fonts: as fontes deste site são carregadas dos servidores do Google, que recebem o seu endereço IP."
+        ]
+      },
+      {
+        "h": "Por quanto tempo os guardamos",
+        "p": [
+          "Enquanto gerimos o seu pedido e, depois, pelo tempo que a lei exige para a documentação fiscal e contábil (em geral, até 6 anos). Passado esse prazo, nós os apagamos."
+        ]
+      },
+      {
+        "h": "Os seus direitos",
+        "p": [
+          "Você pode pedir para acessar os seus dados, corrigi-los, apagá-los, se opor ao tratamento, limitar o uso ou levá-los para outro serviço. Escreva para {email} com o ID do seu pedido.",
+          "Se achar que não tratamos bem os seus dados, pode reclamar junto à Agencia Española de Protección de Datos (www.aepd.es) ou à autoridade de proteção de dados do seu país."
+        ]
+      },
+      {
+        "h": "Cookies e armazenamento",
+        "p": [
+          "Este site não usa cookies nem análises. Só guarda no seu navegador (localStorage) o pedido que você está preparando e o idioma escolhido, para não perdê-los ao voltar. Você pode apagá-los quando quiser nas configurações do navegador."
+        ]
+      }
+    ]
+  },
+  "condiciones": {
+    "titulo": "Condições de venda",
+    "secciones": [
+      {
+        "h": "Quem somos",
+        "p": [
+          "Soy Resinator é a marca de {titular}, com NIF {nif} e domicílio em {domicilio}. Contato: {email}."
+        ]
+      },
+      {
+        "h": "O que vendemos",
+        "p": [
+          "Réplicas de exposição em tamanho real, inspiradas na ficção científica e impressas em 3D sob encomenda. São entregues desmontadas e sem pintura: a cor de cada peça é a do filamento.",
+          "São objetos decorativos, sem capacidade de disparo nem mecanismo funcional. Não são brinquedos: contêm peças pequenas e não são indicadas para menores de 14 anos.",
+          "Por serem impressões FDM, é normal ver as linhas de camada e pequenas diferenças de tom entre lotes de filamento. As fotos do site são impressões reais nossas ou renderizações dos nossos modelos."
+        ]
+      },
+      {
+        "h": "Como se faz um pedido",
+        "p": [
+          "Você escolhe as réplicas, as cores e os extras, preenche os seus dados e envia o pedido, sem criar conta. Ao enviar, recebe um ID de pedido na tela e por e-mail.",
+          "Em até 24 horas enviamos os dados de pagamento. O pedido entra em produção quando recebemos o pagamento, ou o primeiro pagamento se você pagar em duas partes."
+        ]
+      },
+      {
+        "h": "Preços e impostos",
+        "p": [
+          "O preço de cada réplica é o mesmo em todos os países.",
+          "Nos envios para a União Europeia, os preços incluem o IVA.",
+          "Nos envios para fora da União Europeia, o preço que você vê é o preço final da nossa venda. A alfândega do país de destino pode cobrar impostos ou taxas de importação ao receber o pacote. Esses valores ficam por conta do cliente.",
+          "O frete depende do país e do tamanho do pacote: agrupamos as réplicas no menor número de caixas possível. O valor que você vê antes de enviar o pedido é aproximado; confirmamos o definitivo com o link de pagamento."
+        ]
+      },
+      {
+        "h": "Pagamento",
+        "p": [
+          "Você pode pagar o pedido completo ou em duas partes: 50 % para começar e os 50 % restantes antes do envio.",
+          "Na Espanha e na UE o pagamento é por transferência bancária; nos demais países, com PayPal. No site não se cobra nada.",
+          "Se não recebermos o primeiro pagamento em {dias_pago} dias a partir do pedido, podemos cancelá-lo. Se você pagar em duas partes, enviamos a réplica quando recebemos o segundo pagamento."
+        ]
+      },
+      {
+        "h": "Prazos",
+        "p": [
+          "Todos os prazos contam a partir da data do pagamento, ou do primeiro pagamento se você pagar em duas partes. O nosso prazo ideal de envio é de 3 semanas a partir desse momento; o site dá uma estimativa conforme a nossa fila de impressão.",
+          "A data estimada é definida quando recebemos o seu pagamento. Se algo a atrasar, avisamos você."
+        ]
+      },
+      {
+        "h": "Envio",
+        "p": [
+          "Enviamos com InPost ou Correos conforme o país, em caixas individuais, médias (4 kg) ou grandes (5 kg) conforme o que você pedir.",
+          "Quando o pacote sai, passamos o código de rastreio. Confira a caixa ao recebê-la."
+        ]
+      },
+      {
+        "h": "Trocas, devoluções e garantia",
+        "p": [
+          "Se você escolher cores diferentes das de série, a réplica é fabricada segundo as suas especificações e, como a lei prevê nesses casos, não admite direito de arrependimento.",
+          "Se você pedir com as cores de série, tem 14 dias corridos a partir da entrega para desistir: escreva para nós e devolva sem uso na caixa original. Reembolsamos o preço e o envio padrão; os custos de devolução ficam por sua conta.",
+          "Se uma peça chegar quebrada ou com defeito, ou faltar alguma, escreva para nós em até {dias_incidencias} dias a partir da entrega com fotos do pacote e da peça. Nós a reimprimimos e enviamos sem custo ou, se não for possível, devolvemos o valor.",
+          "Nada disso limita a sua garantia legal de conformidade como consumidor."
+        ]
+      },
+      {
+        "h": "Lei aplicável",
+        "p": [
+          "Estas condições regem-se pela lei espanhola, sem prejuízo dos direitos que a lei do seu país de residência lhe reconheça como consumidor."
+        ]
+      }
+    ]
+  },
+  "aviso": {
+    "titulo": "Aviso legal",
+    "secciones": [
+      {
+        "h": "Titular do site",
+        "p": [
+          "Em cumprimento da Lei 34/2002, de serviços da sociedade da informação e de comércio eletrônico (LSSI), informamos que este site pertence a:"
+        ],
+        "ul": [
+          "Titular: {titular}",
+          "NIF: {nif}",
+          "Domicílio: {domicilio}",
+          "E-mail: {email}",
+          "Instagram: {instagram}"
+        ]
+      },
+      {
+        "h": "O que este site oferece",
+        "p": [
+          "Este site permite consultar o catálogo de réplicas da Soy Resinator, enviar pedidos e acompanhar o seu status. As compras regem-se pelas condições de venda, e o tratamento dos seus dados, pela política de privacidade."
+        ]
+      },
+      {
+        "h": "Uso do site",
+        "p": [
+          "Você pode usar este site para se informar e fazer pedidos. Não é permitido usá-lo para fins ilícitos, enviar pedidos falsos nem tentar alterar o seu funcionamento."
+        ]
+      },
+      {
+        "h": "Propriedade intelectual",
+        "p": [
+          "Os textos, as fotografias, o design e o código deste site são da titular ou são usados com permissão. Não é permitido copiá-los nem reutilizá-los sem autorização, exceto para uso pessoal.",
+          "As réplicas são designs inspirados na ficção científica. A Soy Resinator não está vinculada a nenhum estúdio, editora nem fabricante de jogos, e não usa as suas marcas."
+        ]
+      },
+      {
+        "h": "Responsabilidade e links",
+        "p": [
+          "Procuramos que a informação do site esteja correta e atualizada, mas ela pode conter algum erro pontual. O valor e as condições que valem são os do e-mail de confirmação do seu pedido.",
+          "O site tem links para o Instagram e outros serviços de terceiros. Não somos responsáveis pelos seus conteúdos nem pelas suas políticas."
+        ]
+      },
+      {
+        "h": "Lei aplicável",
+        "p": [
+          "Este aviso legal rege-se pela lei espanhola."
+        ]
+      }
+    ]
+  }
+}

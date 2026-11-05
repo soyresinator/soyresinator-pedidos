@@ -10,7 +10,10 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-LANGS = ["en", "es", "de", "fr", "it"]
+LANGS = ["en", "es", "pt", "de", "fr", "it"]
+# COLORES (la hoja) no tiene columna de portugués: los nombres de color en pt van como "color.<id>"
+# y solo existen en pt.json.
+SOLO_PT = "color."
 errors = []
 
 dicts = {}
@@ -23,6 +26,8 @@ for l in LANGS:
     for k in sorted(base - keys):
         errors.append(f"{l}: falta la clave {k}")
     for k in sorted(keys - base):
+        if l == "pt" and k.startswith(SOLO_PT):
+            continue
         errors.append(f"{l}: clave de mas {k} (no esta en en.json)")
     for k, v in dicts[l].items():
         if not isinstance(v, str) or not v.strip():
@@ -52,6 +57,7 @@ cat = json.loads((ROOT / "data" / "catalog.json").read_text(encoding="utf-8"))
 for p in cat["productos"]:
     used |= set(p["incluye"])
     used |= {pt["etiqueta"] for pt in p["partes"]}
+used |= {d["etiqueta"] for d in cat.get("extras_def", {}).values()}
 used |= {f"lang.{l}" for l in LANGS}
 
 # Textos legales: misma estructura en los cinco idiomas, sin rayas largas y mismas variables

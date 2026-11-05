@@ -18,7 +18,7 @@
           "Vollständiger Name, E-Mail-Adresse und Telefonnummer.",
           "Lieferadresse, Postleitzahl, Ort und Land.",
           "Dein Instagram-Name, wenn du ihn uns gibst.",
-          "Was du bestellst: Repliken, Farben, Notizen und Zahlungsart."
+          "Was du bestellst: Repliken, Farben, Extras, Notizen und Zahlungsart."
         ]
       },
       {
@@ -82,13 +82,13 @@
         "p": [
           "Ausstellungsrepliken in Originalgröße, inspiriert von Science-Fiction und auf Bestellung 3D-gedruckt. Sie werden zerlegt und unbemalt geliefert: Die Farbe jedes Teils ist die des Filaments.",
           "Es sind Dekorationsobjekte ohne Schussfähigkeit und ohne funktionierenden Mechanismus. Sie sind kein Spielzeug: Sie enthalten Kleinteile und sind nicht für Kinder unter 14 Jahren geeignet.",
-          "Bei FDM-Drucken sind sichtbare Schichtlinien und leichte Farbunterschiede zwischen Filament-Chargen normal. Die Fotos auf der Website zeigen echte Drucke von uns."
+          "Da es FDM-Drucke sind, sind sichtbare Schichtlinien und kleine Farbunterschiede zwischen Filamentchargen normal. Die Fotos auf der Website sind echte Drucke von uns oder Renderings unserer Modelle."
         ]
       },
       {
         "h": "So funktioniert die Bestellung",
         "p": [
-          "Du wählst Repliken und Farben, gibst deine Daten ein und sendest die Bestellung, ganz ohne Konto. Danach erhältst du eine Bestell-ID auf dem Bildschirm und per E-Mail.",
+          "Du wählst die Repliken, Farben und Extras, gibst deine Daten ein und sendest die Bestellung ab, ohne ein Konto anzulegen. Beim Absenden erhältst du eine Bestell-ID auf dem Bildschirm und per E-Mail.",
           "Innerhalb von 24 Stunden schicken wir dir die Zahlungsdaten. Die Bestellung geht in Produktion, sobald die Zahlung eingeht, bei zwei Raten die erste Rate."
         ]
       },
@@ -98,7 +98,7 @@
           "Jede Replik kostet in allen Ländern gleich viel.",
           "Bei Lieferungen in die Europäische Union enthalten die Preise die Mehrwertsteuer.",
           "Bei Lieferungen außerhalb der Europäischen Union ist der angezeigte Preis der Endpreis unseres Verkaufs. Der Zoll im Bestimmungsland kann bei der Ankunft Einfuhrsteuern oder -abgaben erheben. Diese trägt der Kunde.",
-          "Die Versandkosten werden je nach Land pro Karton berechnet und vor dem Absenden angezeigt."
+          "Die Versandkosten hängen vom Land und von der Paketgröße ab: Wir packen die Repliken in so wenige Kartons wie möglich. Der Betrag, den du vor dem Absenden siehst, ist ein ungefährer Wert; den endgültigen bestätigen wir dir mit dem Zahlungslink."
         ]
       },
       {
@@ -119,7 +119,7 @@
       {
         "h": "Versand",
         "p": [
-          "Wir versenden je nach Land mit InPost oder Correos. In jeden Karton passen eine lange Replik und bis zu zwei Pistolen.",
+          "Wir versenden je nach Land mit InPost oder Correos, in Einzel-, mittleren (4 kg) oder großen (5 kg) Kartons, je nach Bestellung.",
           "Wenn das Paket unterwegs ist, bekommst du die Sendungsnummer. Prüfe den Karton bei der Annahme."
         ]
       },

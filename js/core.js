@@ -1,11 +1,11 @@
 // Soy Resinator · utilidades compartidas por todas las páginas.
 // Sin framework ni compilación: módulos ES servidos tal cual por GitHub Pages.
 
-export const LANGS = ['en', 'es', 'de', 'fr', 'it'];
+export const LANGS = ['en', 'es', 'pt', 'de', 'fr', 'it'];
 const LS_LANG = 'sr_lang';
 const LS_CART = 'sr_cart';
 // Locale para formatear importes por idioma (en-IE: "€160", formato europeo).
-const LOCALES = { en: 'en-IE', es: 'es-ES', de: 'de-DE', fr: 'fr-FR', it: 'it-IT' };
+const LOCALES = { en: 'en-IE', es: 'es-ES', pt: 'pt-PT', de: 'de-DE', fr: 'fr-FR', it: 'it-IT' };
 
 /* ---------- localStorage seguro (solo carrito e idioma) ---------- */
 export function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -108,14 +108,113 @@ export function countryName(pais) {
   } catch (e) { return pais.nombre_es; }
 }
 
-/** Rellena un <select> de países (ordenados en el idioma actual) más "Otro país". */
-export function fillCountrySelect(sel, paises, selected) {
-  const ordenados = [...paises].sort((a, b) => countryName(a).localeCompare(countryName(b), locale()));
-  sel.innerHTML =
-    `<option value="">${esc(t('envio.elige'))}</option>` +
-    ordenados.map(p => `<option value="${p.code}">${esc(countryName(p))}</option>`).join('') +
-    `<option value="OTRO">${esc(t('envio.otro'))}</option>`;
-  sel.value = selected || '';
+/** Texto para comparar al buscar: minúsculas y sin tildes. */
+export function norm(s) {
+  return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+}
+
+/**
+ * Buscador de país (combobox accesible): un <input> donde se escribe y una lista que se filtra.
+ * Busca en el nombre del idioma actual, en el nombre en español y en el código (ES, DE…).
+ * `getCode()` da el país guardado; `onPick(code)` se llama al elegir uno ('' si se borra).
+ * Devuelve { paint() } para repintar el nombre al cambiar de idioma o de país.
+ */
+export function countryPicker(input, paises, getCode, onPick) {
+  const list = document.createElement('ul');
+  list.id = input.id + '-lista';
+  list.className = 'combo-list';
+  list.setAttribute('role', 'listbox');
+  list.hidden = true;
+  input.insertAdjacentElement('afterend', list);
+  input.setAttribute('role', 'combobox');
+  input.setAttribute('aria-autocomplete', 'list');
+  input.setAttribute('aria-expanded', 'false');
+  input.setAttribute('aria-controls', list.id);
+  input.spellcheck = false;
+
+  let shown = [];
+  let active = -1;
+  const nombre = code => { const p = paises.find(x => x.code === code); return p ? countryName(p) : ''; };
+  const ordenados = () => [...paises].sort((a, b) => countryName(a).localeCompare(countryName(b), locale()));
+
+  function filtrar(q) {
+    const n = norm(q);
+    if (!n) return ordenados();
+    const empieza = [], contiene = [];
+    for (const p of ordenados()) {
+      const nm = norm(countryName(p)), es = norm(p.nombre_es);
+      if (nm.startsWith(n) || es.startsWith(n) || p.code.toLowerCase() === n) empieza.push(p);
+      else if (nm.includes(n) || es.includes(n)) contiene.push(p);
+    }
+    return empieza.concat(contiene);
+  }
+  function open(q) {
+    shown = filtrar(q);
+    active = shown.length ? 0 : -1;
+    list.innerHTML = shown.length
+      ? shown.map((p, i) => `<li id="${list.id}-${p.code}" role="option" data-code="${p.code}"${i === active ? ' class="active" aria-selected="true"' : ''}>${esc(countryName(p))}</li>`).join('')
+      : `<li class="combo-empty" aria-disabled="true">${esc(t('envio.sin_resultados'))}</li>`;
+    list.hidden = false;
+    input.setAttribute('aria-expanded', 'true');
+    mark();
+  }
+  function close() {
+    list.hidden = true;
+    input.setAttribute('aria-expanded', 'false');
+    input.removeAttribute('aria-activedescendant');
+  }
+  function mark() {
+    list.querySelectorAll('li[role="option"]').forEach((li, i) => {
+      li.classList.toggle('active', i === active);
+      li.setAttribute('aria-selected', String(i === active));
+      if (i === active) { input.setAttribute('aria-activedescendant', li.id); li.scrollIntoView({ block: 'nearest' }); }
+    });
+  }
+  function pick(code) {
+    close();
+    input.value = nombre(code);
+    if (code !== getCode()) onPick(code);
+  }
+  /** Al salir: si el texto es exactamente un país, ese; si está vacío, ninguno; si no, volvemos al guardado. */
+  function resolver() {
+    const n = norm(input.value);
+    if (!n) { if (getCode()) onPick(''); return; }
+    const p = paises.find(x => norm(countryName(x)) === n || norm(x.nombre_es) === n);
+    if (p) pick(p.code); else input.value = nombre(getCode());
+  }
+
+  input.addEventListener('focus', () => { input.select(); open(''); });
+  input.addEventListener('click', () => { if (list.hidden) open(''); });
+  input.addEventListener('input', () => open(input.value));
+  input.addEventListener('change', () => { if (list.hidden) resolver(); }); // autorrelleno del navegador
+  input.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (list.hidden) { open(input.value); return; }
+      if (!shown.length) return;
+      active = (active + (e.key === 'ArrowDown' ? 1 : -1) + shown.length) % shown.length;
+      mark();
+    } else if (e.key === 'Enter') {
+      if (!list.hidden && active >= 0) { e.preventDefault(); pick(shown[active].code); }
+    } else if (e.key === 'Escape') {
+      if (!list.hidden) { e.preventDefault(); close(); input.value = nombre(getCode()); }
+    }
+  });
+  // mousedown (no click) para elegir antes de que el input pierda el foco.
+  list.addEventListener('mousedown', e => {
+    const li = e.target.closest('li[data-code]');
+    e.preventDefault();
+    if (li) pick(li.dataset.code);
+  });
+  input.addEventListener('blur', () => { if (!list.hidden) { close(); resolver(); } });
+
+  const paint = () => {
+    input.value = nombre(getCode());
+    input.placeholder = t('envio.buscar');
+    if (!list.hidden) close();
+  };
+  paint();
+  return { paint };
 }
 
 export async function copyText(text) {
@@ -142,7 +241,7 @@ export function esc(s) {
 }
 
 /* ---------- Carrito ---------- */
-// { v:1, pais:"ES", items:[{ uid, pid, colores:{grupo: color_id}, montaje:false, nota:"" }] }
+// { v:1, pais:"ES", items:[{ uid, pid, colores:{grupo: color_id}, extras:{tipo: cantidad}, montaje:false, nota:"" }] }
 export function loadCart() {
   try {
     const c = JSON.parse(lsGet(LS_CART) || 'null');
@@ -160,7 +259,7 @@ export function uid() {
 export function newItem(prod) {
   const colores = {};
   (prod.partes || []).forEach(p => { colores[p.grupo] = p.de_serie; });
-  return { uid: uid(), pid: prod.id, colores, montaje: false, nota: '' };
+  return { uid: uid(), pid: prod.id, colores, extras: {}, montaje: false, nota: '' };
 }
 
 /* ---------- Configuración remota (Apps Script ?accion=config) ---------- */
@@ -213,10 +312,11 @@ export function coloresParaParte(parte, remote, serie, minimo = 0) {
   return out;
 }
 
+/** Nombre del color en el idioma actual. COLORES no tiene columna de portugués: va en i18n como "color.<id>". */
 export function colorName(c) {
   if (!c) return '';
   const n = c.nombres || {};
-  return n[lang] || n.es || c.id;
+  return n[lang] || dict['color.' + c.id] || n.es || c.id;
 }
 
 /* ---------- Cabecera y pie comunes ---------- */

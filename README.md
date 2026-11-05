@@ -76,7 +76,7 @@ Ajustes en `TAREA`, al principio de `Tarea.gs`: los IDs de las dos hojas, la equ
 Los datos de la titular están una sola vez, en `"legal"` dentro de [`data/config.json`](data/config.json):
 `titular`, `nif`, `domicilio`, `dias_pago` (días para recibir el primer pago antes de cancelar, ahora 7),
 `dias_incidencias` (días para avisar de una pieza rota, ahora 7) y `actualizado` (fecha que se muestra).
-Los textos están en `legal/<idioma>.json`; si cambiáis uno, cambiad los cinco y ejecutad `python -I tools/check_i18n.py`.
+Los textos están en `legal/<idioma>.json`; si cambiáis uno, cambiad los seis (también pt) y ejecutad `python -I tools/check_i18n.py`.
 
 ## Uso diario
 
@@ -87,8 +87,10 @@ Los textos están en `legal/<idioma>.json`; si cambiáis uno, cambiad los cinco 
 | Cambiar precios, partes o productos | [`data/catalog.json`](data/catalog.json). El servidor recalcula siempre con este fichero (caché de 10 minutos). |
 | Cambiar tarifas de envío o países | [`data/shipping.json`](data/shipping.json). |
 | Cambiar el stock mínimo para ofrecer un color | `stock_minimo_g` en [`data/config.json`](data/config.json) (ahora 200 g). |
-| Cambiar textos de la web o de los correos | `i18n/<idioma>.json`, la misma clave en los cinco ficheros. Luego: `python -I tools/check_i18n.py`. |
+| Cambiar textos de la web o de los correos | `i18n/<idioma>.json`, la misma clave en los seis ficheros (en, es, pt, de, fr, it). Los nombres de color en portugués van solo en pt.json como `color.<id>`. Luego: `python -I tools/check_i18n.py`. |
 | Que un cambio de la web llegue ya al servidor | En el editor del script, ejecuta `limpiarCache`. |
+| Subir cambios de JS o CSS | Cambia el número `?v=` (la fecha) en los 5 HTML y en los `import` de `js/*.js`, todos iguales, para que nadie mezcle ficheros nuevos con viejos de la caché. |
+| Dar código SR a pedidos del formulario | En el editor del script, ejecuta `asignarSRFormulario` (no duplica). La lista para avisar a los clientes queda en la pestaña **AVISOS_SR**. |
 
 ### Reglas de los colores
 
@@ -108,8 +110,8 @@ Un color se ofrece para una parte si en COLORES tiene **ELEGIBLE = sí** y **DIS
 | `js/core.js` | Idioma, carrito, colores disponibles, configuración remota |
 | `js/calc.js` | Cajas, totales y plazo (las mismas reglas que el servidor) |
 | `js/catalogo.js`, `js/carrito.js` | Catálogo; tarjetas por unidad, formulario, envío y confirmación |
-| `data/catalog.json` | Productos, precios, partes con color, horas de impresión, tipo de caja |
-| `data/shipping.json` | Países, servicio, tarifa por caja, UE sí/no, montaje, prefijo |
+| `data/catalog.json` | Productos, precios, partes con color, horas de impresión, volumen para el envío y extras (balas, cargador, stand) con su ID de réplica |
+| `data/shipping.json` | Todos los países (se generan con su zona de Correos), servicio, precio con 1 artículo / caja de 4 kg / caja de 5 kg, UE sí/no, montaje, prefijo. La regla de cajas está en `regla_cajas` |
 | `data/config.json` | URL del script (`api_url`), correo, Instagram, stock mínimo, plazo |
 | `data/colores-serie.json` | Respaldo con los colores de serie, por si no se puede leer COLORES |
 | `i18n/*.json` | Todos los textos (web y correos), mismas claves en en, es, de, fr, it |
