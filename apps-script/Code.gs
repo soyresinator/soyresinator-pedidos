@@ -326,7 +326,9 @@ function crearPedido(b) {
       id, fechaIso, idioma, cliente.nombre, cliente.email, cliente.telefono, cliente.direccion, cliente.cp,
       cliente.ciudad, pais.nombre_es, cliente.instagram, JSON.stringify(itemsJson), resumenEs(unidades),
       // SUBTOTAL incluye los extras (precio de réplicas + extras).
-      notasOriginal(unidades), tot.subtotal + tot.extras, tot.montaje, tot.envio, tot.total, modo, pais.servicio,
+      // Envío a consultar: ENVIO vacío y SERVICIO_ENVIO "A consultar" (TOTAL va sin envío).
+      notasOriginal(unidades), tot.subtotal + tot.extras, tot.montaje, tot.consultar ? '' : tot.envio, tot.total, modo,
+      tot.consultar ? 'A consultar' : pais.servicio,
       tot.cajas, fechaIso, '', ''
     ];
     escribirFila(hoja(H.PEDIDOS), fila, FORMATO_PEDIDOS);
@@ -442,9 +444,11 @@ function totales(items, cat, pais, ship) {
   const montajeUds = pais && pais.montaje ? items.filter(function (i) { return i.montaje; }).length : 0;
   const montaje = montajeUds * cat.montaje_pvp;
   const lista = cajasEnvio(items, cat, ship);
-  const envio = pais ? lista.reduce(function (s, c) { return s + precioCaja(c, pais); }, 0) : 0;
+  // Países sin tarifa (envio_a_consultar): sin precio de envío; el total va sin envío.
+  const consultar = !!(pais && pais.envio_a_consultar);
+  const envio = pais && !consultar ? lista.reduce(function (s, c) { return s + precioCaja(c, pais); }, 0) : 0;
   return { subtotal: subtotal, extras: extras, montajeUds: montajeUds, montaje: montaje, cajas: lista.length,
-    listaCajas: lista, envio: envio, total: subtotal + extras + montaje + envio, horas: horas };
+    listaCajas: lista, envio: envio, consultar: consultar, total: subtotal + extras + montaje + envio, horas: horas };
 }
 
 /** "1 × caja grande (5 kg) + 1 × caja individual" en el idioma del diccionario. */
@@ -524,7 +528,7 @@ function correoCliente(ctx) {
     t('conf.id_label') + ': ' + ctx.id, '',
     t('res.titulo').toUpperCase()
   ].concat(lineas.map(function (l) { return '- ' + l.a + (l.det ? ' (' + l.det + ')' : '') + ': ' + l.b; }))
-    .concat([t('res.total') + ': ' + dinero(ctx.tot.total, L) + ' · ' + impuestos,
+    .concat([t(ctx.tot.consultar ? 'res.total_sin_envio' : 'res.total') + ': ' + dinero(ctx.tot.total, L) + ' · ' + impuestos,
       t('res.pago') + ': ' + pagoTxt, '',
       t('conf.pasos').toUpperCase()])
     .concat(pasos.map(function (p, i) { return (i + 1) + '. ' + p; }))
@@ -549,7 +553,7 @@ function correoCliente(ctx) {
     '<div style="font-size:32px;font-weight:bold;letter-spacing:3px;color:#7A5A26">' + esc(ctx.id) + '</div></div>' +
     '<h2 style="color:#7A5A26;font-size:18px;text-transform:uppercase">' + esc(t('res.titulo')) + '</h2>' +
     '<table style="width:100%;border-collapse:collapse;font-size:15px">' + filas +
-    '<tr><td style="padding:12px 0;font-weight:bold">' + esc(t('res.total')) + '</td>' +
+    '<tr><td style="padding:12px 0;font-weight:bold">' + esc(t(ctx.tot.consultar ? 'res.total_sin_envio' : 'res.total')) + '</td>' +
     '<td style="padding:12px 0;text-align:right;font-weight:bold;font-size:20px;color:#7A5A26">' + esc(dinero(ctx.tot.total, L)) + '</td></tr></table>' +
     '<p style="color:#6b655c;font-size:13px;margin:0">' + esc(impuestos) + '</p>' +
     '<p><strong>' + esc(t('res.pago')) + ':</strong> ' + esc(pagoTxt) + '</p>' +
@@ -580,9 +584,12 @@ function correoTienda(ctx) {
     'RESUMEN'
   ].concat(lineas.map(function (l) { return '- ' + l.a + (l.det ? ' (' + l.det + ')' : '') + ': ' + l.b; }))
     .concat([
-      'Total: ' + dinero(ctx.tot.total, 'es'),
+      (ctx.tot.consultar ? 'Total SIN envío: ' : 'Total: ') + dinero(ctx.tot.total, 'es'),
       'Pago: ' + (ctx.modo === 'dos_partes' ? 'en dos partes' : 'completo') + ' · ' + (ctx.pais.ue ? 'transferencia' : 'PayPal'),
-      'Envío (aproximado): ' + ctx.pais.servicio + ', ' + textoCajas(ctx.tot.listaCajas, es) + ' = ' + dinero(ctx.tot.envio, 'es'), '',
+      ctx.tot.consultar
+        ? 'Envío: A CONSULTAR. ' + ctx.pais.nombre_es + ' no tiene tarifa: escribid al cliente con la mejor opción (' + textoCajas(ctx.tot.listaCajas, es) + '). El total no lo incluye.'
+        : 'Envío (aproximado): ' + ctx.pais.servicio + ', ' + textoCajas(ctx.tot.listaCajas, es) + ' = ' + dinero(ctx.tot.envio, 'es'),
+      '',
       'CLIENTE',
       'Nombre: ' + c.nombre,
       'Email: ' + c.email,
@@ -623,9 +630,13 @@ function lineasResumen(ctx, L, d) {
     out.push({ a: t('res.montaje'), det: t('res.montaje_detalle', { n: ctx.tot.montajeUds, precio: dinero(ctx.cat.montaje_pvp, L) }),
       b: dinero(ctx.tot.montaje, L) });
   }
-  out.push({ a: t('res.envio_aprox'),
-    det: t('res.envio_detalle', { servicio: ctx.pais.servicio, cajas: textoCajas(ctx.tot.listaCajas, d) }) + ' · ' + t('res.envio_nota'),
-    b: dinero(ctx.tot.envio, L) });
+  if (ctx.tot.consultar) {
+    out.push({ a: t('res.envio'), det: t('res.envio_consultar'), b: t('res.envio_consultar_val') });
+  } else {
+    out.push({ a: t('res.envio_aprox'),
+      det: t('res.envio_detalle', { servicio: ctx.pais.servicio, cajas: textoCajas(ctx.tot.listaCajas, d) }) + ' · ' + t('res.envio_nota'),
+      b: dinero(ctx.tot.envio, L) });
+  }
   return out;
 }
 

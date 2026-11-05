@@ -62,9 +62,11 @@ export function totales(items, cat, pais, ship) {
   const montajeUds = pais && pais.montaje ? items.filter(i => i.montaje).length : 0;
   const montaje = montajeUds * cat.montaje_pvp;
   const lista = cajasEnvio(items, cat, ship);
-  const envio = pais ? lista.reduce((s, c) => s + precioCaja(c, pais), 0) : null;
+  // Países sin tarifa (envio_a_consultar): no damos precio y el total va sin envío.
+  const consultar = !!(pais && pais.envio_a_consultar);
+  const envio = pais && !consultar ? lista.reduce((s, c) => s + precioCaja(c, pais), 0) : null;
   const total = subtotal + extras + montaje + (envio || 0);
-  return { subtotal, extras, montajeUds, montaje, cajas: lista.length, listaCajas: lista, envio, total, horas };
+  return { subtotal, extras, montajeUds, montaje, cajas: lista.length, listaCajas: lista, envio, consultar, total, horas };
 }
 
 /**

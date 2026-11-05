@@ -206,10 +206,17 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     check('3 bólters a Alemania = caja de 5 kg + individual = 35 €', s === '2 cajas, 35 €', s);
     s = envio([item('las-pistol'), item('las-pistol'), item('founders-bolt-pistol')], 'GB');
     check('3 pistolas a Reino Unido = caja de 4 kg = 20 €', s === '1 cajas, 20 €', s);
-    s = envio([item('founders-bolt')], 'SE');
-    check('País nuevo (Suecia, zona EU1) = 35 €', s === '1 cajas, 35 €', s);
+    r = post(pedido([item('founders-bolt')], { pais: 'SE' }));
+    f = ultima();
+    const mailSe = correos[correos.length - 2], mailSeT = correos[correos.length - 1];
+    check('País sin tarifa (Suecia): envío vacío, "A consultar" y total sin envío = 160 €', r.ok && r.total === 160 && f[col('ENVIO')] === '' && f[col('SERVICIO_ENVIO')] === 'A consultar' && f[col('TOTAL')] === 160, JSON.stringify([f[col('ENVIO')], f[col('SERVICIO_ENVIO')], f[col('TOTAL')]]));
+    check('Correos con "A consultar": cliente con "Total sin envío", tienda con aviso', mailSe.body.includes('Nos pondremos en contacto contigo para darte la mejor solución de envío') && mailSe.body.includes('Total sin envío') && mailSeT.body.includes('Envío: A CONSULTAR'), mailSe.body.split('\n').filter(l => /Env|Total/.test(l)).join(' / '));
     const shipJ = JSON.parse(ficheros['data/shipping.json']);
-    check('shipping.json: más de 200 países, todos con precio y prefijo; sin Rusia', shipJ.paises.length > 200 && shipJ.paises.every(p => p.precio_1 > 0 && p.precio_4kg >= p.precio_1 && p.precio_5kg >= p.precio_4kg && /^\+\d{1,4}$/.test(p.prefijo) && p.nombre_es) && !shipJ.paises.some(p => p.code === 'RU'), shipJ.paises.length);
+    const conTarifa = shipJ.paises.filter(p => !p.envio_a_consultar);
+    check('shipping.json: más de 200 países con prefijo; 22 con tarifa (InPost y Correos de la lista); sin Rusia',
+      shipJ.paises.length > 200 && shipJ.paises.every(p => /^\+\d{1,4}$/.test(p.prefijo) && p.nombre_es) && conTarifa.length === 22 &&
+      conTarifa.every(p => p.precio_1 > 0 && p.precio_4kg >= p.precio_1 && p.precio_5kg >= p.precio_4kg && p.servicio) &&
+      shipJ.paises.filter(p => p.envio_a_consultar).every(p => p.precio_1 === null) && !shipJ.paises.some(p => p.code === 'RU'), conTarifa.map(p => p.code).join(','));
 
     // Extras
     r = post(pedido([item('founders-bolt', {}, false, '', { bala: 5, cargador: 1, stand: 1 })]));

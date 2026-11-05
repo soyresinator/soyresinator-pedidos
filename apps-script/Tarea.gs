@@ -225,7 +225,9 @@ function actualizarEstados(res, cat, cfgWeb, placas, cola, ahora) {
         Math.ceil((otros + horas * (pl.factor_horas || 1.08)) / (cfg.horas_dia || 16)) + cfg.dias_preparacion);
       e[7] = Utilities.formatDate(new Date(ahora.getTime() + dias * 86400000), AJUSTES.ZONA_HORARIA, 'yyyy-MM-dd');
     }
-    e[8] = MAPA_SERVICIO_WEB[str(r.SERVICIO_ENVIO)] || (reg ? reg.servicio : '');
+    // "A consultar" no es un transportista: no se lo enseñamos al cliente hasta que elijáis uno en la app.
+    const servicio = MAPA_SERVICIO_WEB[str(r.SERVICIO_ENVIO)] || (reg ? reg.servicio : '');
+    e[8] = /consultar/i.test(servicio) ? '' : servicio;
     e[9] = str(r.TRACKING);
     if (JSON.stringify(e.slice(2, 10)) !== antes) { e[10] = ahora.toISOString(); cambios++; }
     if (reg && str(r.ID_APP) && str(r.ID_APP) !== reg.appActual) web.getRange(reg.fila, 24).setNumberFormat('@').setValue(str(r.ID_APP));

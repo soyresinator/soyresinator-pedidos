@@ -354,9 +354,9 @@ function resumenHtml(cart) {
     rows.push(row(C.t('res.montaje'), C.money(tot.montaje),
       C.t('res.montaje_detalle', { n: tot.montajeUds, precio: C.money(S.cat.montaje_pvp) })));
   }
-  rows.push(pais
-    ? row(C.t('res.envio_aprox'), C.money(tot.envio), textoCajas(tot, pais) + ' · ' + C.t('res.envio_nota'))
-    : row(C.t('res.envio'), '…', C.t('res.envio_pendiente')));
+  if (!pais) rows.push(row(C.t('res.envio'), '…', C.t('res.envio_pendiente')));
+  else if (tot.consultar) rows.push(row(C.t('res.envio'), C.t('res.envio_consultar_val'), C.t('res.envio_consultar')));
+  else rows.push(row(C.t('res.envio_aprox'), C.money(tot.envio), textoCajas(tot, pais) + ' · ' + C.t('res.envio_nota')));
 
   const modo = cart.modo === 'dos_partes' ? 'dos_partes' : 'completo';
   const tax = pais ? (pais.ue ? C.t('precio.ue') : C.t('precio.fuera_ue')) : '';
@@ -370,7 +370,7 @@ function resumenHtml(cart) {
     <div class="sum">
       ${rows.join('')}
       <div class="sum-total">
-        <span>${C.esc(C.t('res.total'))}</span>
+        <span>${C.esc(C.t(tot.consultar ? 'res.total_sin_envio' : 'res.total'))}</span>
         <span class="price">${C.esc(C.money(tot.total))}</span>
       </div>
       ${tax ? `<p class="tax">${C.esc(tax)}${pais && !pais.ue ? ' · ' + C.esc(C.t('precio.aduanas')) : ''}</p>` : ''}
@@ -398,8 +398,9 @@ function resumenTexto() {
   });
   lines.push('');
   if (tot.montajeUds) lines.push(`${C.t('res.montaje')}: ${C.money(tot.montaje)}`);
-  if (pais) lines.push(`${C.t('res.envio_aprox')}: ${C.money(tot.envio)} (${textoCajas(tot, pais)})`);
-  lines.push(`${C.t('res.total')}: ${C.money(tot.total)}`);
+  if (pais && tot.consultar) lines.push(`${C.t('res.envio')}: ${C.t('res.envio_consultar')}`);
+  else if (pais) lines.push(`${C.t('res.envio_aprox')}: ${C.money(tot.envio)} (${textoCajas(tot, pais)})`);
+  lines.push(`${C.t(tot.consultar ? 'res.total_sin_envio' : 'res.total')}: ${C.money(tot.total)}`);
   lines.push(`${C.t('res.pago')}: ${C.t(cart.modo === 'dos_partes' ? 'pago.dos_partes' : 'pago.completo')}`);
   lines.push('');
   lines.push(`${C.t('datos.nombre')}: ${v('f-nombre')}`);
