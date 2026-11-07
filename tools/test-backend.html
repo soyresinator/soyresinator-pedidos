@@ -165,7 +165,7 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     let r = post(pedido([item('founders-bolt', { rojo: 'azul-marino' }, true), item('las-pistol', {}, true)], { total_cliente: 1 }));
     let f = ultima();
     check('Founders Bolt azul marino + Las Pistol + montaje a España = 378 € (caja de 4 kg 18 €; total_cliente manipulado a 1)', r.ok && r.total === 378 && f[col('TOTAL')] === 378 && f[col('SUBTOTAL')] === 260 && f[col('MONTAJE')] === 100 && f[col('ENVIO')] === 18 && f[col('CAJAS')] === 1, JSON.stringify(r));
-    check('Encabezados de ESTADO_WEB: 12 columnas, L = ID_PEDIDO', ss.getSheetByName('ESTADO_WEB').data[0].length === 12 && ss.getSheetByName('ESTADO_WEB').data[0][11] === 'ID_PEDIDO');
+    check('Encabezados de ESTADO_WEB: 13 columnas, L = ID_PEDIDO, M = AVISO_ENVIO', ss.getSheetByName('ESTADO_WEB').data[0].length === 13 && ss.getSheetByName('ESTADO_WEB').data[0][11] === 'ID_PEDIDO' && ss.getSheetByName('ESTADO_WEB').data[0][12] === 'AVISO_ENVIO');
     check('ID con formato SR-XXXXXX', /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/.test(r.id), r.id);
     check('RESUMEN_ES correcto', f[col('RESUMEN_ES')] === '1. Founders Bolt · Detalles rojos: Azul marino · Montaje: sí | 2. Las Pistol · Cuerpo verde: Verde oscuro (de serie) · Montaje: sí', f[col('RESUMEN_ES')]);
     const items = JSON.parse(f[col('ITEMS_JSON')]);
@@ -213,7 +213,7 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     check('Correos con "A consultar": cliente con "Total sin envío", tienda con aviso', mailSe.body.includes('Nos pondremos en contacto contigo para darte la mejor solución de envío') && mailSe.body.includes('Total sin envío') && mailSeT.body.includes('Envío: A CONSULTAR'), mailSe.body.split('\n').filter(l => /Env|Total/.test(l)).join(' / '));
     const shipJ = JSON.parse(ficheros['data/shipping.json']);
     const conTarifa = shipJ.paises.filter(p => !p.envio_a_consultar);
-    check('shipping.json: más de 200 países con prefijo; 22 con tarifa, todas Correos (sin InPost); sin Rusia',
+    check('shipping.json: más de 200 países con prefijo; 22 con tarifa, todas por Correos; sin Rusia',
       shipJ.paises.length > 200 && shipJ.paises.every(p => /^\+\d{1,4}$/.test(p.prefijo) && p.nombre_es) && conTarifa.length === 22 &&
       conTarifa.every(p => p.precio_1 > 0 && p.precio_4kg >= p.precio_1 && p.precio_5kg >= p.precio_4kg && /^Correos /.test(p.servicio)) &&
       shipJ.paises.filter(p => p.envio_a_consultar).every(p => p.precio_1 === null) && !shipJ.paises.some(p => p.code === 'RU'), conTarifa.map(p => p.code).join(','));

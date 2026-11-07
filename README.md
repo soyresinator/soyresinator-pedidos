@@ -93,6 +93,7 @@ Los textos están en `legal/<idioma>.json`; si cambiáis uno, cambiad los seis (
 | Subir cambios de textos o del catálogo (SEO) | Ejecuta `python -I tools/prerender.py` antes de subir. Escribe en los HTML el contenido en inglés (título, descripción, textos, tarjetas del catálogo y datos JSON-LD) y regenera `sitemap.xml`, para que Google lo vea sin JavaScript. Las descripciones de cada réplica son las claves `desc.<id>` de `i18n/*.json`. |
 | Cambiar tarifas de envío | Edita `data/shipping.json` y, tras subirlo, ejecuta `limpiarCache` en el Apps Script para no esperar los 10 minutos de caché. |
 | Dar código SR a pedidos del formulario | En el editor del script, ejecuta `asignarSRFormulario` (no duplica). La lista para avisar a los clientes queda en la pestaña **AVISOS_SR**. |
+| Correo "tu pedido ha salido" | Lo manda la tarea horaria cuando un pedido pasa a **Enviado** con TRACKING en RES · Pedidos, una sola vez (fecha en la columna M **AVISO_ENVIO** de ESTADO_WEB; bórrala para reenviarlo). En `Tarea.gs`, `TAREA.AVISO_ENVIO`: `'no'`, `'prueba'` (solo los SR de `AVISO_PRUEBA`) o `'todos'`. Antes de pasar a `'todos'`, ejecuta `marcarAvisosPrevios` una vez. |
 
 ### Reglas de los colores
 

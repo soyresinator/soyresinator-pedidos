@@ -8,6 +8,8 @@
  *   3. ESTADO_WEB   <- RES · Pedidos y COMPROMETIDO: estado, pago, placas, servicio, tracking e ID_APP (columna X).
  *                      También los pedidos del formulario antiguo a los que asignarSRFormulario() dio un SR-
  *                      (su RES-… va en la columna L de ESTADO_WEB).
+ *                      Si el pedido pasa a Enviado con TRACKING, manda UNA vez el correo "tu pedido ha salido"
+ *                      y apunta la fecha en la columna M (AVISO_ENVIO). Se controla con TAREA.AVISO_ENVIO.
  *   4. CONFIG       <- horas de impresión que quedan en cola (A2) y fecha (D2). PEDIDOS_ABIERTOS (E2) no se toca.
  *
  * Instalación: ejecuta instalarTarea() una vez. Para probar sin esperar: ejecuta tareaHoraria().
@@ -21,7 +23,12 @@ const TAREA = {
   REPLICA: { 'krieg': 'RIFLE-KRIEG', 'cadia': 'RIFLE-CADIA' },
   // Horas de impresión de lo que no está en la web (para la cola). Lo que no aparezca: HORAS_OTROS.
   HORAS_EXTRA: { 'STAND': 8, 'TOKEN-BOX': 10, 'SHELF-CASE': 12 },
-  HORAS_OTROS: 10
+  HORAS_OTROS: 10,
+  // Correo "tu pedido ha salido" (ESTADO = Enviado y con TRACKING en RES · Pedidos):
+  //   'no' = apagado · 'prueba' = solo a los SR de AVISO_PRUEBA · 'todos' = a todos los clientes.
+  // Antes de poner 'todos', ejecuta marcarAvisosPrevios() una vez para no escribir a quien ya recibió su pedido.
+  AVISO_ENVIO: 'prueba',
+  AVISO_PRUEBA: [] // p. ej. ['SR-ABC123']
 };
 
 const MAPA_ESTADO = {
@@ -29,7 +36,8 @@ const MAPA_ESTADO = {
   'listo': 'listo', 'empaquetado': 'listo', 'enviado': 'enviado', 'entregado': 'entregado', 'cancelado': 'cancelado'
 };
 const MAPA_PAGO = { 'pendiente': 'pendiente', '1ª parte': 'parcial', '1a parte': 'parcial', 'pagado': 'pagado', 'regalo': 'pagado' };
-const MAPA_SERVICIO_WEB = { 'InPost': 'InPost', 'Standard': 'Correos Standard', 'Premium': 'Correos Premium' };
+// Solo enviamos con Correos (InPost se dejó de usar el 07/11/2026).
+const MAPA_SERVICIO_WEB = { 'Standard': 'Correos Standard', 'Premium': 'Correos Premium' };
 
 function instalarTarea() {
   quitarTarea();
@@ -187,14 +195,17 @@ function actualizarEstados(res, cat, cfgWeb, placas, cola, ahora) {
   if (nE < 1) return 'Estados: 0';
   const registro = {};
   if (nW > 0) web.getRange(2, 1, nW, 24).getValues().forEach(function (w, i) {
-    if (str(w[22])) registro[str(w[0])] = { res: str(w[22]), fila: i + 2, servicio: str(w[19]), appActual: str(w[23]) };
+    if (str(w[22])) registro[str(w[0])] = { res: str(w[22]), fila: i + 2, servicio: str(w[19]), appActual: str(w[23]),
+      idioma: str(w[2]), nombre: str(w[3]), email: str(w[4]), items: w[11] };
   });
+  if (est.getRange(1, 13).getValue() !== 'AVISO_ENVIO') est.getRange(1, 13).setValue('AVISO_ENVIO').setFontWeight('bold');
+  const avisos = [];
   const resPorId = {};
   tabla(res.getSheetByName('PEDIDOS')).filas.forEach(function (r) { resPorId[str(r.ID_PEDIDO)] = r; });
   const cfg = leerConfig();
   const pl = cfgWeb.plazo || {};
 
-  const rango = est.getRange(2, 1, nE, 12);
+  const rango = est.getRange(2, 1, nE, 13);
   const v = rango.getValues();
   let cambios = 0;
   v.forEach(function (e) {
@@ -231,10 +242,157 @@ function actualizarEstados(res, cat, cfgWeb, placas, cola, ahora) {
     e[9] = str(r.TRACKING);
     if (JSON.stringify(e.slice(2, 10)) !== antes) { e[10] = ahora.toISOString(); cambios++; }
     if (reg && str(r.ID_APP) && str(r.ID_APP) !== reg.appActual) web.getRange(reg.fila, 24).setNumberFormat('@').setValue(str(r.ID_APP));
+    // Aviso de envío: una sola vez por pedido (AVISO_ENVIO vacía). Si cambia el tracking, no se reenvía.
+    if (str(r.ESTADO).toLowerCase() === 'enviado' && e[9] && !str(e[12]) && avisoPermitido(str(e[0]))) {
+      avisos.push({ e: e, r: r, reg: reg });
+    }
+  });
+
+  let enviados = 0, fallos = 0;
+  if (avisos.length) {
+    const clientes = {};
+    tabla(res.getSheetByName('CLIENTES')).filas.forEach(function (c) { clientes[str(c.ID_CLIENTE)] = c; });
+    avisos.forEach(function (a) {
+      try {
+        if (correoEnvio(a, clientes)) { a.e[12] = ahora.toISOString(); enviados++; } else fallos++;
+      } catch (err) {
+        fallos++;
+        console.error('Aviso de envío ' + str(a.e[0]) + ': no se pudo enviar'); // sin direcciones en el log
+      }
+    });
+  }
+  rango.setNumberFormats(v.map(function () { return FORMATO_ESTADO; }));
+  rango.setValues(v);
+  return 'Estados: ' + cambios + ' cambios' +
+    (enviados || fallos ? ' · Avisos de envío: ' + enviados + (fallos ? ' (' + fallos + ' sin enviar)' : '') : '');
+}
+
+/* ---------- Aviso de envío al cliente ---------- */
+function avisoPermitido(sr) {
+  if (TAREA.AVISO_ENVIO === 'todos') return true;
+  if (TAREA.AVISO_ENVIO === 'prueba') return TAREA.AVISO_PRUEBA.indexOf(sr) >= 0;
+  return false;
+}
+
+/** Enlace al localizador oficial de Correos con el número ya puesto. */
+function urlSeguimiento(servicio, tracking) {
+  if (/correos/i.test(servicio)) {
+    return 'https://www.correos.es/es/es/herramientas/localizador/envios/detalle?tracking-number=' + encodeURIComponent(tracking);
+  }
+  return '';
+}
+
+/** Productos del pedido web desde ITEMS_JSON: "2 × Trench Las Rifle". */
+function productosWeb(itemsJson) {
+  let items = [];
+  try { items = JSON.parse(itemsJson || '[]'); } catch (err) { return ''; }
+  const cuenta = {}, orden = [];
+  items.forEach(function (u) {
+    const n = str(u.nombre);
+    if (!n) return;
+    if (!cuenta[n]) { cuenta[n] = 0; orden.push(n); }
+    cuenta[n]++;
+  });
+  return orden.map(function (n) { return (cuenta[n] > 1 ? cuenta[n] + ' × ' : '') + n; }).join(', ');
+}
+
+/** Devuelve true si se ha enviado; false si falta el email. */
+function correoEnvio(a, clientes) {
+  const r = a.r, reg = a.reg, id = str(a.e[0]);
+  let email, nombre, L, productos;
+  if (reg) {
+    email = reg.email; nombre = reg.nombre;
+    L = IDIOMAS.indexOf(reg.idioma) >= 0 ? reg.idioma : 'en';
+    productos = productosWeb(reg.items) || str(r.PRODUCTOS);
+  } else {
+    // Formulario antiguo: email de CLIENTES (o el que guarda CLAVE_FORM) y en inglés.
+    const c = clientes[str(r.ID_CLIENTE)] || {};
+    email = str(c.EMAIL) || str(String(r.CLAVE_FORM || '').split('|')[1]);
+    nombre = str(c.NOMBRE) || str(r.CLIENTE);
+    L = 'en';
+    productos = str(r.PRODUCTOS);
+  }
+  email = email.toLowerCase();
+  if (!RE_EMAIL.test(email)) return false;
+
+  const d = ficheroPages('i18n/' + L + '.json');
+  const t = function (k, v) { return tr(d, k, v); };
+  const servicio = MAPA_SERVICIO_WEB[str(r.SERVICIO_ENVIO)] || str(r.SERVICIO_ENVIO);
+  const tracking = str(r.TRACKING);
+  const urlT = urlSeguimiento(servicio, tracking);
+  const urlP = AJUSTES.PAGES_BASE + 'pedido.html?id=' + encodeURIComponent(id);
+  const saludo = nombre ? t('mail.saludo', { nombre: nombre.split(' ')[0] }) : t('mail.env_saludo');
+  const datos = [[t('conf.id_label'), id]];
+  if (productos) datos.push([t('mail.env_productos'), productos]);
+  if (servicio) datos.push([t('mail.env_servicio'), servicio]);
+  datos.push([t('mail.env_tracking'), tracking]);
+
+  const texto = [saludo, '', t('mail.env_intro'), '']
+    .concat(datos.map(function (x) { return x[0] + ': ' + x[1]; }))
+    .concat(urlT ? ['', t('mail.env_boton_tracking', { servicio: servicio }) + ': ' + urlT, t('mail.env_nota')] : [])
+    .concat(['', t('mail.env_pedido') + ': ' + urlP, '', t('mail.dudas'), '', t('mail.firma')]).join('\n');
+
+  const boton = function (url, txt, color) {
+    return '<p style="text-align:center;margin:20px 0"><a href="' + esc(url) + '" style="background:' + color +
+      ';color:#ffffff;padding:14px 24px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block">' + esc(txt) + '</a></p>';
+  };
+  const html =
+    '<div style="background:#f4f0e8;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#1a150c">' +
+    '<div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:8px;overflow:hidden">' +
+    '<div style="background:#0B0800;padding:18px 24px;color:#A77F41;font-size:20px;font-weight:bold;letter-spacing:2px">SOY RESINATOR</div>' +
+    '<div style="padding:24px">' +
+    '<p>' + esc(saludo) + '</p><p>' + esc(t('mail.env_intro')) + '</p>' +
+    '<table style="width:100%;border-collapse:collapse;font-size:15px;margin:16px 0">' +
+    datos.map(function (x) {
+      return '<tr><th scope="row" style="text-align:left;padding:8px 12px 8px 0;border-bottom:1px solid #e4dccd;color:#6b655c;font-weight:normal;white-space:nowrap;vertical-align:top">' +
+        esc(x[0]) + '</th><td style="padding:8px 0;border-bottom:1px solid #e4dccd;font-weight:bold">' + esc(x[1]) + '</td></tr>';
+    }).join('') + '</table>' +
+    (urlT ? boton(urlT, t('mail.env_boton_tracking', { servicio: servicio }), '#7A5A26') +
+      '<p style="color:#6b655c;font-size:13px">' + esc(t('mail.env_nota')) + '</p>' : '') +
+    boton(urlP, t('mail.env_pedido'), '#3d3528') +
+    '<p>' + esc(t('mail.dudas')) + '</p><p>' + esc(t('mail.firma')) + '</p>' +
+    '</div></div></div>';
+
+  MailApp.sendEmail({
+    to: email,
+    replyTo: AJUSTES.EMAIL_TIENDA,
+    name: AJUSTES.NOMBRE_REMITENTE,
+    subject: t('mail.env_asunto', { id: id }),
+    body: texto,
+    htmlBody: html
+  });
+  return true;
+}
+
+/* ---------- Una sola vez, antes de poner AVISO_ENVIO: 'todos' ----------
+ * Marca como "previo" los pedidos que ya están Enviados o Entregados en RES · Pedidos,
+ * para que la tarea no les mande ahora un aviso atrasado. No envía nada. Se puede repetir.
+ */
+function marcarAvisosPrevios() {
+  const res = SpreadsheetApp.openById(TAREA.ID_PEDIDOS);
+  const est = hoja(H.ESTADO);
+  if (est.getRange(1, 13).getValue() !== 'AVISO_ENVIO') est.getRange(1, 13).setValue('AVISO_ENVIO').setFontWeight('bold');
+  const nE = est.getLastRow() - 1;
+  if (nE < 1) return 'Marcados: 0';
+  const web = hoja(H.PEDIDOS);
+  const nW = web.getLastRow() - 1;
+  const resDeWeb = {};
+  if (nW > 0) web.getRange(2, 1, nW, 23).getValues().forEach(function (w) { if (str(w[22])) resDeWeb[str(w[0])] = str(w[22]); });
+  const estadoRes = {};
+  tabla(res.getSheetByName('PEDIDOS')).filas.forEach(function (r) { estadoRes[str(r.ID_PEDIDO)] = str(r.ESTADO).toLowerCase(); });
+
+  const rango = est.getRange(2, 1, nE, 13);
+  const v = rango.getValues();
+  let marcados = 0;
+  v.forEach(function (e) {
+    if (str(e[12])) return;
+    const resId = resDeWeb[str(e[0])] || str(e[11]);
+    const estado = estadoRes[resId] || '';
+    if (estado === 'enviado' || estado === 'entregado') { e[12] = 'previo'; marcados++; }
   });
   rango.setNumberFormats(v.map(function () { return FORMATO_ESTADO; }));
   rango.setValues(v);
-  return 'Estados: ' + cambios + ' cambios';
+  return 'Marcados como previos: ' + marcados;
 }
 
 /* ---------- 4. CONFIG ---------- */
@@ -281,7 +439,7 @@ function asignarSRFormulario() {
       const email = (str(cli.EMAIL) || str(String(r.CLAVE_FORM || '').split('|')[1])).toLowerCase();
       if (!RE_EMAIL.test(email)) { avisos.push([str(r.CLIENTE), '', '', idRes, 'SIN EMAIL: no se ha creado']); return; }
       const sr = nuevoId();
-      escribirFila(est, [sr, hashEmail(email), 'recibido', '', '', 'pendiente', 'formulario', '', '', '', ahora, idRes],
+      escribirFila(est, [sr, hashEmail(email), 'recibido', '', '', 'pendiente', 'formulario', '', '', '', ahora, idRes, ''],
         FORMATO_ESTADO);
       avisos.push([str(r.CLIENTE) || str(cli.NOMBRE), email, sr, idRes, str(r.PRODUCTOS)]);
       ya[idRes] = true;

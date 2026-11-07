@@ -83,7 +83,8 @@ const SpreadsheetApp = { getActiveSpreadsheet: () => web, openById: id => libros
 const cacheMem = {};
 const CacheService = { getScriptCache: () => ({ get: k => cacheMem[k] ?? null, put: (k, v) => { cacheMem[k] = v; }, remove: k => { delete cacheMem[k]; }, removeAll: ks => ks.forEach(k => delete cacheMem[k]) }) };
 const LockService = { getScriptLock: () => ({ waitLock() {}, tryLock: () => true, releaseLock() {} }) };
-const MailApp = { sendEmail() {} };
+const mails = [];
+const MailApp = { sendEmail(o) { mails.push(o); } };
 const ficheros = {};
 const PAGES = 'https://soyresinator.com/';
 const UrlFetchApp = { fetch: url => { const txt = ficheros[url.replace(PAGES, '')]; return { getResponseCode: () => (txt === undefined ? 404 : 200), getContentText: () => txt }; } };
@@ -103,12 +104,12 @@ const resultados = [];
 function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, detalle: detalle === undefined ? '' : String(detalle) }); }
 
 (async () => {
-  for (const r of ['data/catalog.json', 'data/shipping.json', 'data/config.json', 'data/colores-serie.json', 'i18n/en.json', 'i18n/es.json', 'i18n/de.json', 'i18n/fr.json', 'i18n/it.json'])
+  for (const r of ['data/catalog.json', 'data/shipping.json', 'data/config.json', 'data/colores-serie.json', 'i18n/en.json', 'i18n/es.json', 'i18n/de.json', 'i18n/fr.json', 'i18n/it.json', 'i18n/pt.json'])
     ficheros[r] = await (await fetch('../' + r, { cache: 'no-cache' })).text();
   const codigo = await (await fetch('../apps-script/Code.gs', { cache: 'no-cache' })).text();
   const tarea = await (await fetch('../apps-script/Tarea.gs', { cache: 'no-cache' })).text();
   const G = new Function('SpreadsheetApp', 'CacheService', 'LockService', 'MailApp', 'UrlFetchApp', 'Utilities', 'ContentService', 'ScriptApp',
-    codigo + '\n' + tarea + '\nreturn { instalar, doGet, doPost, instalarTarea, tareaHoraria, quitarTarea, asignarSRFormulario };')(
+    codigo + '\n' + tarea + '\nreturn { instalar, doGet, doPost, instalarTarea, tareaHoraria, quitarTarea, asignarSRFormulario, marcarAvisosPrevios, TAREA };')(
     SpreadsheetApp, CacheService, LockService, MailApp, UrlFetchApp, Utilities, ContentService, ScriptApp);
   const cat = JSON.parse(ficheros['data/catalog.json']);
   const post = b => JSON.parse(G.doPost({ postData: { contents: JSON.stringify(b) } }).content);
@@ -170,6 +171,30 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     e = H('ESTADO_WEB').data.find(r => r[0] === a.id);
     check('Enviado con tracking; la fecha estimada no cambia', e[2] === 'enviado' && e[5] === 'pagado' && e[9] === 'UA123456789ES' && e[7] === fechaFijada, e.slice(2, 10).join(' | '));
 
+    // Aviso de envío por email
+    const mailsDe = to => mails.filter(m => m.to === to && /on its way|en camino|unterwegs/.test(m.subject));
+    check('ESTADO_WEB tiene la columna M = AVISO_ENVIO', H('ESTADO_WEB').data[0][12] === 'AVISO_ENVIO', H('ESTADO_WEB').data[0][12]);
+    check('Modo prueba sin SR en la lista: no manda aviso', G.TAREA.AVISO_ENVIO === 'prueba' && mailsDe('nuevo@example.com').length === 0 && !e[12], e[12]);
+    G.TAREA.AVISO_PRUEBA = [a.id];
+    log = G.tareaHoraria();
+    e = H('ESTADO_WEB').data.find(r => r[0] === a.id);
+    let m = mailsDe('nuevo@example.com');
+    check('Modo prueba con su SR: 1 aviso, AVISO_ENVIO con fecha ISO y el log sin direcciones', m.length === 1 && /^\d{4}-\d{2}-\d{2}T/.test(e[12]) && /Avisos de envío: 1/.test(log) && !log.includes('@'), log + ' · ' + e[12]);
+    check('Aviso en el idioma del pedido (en) con SR, productos, transportista y tracking',
+      m[0] && m[0].subject === 'Your order ' + a.id + ' is on its way' && m[0].name === 'Soy Resinator' && m[0].replyTo === 'soyresinator@gmail.com' &&
+      m[0].body.includes(a.id) && m[0].body.includes('Founders Bolt, Las Pistol') && m[0].body.includes('Correos Premium') && m[0].body.includes('UA123456789ES'), m[0] && m[0].body);
+    check('Enlaces: seguimiento oficial de Correos con el número y la página de Mi pedido',
+      m[0].body.includes('https://www.correos.es/es/es/herramientas/localizador/envios/detalle?tracking-number=UA123456789ES') &&
+      m[0].htmlBody.includes('pedido.html?id=' + a.id) && m[0].body.includes('https://soyresinator.com/pedido.html?id=' + a.id), m[0].body);
+    G.tareaHoraria();
+    pa[c('TRACKING')] = 'UA999999999ES';
+    G.tareaHoraria();
+    check('No se repite, ni aunque cambie el tracking', mailsDe('nuevo@example.com').length === 1, mailsDe('nuevo@example.com').length);
+    e[12] = '';
+    G.tareaHoraria();
+    m = mailsDe('nuevo@example.com');
+    check('Si se borra AVISO_ENVIO, se reenvía una vez con el tracking nuevo', m.length === 2 && m[1].body.includes('UA999999999ES'), m.length);
+
     // Placas y cola
     const f029 = filaRes('RES-2026-029');
     f029[c('ID_FORM')] = 'SR-PLACAS';
@@ -201,6 +226,20 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     check('ESTADO_WEB del migrado: SR nuevo, RES en L, estado y pago de la app, fecha = ENVIO_IDEAL', /^SR-[A-Z2-9]{6}$/.test(sr) && e[11] === 'RES-2026-030' && e[2] === 'en_produccion' && e[5] === 'parcial' && e[7] === '2026-11-28', e.join(' | '));
     const est = JSON.parse(G.doPost({ postData: { contents: JSON.stringify({ accion: 'estado', id: sr, email: 'repite@example.com' }) } }).content);
     check('El cliente migrado puede consultar su pedido en la web', est.ok && est.estado === 'en_produccion' && est.fecha_envio_estimada === '2026-11-28', JSON.stringify(est));
+    // Aviso de envío a pedidos del formulario antiguo; los ya enviados se marcan antes como "previo"
+    const f033 = filaRes('RES-2026-033');
+    f033[c('ESTADO')] = 'Enviado'; f033[c('TRACKING')] = 'PQ000000033ES'; f033[c('SERVICIO_ENVIO')] = 'Standard';
+    log = G.marcarAvisosPrevios();
+    const sr033 = av.find(r => r[3] === 'RES-2026-033')[2];
+    check('marcarAvisosPrevios marca los ya enviados y no manda nada', /Marcados como previos: [1-9]/.test(log) && H('ESTADO_WEB').data.find(r => r[0] === sr033)[12] === 'previo' && mailsDe('sinficha@example.com').length === 0, log);
+    G.TAREA.AVISO_ENVIO = 'todos'; G.TAREA.AVISO_PRUEBA = [];
+    const f030 = filaRes('RES-2026-030');
+    f030[c('ESTADO')] = 'Enviado'; f030[c('TRACKING')] = 'PQ000000030ES'; f030[c('SERVICIO_ENVIO')] = 'Standard';
+    G.tareaHoraria();
+    m = mailsDe('repite@example.com');
+    check('Formulario antiguo: email de CLIENTES, en inglés, Correos Standard; el "previo" no recibe nada',
+      m.length === 1 && m[0].subject === 'Your order ' + sr + ' is on its way' && m[0].body.includes('Correos Standard') && m[0].body.includes('PQ000000030ES') && mailsDe('sinficha@example.com').length === 0,
+      m.map(x => x.subject).join(' / '));
     G.asignarSRFormulario();
     check('Repetir asignarSRFormulario no duplica', H('ESTADO_WEB').getLastRow() === nEst + 2 && H('AVISOS_SR').data.length === 3, H('ESTADO_WEB').getLastRow() - nEst);
     check('No toca RES · Pedidos ni PEDIDOS_WEB', !shPed.data.some(r => String(r[c('ID_FORM')]).startsWith('SR-') && !['RES-2026-031', 'RES-2026-029'].includes(r[0])) && H('PEDIDOS_WEB').getLastRow() === 4);

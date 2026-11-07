@@ -41,8 +41,9 @@ const ENCABEZADOS = {
     'INSTAGRAM', 'ITEMS_JSON', 'RESUMEN_ES', 'NOTAS_ORIGINAL', 'SUBTOTAL', 'MONTAJE', 'ENVIO', 'TOTAL',
     'MODO_PAGO', 'SERVICIO_ENVIO', 'CAJAS', 'CONSENTIMIENTO', 'REGISTRADO', 'ID_APP'],
   // ID_PEDIDO (L) = RES-AAAA-NNN. Lo rellena la tarea; en los pedidos del formulario antiguo lo pone asignarSRFormulario().
+  // AVISO_ENVIO (M) = fecha ISO del correo "tu pedido ha salido" (o "previo"). Bórrala para que se reenvíe.
   ESTADO_WEB: ['ID_WEB', 'EMAIL_HASH', 'ESTADO', 'PLACAS_HECHAS', 'PLACAS_TOTAL', 'PAGO', 'FECHA_PAGO',
-    'FECHA_ENVIO_ESTIMADA', 'SERVICIO', 'TRACKING', 'ACTUALIZADO', 'ID_PEDIDO'],
+    'FECHA_ENVIO_ESTIMADA', 'SERVICIO', 'TRACKING', 'ACTUALIZADO', 'ID_PEDIDO', 'AVISO_ENVIO'],
   CONFIG: ['HORAS_COLA', 'HORAS_DIA', 'DIAS_PREPARACION', 'ACTUALIZADO', 'PEDIDOS_ABIERTOS'],
   COLORES: ['COLOR_ID', 'NOMBRE_ES', 'NOMBRE_EN', 'NOMBRE_DE', 'NOMBRE_FR', 'NOMBRE_IT', 'HEX',
     'IDS_FILAMENTO', 'DISPONIBLE_G', 'ELEGIBLE', 'ACTUALIZADO']
@@ -51,7 +52,7 @@ const ENCABEZADOS = {
 // Formato de cada columna al escribir una fila: '@' = texto (evita fórmulas y que se pierdan ceros), '0.00' = número.
 const FORMATO_PEDIDOS = ['@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@',
   '0.00', '0.00', '0.00', '0.00', '@', '@', '0', '@', '@', '@'];
-const FORMATO_ESTADO = ['@', '@', '@', '0', '0', '@', '@', '@', '@', '@', '@', '@'];
+const FORMATO_ESTADO = ['@', '@', '@', '0', '0', '@', '@', '@', '@', '@', '@', '@', '@'];
 
 // Filas iniciales de COLORES (foto del 04/11/2026). Luego las mantiene la tarea programada.
 const COLORES_INICIALES = [
@@ -333,7 +334,7 @@ function crearPedido(b) {
     ];
     escribirFila(hoja(H.PEDIDOS), fila, FORMATO_PEDIDOS);
     escribirFila(hoja(H.ESTADO),
-      [id, hashEmail(cliente.email), 'recibido', '', '', 'pendiente', '', '', '', '', fechaIso, ''], FORMATO_ESTADO);
+      [id, hashEmail(cliente.email), 'recibido', '', '', 'pendiente', '', '', '', '', fechaIso, '', ''], FORMATO_ESTADO);
     SpreadsheetApp.flush();
   } finally {
     lock.releaseLock();
