@@ -1,6 +1,7 @@
 // Soy Resinator · catálogo (index.html). Arranca también la vista de pedido.
-import * as C from './core.js?v=20261105';
-import * as P from './carrito.js?v=20261105';
+import * as C from './core.js?v=20261107';
+import * as P from './carrito.js?v=20261107';
+import { plazoDias } from './calc.js?v=20261107';
 
 const state = {
   cfg: null, cat: null, ship: null, serie: [],
@@ -135,6 +136,12 @@ function card(p, tax) {
   } else {
     colors = `<p class="colors-line">${C.esc(C.t('cat.colores_serie'))}</p>`;
   }
+  // Fecha estimada si paga hoy: cola real de la app + horas de esta réplica (misma regla que el carrito).
+  // Sin datos de la cola o con la forja cerrada, no se muestra.
+  const dias = state.abiertos ? plazoDias(p.horas, state.remote, state.cfg) : null;
+  const plazo = dias === null ? '' : `<p class="eta-line">${C.esc(C.t('cat.plazo', {
+    fecha: new Date(Date.now() + dias * 86400000).toLocaleDateString(C.locale(), { day: 'numeric', month: 'long' })
+  }))}</p>`;
   const extras = (p.extras || []).length
     ? `<p class="extras-line">${C.esc(C.t('cat.extras', { precio: C.money(Math.min(...p.extras.map(e => e.pvp))) }))}</p>` : '';
   const action = state.abiertos
@@ -142,7 +149,7 @@ function card(p, tax) {
     : `<p class="closed-inline">${C.esc(C.t('cerrado.texto'))}</p>`;
 
   return `
-    <article class="card">
+    <article class="card" id="p-${p.id}">
       <div class="media">
         ${p.especial ? `<span class="badge">${C.esc(C.t('cat.especial'))}</span>` : ''}
         <span class="ph-name" aria-hidden="true">${C.esc(p.nombre)}</span>
@@ -150,6 +157,7 @@ function card(p, tax) {
       </div>
       <div class="card-body">
         <h4>${C.esc(p.nombre)}</h4>
+        ${C.hasKey('desc.' + p.id) ? `<p class="card-desc">${C.esc(C.t('desc.' + p.id))}</p>` : ''}
         <div class="price-row">
           <span class="price">${C.esc(C.money(p.pvp))}</span>
           ${tax ? `<span class="tax">${C.esc(tax)}</span>` : ''}
@@ -158,6 +166,7 @@ function card(p, tax) {
           <p class="sr-only">${C.esc(C.t('cat.incluye'))}</p>
           <ul class="includes">${includes}</ul>
         </div>
+        ${plazo}
         ${colors}
         ${extras}
         <div class="card-actions">${action}</div>

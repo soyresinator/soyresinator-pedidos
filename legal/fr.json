@@ -38,7 +38,7 @@
         "h": "Qui d'autre y a accès",
         "p": [
           "Pour fonctionner, nous utilisons ces services, qui traitent les données selon nos instructions :",
-          "Pour exécuter la commande, nous partageons aussi le strict nécessaire avec le transporteur (InPost ou Correos : nom, adresse et téléphone) et, si tu paies avec PayPal, avec PayPal.",
+          "Pour exécuter la commande, nous partageons aussi le strict nécessaire avec le transporteur (Correos : nom, adresse et téléphone) et, si tu paies avec PayPal, avec PayPal.",
           "Si ton colis part vers un pays situé hors de l'Espace économique européen (par exemple les États-Unis, la Suisse ou le Royaume-Uni), le transporteur et ses partenaires sur place traitent tes données de livraison dans ce pays. Ce transfert est nécessaire à l'exécution du contrat que tu conclus avec nous (article 49, paragraphe 1, point b, du RGPD). La Suisse et le Royaume-Uni bénéficient en outre d'une décision d'adéquation de la Commission européenne."
         ],
         "ul": [
@@ -119,7 +119,7 @@
       {
         "h": "Livraison",
         "p": [
-          "On expédie avec InPost ou Correos selon le pays, en colis simple, moyen (4 kg) ou grand (5 kg) selon ta commande.",
+          "On expédie avec Correos, en colis simple, moyen (4 kg) ou grand (5 kg) selon ta commande.",
           "Quand le colis part, nous te donnons le numéro de suivi. Vérifie le carton à la réception."
         ]
       },

@@ -1,6 +1,6 @@
 // Soy Resinator · "Mi pedido" (pedido.html)
 // El ID puede venir en la URL (?id=SR-XXXXXX). El email nunca: se escribe y se envía por POST.
-import * as C from './core.js?v=20261105';
+import * as C from './core.js?v=20261107';
 
 const $ = id => document.getElementById(id);
 const RE_ID = /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/;
@@ -98,6 +98,13 @@ function fecha(s, conAnio = true) {
   return d.toLocaleDateString(C.locale(), conAnio ? { day: 'numeric', month: 'long', year: 'numeric' } : { day: 'numeric', month: 'long' });
 }
 
+/** true si la fecha (AAAA-MM-DD) es anterior a hoy. */
+function fechaPasada(s) {
+  const hoy = new Date();
+  const d = /^\d{4}-\d{2}-\d{2}$/.test(s) ? new Date(s + 'T23:59:59') : new Date(s);
+  return !isNaN(d) && d < hoy;
+}
+
 function pintar(r) {
   $('seg-error').hidden = true;
   const estado = C.hasKey('estado.' + r.estado) ? r.estado : 'recibido';
@@ -118,6 +125,10 @@ function pintar(r) {
   const pago = C.hasKey('pagoest.' + r.pago) ? r.pago : 'pendiente';
   fila('seg.pago', C.esc(C.t('pagoest.' + pago)));
 
+  // Impreso y preparado, pero falta el segundo pago: se lo decimos claro.
+  const aviso = !cancelado && estado === 'listo' && pago === 'parcial'
+    ? `<p class="notice">${C.esc(C.t('seg.listo_segundo_pago'))}</p>` : '';
+
   if (!cancelado) {
     if (Number(r.placas_total) > 0) {
       const hechas = Math.min(Number(r.placas_hechas) || 0, Number(r.placas_total));
@@ -126,13 +137,14 @@ function pintar(r) {
     }
     let f;
     if (pago === 'pendiente') f = C.t('seg.fecha_pendiente');
-    else if (r.fecha_envio_estimada) f = fecha(r.fecha_envio_estimada);
-    else f = C.t('seg.fecha_sin');
+    else if (r.fecha_envio_estimada && !(fechaPasada(r.fecha_envio_estimada) && !['enviado', 'entregado'].includes(estado))) {
+      f = fecha(r.fecha_envio_estimada);
+    } else f = C.t('seg.fecha_sin'); // sin fecha, o ya pasada y aún sin salir
     fila('seg.fecha', C.esc(f));
     if (r.servicio) fila('seg.servicio', C.esc(r.servicio));
     if (r.tracking) fila('seg.tracking', `<span class="mono">${C.esc(r.tracking)}</span>`);
   }
-  $('r-datos').innerHTML = filas.join('') +
+  $('r-datos').innerHTML = aviso + filas.join('') +
     (r.actualizado ? `<p class="help">${C.esc(C.t('seg.actualizado', { fecha: fecha(r.actualizado) }))}</p>` : '');
   $('seg-resultado').hidden = false;
 }

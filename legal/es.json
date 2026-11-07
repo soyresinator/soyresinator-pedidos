@@ -38,7 +38,7 @@
         "h": "Quién más los ve",
         "p": [
           "Para funcionar usamos estos servicios, que tratan los datos siguiendo nuestras instrucciones:",
-          "Además, para cumplir el pedido compartimos lo imprescindible con la empresa de transporte (InPost o Correos: nombre, dirección y teléfono) y, si pagas con PayPal, con PayPal.",
+          "Además, para cumplir el pedido compartimos lo imprescindible con la empresa de transporte (Correos: nombre, dirección y teléfono) y, si pagas con PayPal, con PayPal.",
           "Si el envío va a un país fuera del Espacio Económico Europeo (por ejemplo, Estados Unidos, Suiza o Reino Unido), la empresa de transporte y sus socios en destino tratan tus datos de entrega en ese país. Esa transferencia es necesaria para cumplir el contrato que celebras con nosotros (artículo 49.1.b del RGPD). Suiza y Reino Unido cuentan además con una decisión de adecuación de la Comisión Europea."
         ],
         "ul": [
@@ -119,7 +119,7 @@
       {
         "h": "Envío",
         "p": [
-          "Enviamos con InPost o Correos según el país, en cajas individuales, medianas (4 kg) o grandes (5 kg) según lo que pidas.",
+          "Enviamos con Correos, en cajas individuales, medianas (4 kg) o grandes (5 kg) según lo que pidas.",
           "Cuando sale el paquete te damos el número de seguimiento. Revisa la caja al recibirla."
         ]
       },

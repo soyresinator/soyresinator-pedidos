@@ -38,7 +38,7 @@
         "h": "Who else sees it",
         "p": [
           "To run the shop we use these services, which process data on our instructions:",
-          "To fulfil your order we also share what is strictly needed with the carrier (InPost or Correos: name, address and phone) and, if you pay with PayPal, with PayPal.",
+          "To fulfil your order we also share what is strictly needed with the carrier (Correos: name, address and phone) and, if you pay with PayPal, with PayPal.",
           "If your parcel goes to a country outside the European Economic Area (for example, the United States, Switzerland or the United Kingdom), the carrier and its partners at destination process your delivery details in that country. This transfer is necessary to perform the contract you make with us (Article 49(1)(b) GDPR). Switzerland and the United Kingdom also have an adequacy decision from the European Commission."
         ],
         "ul": [
@@ -119,7 +119,7 @@
       {
         "h": "Shipping",
         "p": [
-          "We ship with InPost or Correos depending on the country, in single, medium (4 kg) or large (5 kg) boxes depending on what you order.",
+          "We ship with Correos, in single, medium (4 kg) or large (5 kg) boxes depending on what you order.",
           "When the parcel leaves we give you the tracking number. Check the box when you receive it."
         ]
       },

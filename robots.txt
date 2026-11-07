@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /tools/
+Disallow: /apps-script/
+
+Sitemap: https://soyresinator.com/sitemap.xml

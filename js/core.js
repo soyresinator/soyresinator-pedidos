@@ -78,9 +78,12 @@ export function applyI18n(root = document) {
     });
   });
   if (root === document) {
-    document.title = t('meta.title');
+    // <body data-meta="index">: título y descripción propios de la página; si no, los generales.
+    const m = document.body && document.body.dataset.meta;
+    const k = m && hasKey(`meta.${m}.titulo`) ? `meta.${m}.` : null;
+    document.title = t(k ? k + 'titulo' : 'meta.title');
     const md = document.querySelector('meta[name="description"]');
-    if (md) md.setAttribute('content', t('meta.description'));
+    if (md) md.setAttribute('content', t(k ? k + 'desc' : 'meta.description'));
   }
 }
 

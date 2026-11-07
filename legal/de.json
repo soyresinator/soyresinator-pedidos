@@ -38,7 +38,7 @@
         "h": "Wer sie außerdem sieht",
         "p": [
           "Für den Betrieb nutzen wir diese Dienste, die Daten nach unseren Weisungen verarbeiten:",
-          "Um die Bestellung auszuführen, geben wir außerdem das Nötigste an das Versandunternehmen weiter (InPost oder Correos: Name, Adresse und Telefon) und, wenn du mit PayPal zahlst, an PayPal.",
+          "Um die Bestellung auszuführen, geben wir außerdem das Nötigste an das Versandunternehmen weiter (Correos: Name, Adresse und Telefon) und, wenn du mit PayPal zahlst, an PayPal.",
           "Geht deine Sendung in ein Land außerhalb des Europäischen Wirtschaftsraums (zum Beispiel in die USA, die Schweiz oder das Vereinigte Königreich), verarbeiten das Transportunternehmen und seine Partner im Zielland deine Lieferdaten dort. Diese Übermittlung ist zur Erfüllung des Vertrags mit uns erforderlich (Art. 49 Abs. 1 lit. b DSGVO). Für die Schweiz und das Vereinigte Königreich gibt es zudem einen Angemessenheitsbeschluss der Europäischen Kommission."
         ],
         "ul": [
@@ -119,7 +119,7 @@
       {
         "h": "Versand",
         "p": [
-          "Wir versenden je nach Land mit InPost oder Correos, in Einzel-, mittleren (4 kg) oder großen (5 kg) Kartons, je nach Bestellung.",
+          "Wir versenden mit Correos, in Einzel-, mittleren (4 kg) oder großen (5 kg) Kartons, je nach Bestellung.",
           "Wenn das Paket unterwegs ist, bekommst du die Sendungsnummer. Prüfe den Karton bei der Annahme."
         ]
       },

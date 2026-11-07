@@ -163,9 +163,21 @@ img { max-width: 100%; display: block; }
 :root[data-theme="light"] .btn-ghost { color: var(--gold); }
 .btn-block { width: 100%; }
 
-.pillars { display: grid; gap: 12px; padding-top: 28px; padding-bottom: 8px; }
-.pillar { border-left: 2px solid var(--gold); padding: 4px 0 4px 14px; }
-.pillar h2 { font-size: 1.3rem; text-transform: uppercase; margin-bottom: 4px; }
+/* Así trabajamos */
+.how { padding-top: 40px; padding-bottom: 8px; }
+.how .lead { margin: 10px 0 20px; }
+.how-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.how-item {
+  background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--gold);
+  border-radius: 8px; padding: 16px;
+}
+.how-item h3 { font-size: 1.3rem; text-transform: uppercase; margin: 0 0 6px; color: var(--gold-hi); }
+.how-item p { margin: 0; }
+.how-sub { font-size: 1.5rem; text-transform: uppercase; margin: 32px 0 12px; }
+.pillars { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: paso; }
+.pillar { counter-increment: paso; border-left: 2px solid var(--gold); padding: 4px 0 4px 14px; }
+.pillar h4 { font-size: 1.2rem; text-transform: uppercase; margin: 0 0 4px; }
+.pillar h4::before { content: counter(paso) ". "; color: var(--gold-hi); }
 .pillar p { margin: 0; color: var(--muted); }
 
 /* Catálogo */
@@ -220,6 +232,7 @@ img { max-width: 100%; display: block; }
   font-family: "Saira Condensed", "Arial Narrow", sans-serif; letter-spacing: .02em;
   font-size: 1.7rem; line-height: 1.1; font-weight: 700; text-transform: uppercase; color: var(--gold); margin: 0;
 }
+.card-desc { margin: 0; color: var(--muted); font-size: .95rem; }
 .price-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
 .price { font-size: 1.9rem; font-weight: 700; color: var(--gold); }
 .tax { font-size: .85rem; color: var(--muted); }
@@ -300,6 +313,8 @@ body.has-float .toast { bottom: 80px; }
 .step:disabled { color: var(--muted); opacity: .45; cursor: default; }
 .step-n { min-width: 2.2em; text-align: center; font-variant-numeric: tabular-nums; }
 .extras-line { font-size: .95rem; color: var(--gold-hi); margin: 0; }
+.eta-line { font-size: .95rem; margin: 0; color: var(--text); }
+.eta-line::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); margin-right: 8px; vertical-align: middle; }
 .sum-extra { padding-top: 4px; border-bottom-style: dashed; }
 .sum-extra > div > span:first-child { color: var(--muted); padding-left: 12px; }
 
@@ -437,6 +452,7 @@ progress { width: 100%; height: 10px; accent-color: var(--gold); display: block;
   body.has-float .toast { bottom: 16px; }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pillars { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .how-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .footer-grid { grid-template-columns: 2fr 1fr; }
   .hero { padding: 88px 0 72px; }
 }

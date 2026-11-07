@@ -38,7 +38,7 @@
         "h": "Chi altro li vede",
         "p": [
           "Per funzionare usiamo questi servizi, che trattano i dati secondo le nostre istruzioni:",
-          "Per evadere l'ordine condividiamo inoltre lo stretto necessario con il corriere (InPost o Correos: nome, indirizzo e telefono) e, se paghi con PayPal, con PayPal.",
+          "Per evadere l'ordine condividiamo inoltre lo stretto necessario con il corriere (Correos: nome, indirizzo e telefono) e, se paghi con PayPal, con PayPal.",
           "Se la spedizione è diretta a un paese fuori dallo Spazio economico europeo (per esempio Stati Uniti, Svizzera o Regno Unito), il corriere e i suoi partner a destinazione trattano i tuoi dati di consegna in quel paese. Questo trasferimento è necessario per eseguire il contratto che concludi con noi (articolo 49, paragrafo 1, lettera b, del GDPR). Svizzera e Regno Unito dispongono inoltre di una decisione di adeguatezza della Commissione europea."
         ],
         "ul": [
@@ -119,7 +119,7 @@
       {
         "h": "Spedizione",
         "p": [
-          "Spediamo con InPost o Correos a seconda del paese, in scatole singole, medie (4 kg) o grandi (5 kg) secondo l'ordine.",
+          "Spediamo con Correos, in scatole singole, medie (4 kg) o grandi (5 kg) secondo l'ordine.",
           "Quando il pacco parte ti diamo il numero di tracking. Controlla la scatola al ricevimento."
         ]
       },
