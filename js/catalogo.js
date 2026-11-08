@@ -1,7 +1,7 @@
 // Soy Resinator · catálogo (index.html). Arranca también la vista de pedido.
-import * as C from './core.js?v=20261107';
-import * as P from './carrito.js?v=20261107';
-import { plazoDias } from './calc.js?v=20261107';
+import * as C from './core.js?v=20261108';
+import * as P from './carrito.js?v=20261108';
+import { plazoDias } from './calc.js?v=20261108';
 
 const state = {
   cfg: null, cat: null, ship: null, serie: [],

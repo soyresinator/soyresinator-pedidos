@@ -125,9 +125,7 @@
   "pago.dos_partes": "En dos partes",
   "pago.dos_partes_ayuda": "50 % ahora y 50 % antes del envío.",
   "pago.nada_ahora": "Aquí no se cobra nada. Te enviaremos los datos de pago por correo.",
-  "pago.metodo_transfer": "Pagarás por transferencia bancaria.",
   "pago.metodo_paypal": "Pagarás con PayPal.",
-  "pago.metodo_sin_pais": "Transferencia en España y la UE, PayPal en el resto.",
   "pago.inicio": "La impresión empieza cuando recibimos tu pago (o el primer pago, si pagas en dos partes).",
   "res.titulo": "Resumen",
   "res.montaje": "Montaje",
@@ -246,5 +244,7 @@
   "desc.trench-las-rifle": "Una pieza sobria para quienes veneran la estética sombría de la Gran Guerra. Sólido, fiable y preciso, con un sistema de anillos alrededor del cañón para disipar el calor. Bayoneta incluida. Funcional. Elegante. Letal.",
   "desc.trooper-las-rifle": "El martillo del soldado de línea: un fusil robusto que encarna una voluntad inquebrantable. No es una reliquia estática: el cargador de energía se extrae y se vuelve a insertar, como en el original. Bayoneta incluida.",
   "desc.las-pistol": "El arma auxiliar fiable del soldado de línea. Compacta y ligera, su cargador de energía comparte el lenguaje de diseño de los fusiles láser. La fiabilidad puede marcar la diferencia entre aguantar la línea y caer.",
-  "desc.renegade-bolt": "Sus detalles corrompidos delatan su lealtad a poderes oscuros. Las armas bolt nunca se pensaron para la sutileza, solo para la destrucción brutal. Más que una réplica: un fragmento de historia empapado de herejía."
+  "desc.renegade-bolt": "Sus detalles corrompidos delatan su lealtad a poderes oscuros. Las armas bolt nunca se pensaron para la sutileza, solo para la destrucción brutal. Más que una réplica: un fragmento de historia empapado de herejía.",
+  "desc.founders-bolt-wolf": "El Founders Bolt en su versión lobo, con detalles propios de la manada: runas a lo largo del cuerpo y un emblema de lobo. Compacto, pero con una presencia imponente, recreado a tamaño real y con cargador extraíble. Edición especial con colores fijos.",
+  "desc.pulse-carabine": "Compacta y muy manejable, pensada para fuerzas que confían en la movilidad sin renunciar a la potencia de fuego. Su mira de puntería y sus líneas limpias y avanzadas pertenecen a un arsenal donde la precisión y la eficacia importan tanto como la fuerza bruta."
 }

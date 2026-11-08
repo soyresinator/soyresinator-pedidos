@@ -5,6 +5,7 @@
     { "id": "gris-titan", "hex": "#8c9094", "nombres": { "es": "Gris titán", "en": "Titan grey", "de": "Titangrau", "fr": "Gris titane", "it": "Grigio titanio" } },
     { "id": "dorado", "hex": "#c9a24a", "nombres": { "es": "Dorado", "en": "Gold", "de": "Gold", "fr": "Doré", "it": "Oro" } },
     { "id": "rojo-oscuro", "hex": "#7a1e1e", "nombres": { "es": "Rojo oscuro", "en": "Dark red", "de": "Dunkelrot", "fr": "Rouge foncé", "it": "Rosso scuro" } },
+    { "id": "rojo-escarlata", "hex": "#b3261e", "nombres": { "es": "Rojo escarlata", "en": "Scarlet red", "de": "Scharlachrot", "fr": "Rouge écarlate", "it": "Rosso scarlatto" } },
     { "id": "verde-oscuro", "hex": "#2f4a2a", "nombres": { "es": "Verde oscuro", "en": "Dark green", "de": "Dunkelgrün", "fr": "Vert foncé", "it": "Verde scuro" } },
     { "id": "amarillo", "hex": "#e3c62c", "nombres": { "es": "Amarillo limón", "en": "Lemon yellow", "de": "Zitronengelb", "fr": "Jaune citron", "it": "Giallo limone" } }
   ]

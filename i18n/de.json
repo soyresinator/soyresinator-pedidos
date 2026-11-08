@@ -125,9 +125,7 @@
   "pago.dos_partes": "In zwei Raten",
   "pago.dos_partes_ayuda": "50 % jetzt und 50 % vor dem Versand.",
   "pago.nada_ahora": "Hier wird nichts abgebucht. Wir schicken dir die Zahlungsdaten per E-Mail.",
-  "pago.metodo_transfer": "Du zahlst per Banküberweisung.",
   "pago.metodo_paypal": "Du zahlst mit PayPal.",
-  "pago.metodo_sin_pais": "Überweisung in Spanien und der EU, PayPal überall sonst.",
   "pago.inicio": "Der Druck beginnt, sobald deine Zahlung eingeht (oder die erste Rate, wenn du in zwei Raten zahlst).",
   "res.titulo": "Zusammenfassung",
   "res.montaje": "Montage",
@@ -246,5 +244,7 @@
   "desc.trench-las-rifle": "Ein düsteres Stück für alle, die die grimmige Ästhetik des Großen Krieges verehren. Solide, zuverlässig und präzise, mit einem Ringsystem um den Lauf zur Wärmeableitung. Bajonett inklusive. Funktional. Elegant. Tödlich.",
   "desc.trooper-las-rifle": "Der Hammer des Linieninfanteristen: ein robustes Gewehr, das einen unbeugsamen Willen verkörpert. Kein starres Relikt: Das Energiemagazin lässt sich herausnehmen und wieder einsetzen, wie beim Original. Bajonett inklusive.",
   "desc.las-pistol": "Die verlässliche Seitenwaffe des Linieninfanteristen. Kompakt und leicht, ihr Energiemagazin folgt der Formensprache der Lasergewehre. Zuverlässigkeit kann den Unterschied machen zwischen Standhalten und Fallen.",
-  "desc.renegade-bolt": "Verdorbene Details verraten ihre Treue zu dunklen Mächten. Bolt-Waffen waren nie für Subtilität gedacht, nur für brutale Zerstörung. Mehr als eine Replik: ein Stück Geschichte voller Ketzerei."
+  "desc.renegade-bolt": "Verdorbene Details verraten ihre Treue zu dunklen Mächten. Bolt-Waffen waren nie für Subtilität gedacht, nur für brutale Zerstörung. Mehr als eine Replik: ein Stück Geschichte voller Ketzerei.",
+  "desc.founders-bolt-wolf": "Der Founders Bolt in der Wolfsversion, mit eigenen Details des Rudels: Runen entlang des Gehäuses und ein Wolfsemblem. Kompakt, aber mit imposanter Präsenz, in Originalgröße nachgebaut und mit abnehmbarem Magazin. Sonderedition in festen Farben.",
+  "desc.pulse-carabine": "Kompakt und äußerst wendig, gemacht für Truppen, die auf Beweglichkeit setzen, ohne auf Feuerkraft zu verzichten. Zielvisier und klare, fortschrittliche Linien gehören zu einem Arsenal, in dem Präzision und Effizienz so viel zählen wie rohe Kraft."
 }

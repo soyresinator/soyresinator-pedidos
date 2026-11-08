@@ -82,6 +82,25 @@
       ]
     },
     {
+      "id": "founders-bolt-wolf",
+      "nombre": "Founders Bolt Wolf Version",
+      "modelo": "bolter-pf-sw",
+      "id_replica": "BOLTER-PF-SW",
+      "coleccion": "imperium-arsenal",
+      "pvp": 180,
+      "especial": true,
+      "incluye": ["inc.kit", "inc.balas4"],
+      "horas": 51.7,
+      "volumen": 3,
+      "extras": [
+        { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
+        { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PF", "pvp": 30, "horas": 7.97 },
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+      ],
+      "caja": "larga",
+      "partes": []
+    },
+    {
       "id": "founders-bolt-pistol",
       "nombre": "Founders Bolt Pistol",
       "modelo": "pistola-pf",
@@ -206,6 +225,28 @@
           "placas": [1], "filamento_serie": "FIL-PLAM-CHARCOAL" },
         { "grupo": "metalicos", "etiqueta": "parte.detalles_metalicos", "gramos": 259, "de_serie": "gris-titan", "opciones": ["gris-titan", "dorado"],
           "placas": [4, 8], "filamento_serie": "FIL-SILK-GREYTITAN" }
+      ]
+    },
+    {
+      "id": "pulse-carabine",
+      "nombre": "Pulse Carabine",
+      "modelo": "tau-corto",
+      "id_replica": "RIFLE-TAU-CORTO",
+      "coleccion": "xenos-and-hereticus",
+      "pvp": 160,
+      "especial": false,
+      "incluye": ["inc.kit"],
+      "horas": 42.2,
+      "volumen": 2.5,
+      "extras": [
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+      ],
+      "caja": "larga",
+      "partes": [
+        { "grupo": "rojo", "etiqueta": "parte.partes_rojas", "gramos": 596, "de_serie": "rojo-escarlata", "opciones": "stock",
+          "placas": [4, 6], "filamento_serie": "FIL-PLAM-REDSCARLET" },
+        { "grupo": "dorado", "etiqueta": "parte.detalle_dorado", "gramos": 39, "de_serie": "dorado", "opciones": ["dorado", "gris-titan"],
+          "placas": [1], "filamento_serie": "FIL-SILK-GOLD" }
       ]
     },
     {

@@ -179,12 +179,19 @@ function calcularCola(res, cat, placas) {
   tabla(res.getSheetByName('PEDIDOS')).filas.forEach(function (r) {
     const id = str(r.ID_PEDIDO);
     if (MAPA_ESTADO[str(r.ESTADO).toLowerCase()] !== 'en_produccion') return;
+    if (esPrueba(r)) return; // pedidos de prueba (columna PRUEBA = SÍ): no ocupan cola
     const pl = placas[id];
     const parte = pl && pl.total ? (pl.total - pl.hechas) / pl.total : 1;
     restante[id] = (horasPedido[id] || 0) * parte;
     total += restante[id];
   });
   return { total: Math.round(total * 10) / 10, restante: restante, horasPedido: horasPedido };
+}
+
+/** Columna PRUEBA (AA) de PEDIDOS: "SÍ" en los pedidos de prueba. Solo cuenta para la cola. */
+function esPrueba(r) {
+  const v = str(r.PRUEBA).toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  return v === 'SI' || v === 'TRUE';
 }
 
 /* ---------- 3. ESTADO_WEB ---------- */

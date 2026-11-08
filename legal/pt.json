@@ -38,7 +38,7 @@
         "h": "Quem mais os vê",
         "p": [
           "Para funcionar usamos estes serviços, que tratam os dados seguindo as nossas instruções:",
-          "Além disso, para cumprir o pedido compartilhamos o indispensável com a transportadora (Correos: nome, endereço e telefone) e, se você pagar com PayPal, com o PayPal.",
+          "Além disso, para cumprir o pedido compartilhamos o indispensável com a transportadora (Correos: nome, endereço e telefone) e com o PayPal, que processa o pagamento.",
           "Se o envio for para um país fora do Espaço Econômico Europeu (por exemplo, Brasil, Estados Unidos, Suíça ou Reino Unido), a transportadora e os seus parceiros no destino tratam os seus dados de entrega nesse país. Essa transferência é necessária para cumprir o contrato que você celebra conosco (artigo 49.1.b do RGPD). A Suíça e o Reino Unido contam além disso com uma decisão de adequação da Comissão Europeia."
         ],
         "ul": [
@@ -105,7 +105,7 @@
         "h": "Pagamento",
         "p": [
           "Você pode pagar o pedido completo ou em duas partes: 50 % para começar e os 50 % restantes antes do envio.",
-          "Na Espanha e na UE o pagamento é por transferência bancária; nos demais países, com PayPal. No site não se cobra nada.",
+          "O pagamento é feito com PayPal, em qualquer país. No site não se cobra nada.",
           "Se não recebermos o primeiro pagamento em {dias_pago} dias a partir do pedido, podemos cancelá-lo. Se você pagar em duas partes, enviamos a réplica quando recebemos o segundo pagamento."
         ]
       },
@@ -169,10 +169,18 @@
         ]
       },
       {
-        "h": "Propriedade intelectual",
+        "h": "Propriedade intelectual e créditos de design",
         "p": [
-          "Os textos, as fotografias, o design e o código deste site são da titular ou são usados com permissão. Não é permitido copiá-los nem reutilizá-los sem autorização, exceto para uso pessoal.",
-          "Os designs das réplicas são obra da TameGrips, exceto a Heavy Bolt Wolf Version, que é uma versão da Soy Resinator baseada num design da TameGrips. A Soy Resinator fabrica-os e vende-os como vendedor oficial da TameGrips, com a sua autorização. Os direitos sobre os designs pertencem aos seus autores: não é permitido copiá-los, reproduzi-los nem distribuir os seus arquivos.",
+          "Na Soy Resinator acreditamos em respeitar a criatividade e em dar o crédito a quem o merece.",
+          "## Designs da TameGrips",
+          "Muitas das nossas réplicas baseiam-se em designs 3D originais criados pela TameGrips. A Soy Resinator é vendedora autorizada das réplicas físicas produzidas a partir desses designs, com a permissão do designer.",
+          "Todos os direitos de propriedade intelectual sobre esses designs originais continuam a pertencer à TameGrips.",
+          "## Criações originais da Soy Resinator",
+          "Além das réplicas licenciadas, desenvolvemos também os nossos próprios designs e adaptações criativas, algumas inspiradas no trabalho da TameGrips.",
+          "Estas criações refletem o nosso próprio trabalho de design, o nosso ofício e a nossa paixão por dar vida a mundos de ficção.",
+          "## Direitos autorais e utilização",
+          "Todo o conteúdo original do site da Soy Resinator, incluindo fotografias, gráficos, textos e o design do site, pertence à Soy Resinator ou é usado com permissão.",
+          "É proibida a reprodução, redistribuição ou utilização comercial não autorizadas de designs de terceiros, arquivos digitais ou conteúdo original da Soy Resinator, exceto quando permitido pela lei aplicável ou pelo respetivo titular dos direitos.",
           "A Soy Resinator não está vinculada a nenhum estúdio, editora nem fabricante de jogos, e não usa as suas marcas."
         ]
       },

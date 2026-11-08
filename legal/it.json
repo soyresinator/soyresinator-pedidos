@@ -38,7 +38,7 @@
         "h": "Chi altro li vede",
         "p": [
           "Per funzionare usiamo questi servizi, che trattano i dati secondo le nostre istruzioni:",
-          "Per evadere l'ordine condividiamo inoltre lo stretto necessario con il corriere (Correos: nome, indirizzo e telefono) e, se paghi con PayPal, con PayPal.",
+          "Per evadere l'ordine condividiamo inoltre lo stretto necessario con il corriere (Correos: nome, indirizzo e telefono) e con PayPal, che gestisce il pagamento.",
           "Se la spedizione è diretta a un paese fuori dallo Spazio economico europeo (per esempio Stati Uniti, Svizzera o Regno Unito), il corriere e i suoi partner a destinazione trattano i tuoi dati di consegna in quel paese. Questo trasferimento è necessario per eseguire il contratto che concludi con noi (articolo 49, paragrafo 1, lettera b, del GDPR). Svizzera e Regno Unito dispongono inoltre di una decisione di adeguatezza della Commissione europea."
         ],
         "ul": [
@@ -105,7 +105,7 @@
         "h": "Pagamento",
         "p": [
           "Puoi pagare l'ordine in un'unica soluzione o in due rate: il 50% per iniziare e il restante 50% prima della spedizione.",
-          "In Spagna e nell'UE si paga con bonifico bancario; negli altri paesi con PayPal. Sul sito non viene addebitato nulla.",
+          "Il pagamento si effettua con PayPal, in qualsiasi paese. Sul sito non viene addebitato nulla.",
           "Se non riceviamo il primo pagamento entro {dias_pago} giorni dall'ordine, possiamo annullarlo. Se paghi in due rate, spediamo la replica quando riceviamo la seconda."
         ]
       },
@@ -169,10 +169,18 @@
         ]
       },
       {
-        "h": "Proprietà intellettuale",
+        "h": "Proprietà intellettuale e crediti di design",
         "p": [
-          "I testi, le fotografie, il design e il codice di questo sito appartengono alla titolare o sono usati con permesso. Non puoi copiarli né riutilizzarli senza autorizzazione, salvo per uso personale.",
-          "I design delle repliche sono opera di TameGrips, tranne la Heavy Bolt Wolf Version, una versione di Soy Resinator basata su un design di TameGrips. Soy Resinator li produce e li vende come rivenditore ufficiale di TameGrips, con la sua autorizzazione. I diritti sui design appartengono ai loro autori: non è consentito copiarli, riprodurli né distribuirne i file.",
+          "In Soy Resinator crediamo nel rispetto della creatività e nel dare merito a chi lo ha.",
+          "## Design di TameGrips",
+          "Molte delle nostre repliche si basano su design 3D originali creati da TameGrips. Soy Resinator è un venditore autorizzato delle repliche fisiche realizzate a partire da questi design, con il permesso del designer.",
+          "Tutti i diritti di proprietà intellettuale su questi design originali restano di TameGrips.",
+          "## Creazioni originali di Soy Resinator",
+          "Oltre alle repliche su licenza, sviluppiamo anche design propri e adattamenti creativi, alcuni ispirati al lavoro di TameGrips.",
+          "Queste creazioni riflettono il nostro lavoro di design, la nostra maestria e la nostra passione per dare vita a mondi di finzione.",
+          "## Diritto d'autore e utilizzo",
+          "Tutti i contenuti originali del sito di Soy Resinator, comprese fotografie, grafiche, testi e design del sito, appartengono a Soy Resinator o sono usati con autorizzazione.",
+          "È vietata la riproduzione, ridistribuzione o uso commerciale non autorizzati di design di terzi, file digitali o contenuti originali di Soy Resinator, salvo quando consentito dalla legge applicabile o dal relativo titolare dei diritti.",
           "Soy Resinator non è legata ad alcuno studio, editore o produttore di giochi e non usa i loro marchi."
         ]
       },

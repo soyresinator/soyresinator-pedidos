@@ -176,7 +176,7 @@
     {"code": "NL", "nombre_es": "Países Bajos", "ue": true, "zona": "propia", "servicio": "Correos Standard", "envio_a_consultar": false, "precio_1": 19, "precio_4kg": 19, "precio_5kg": 21, "montaje": false, "prefijo": "+31"},
     {"code": "PE", "nombre_es": "Perú", "ue": false, "zona": "AM", "servicio": "", "envio_a_consultar": true, "precio_1": null, "precio_4kg": null, "precio_5kg": null, "montaje": false, "prefijo": "+51"},
     {"code": "PF", "nombre_es": "Polinesia Francesa", "ue": false, "zona": "AS-OC", "servicio": "", "envio_a_consultar": true, "precio_1": null, "precio_4kg": null, "precio_5kg": null, "montaje": false, "prefijo": "+689"},
-    {"code": "PL", "nombre_es": "Polonia", "ue": true, "zona": "propia", "servicio": "Correos Standard", "envio_a_consultar": false, "precio_1": 35, "precio_4kg": 35, "precio_5kg": 37, "montaje": false, "prefijo": "+48"},
+    {"code": "PL", "nombre_es": "Polonia", "ue": true, "zona": "propia", "servicio": "Correos Standard", "envio_a_consultar": false, "precio_1": 48, "precio_4kg": 48, "precio_5kg": 51, "montaje": false, "prefijo": "+48"},
     {"code": "PT", "nombre_es": "Portugal", "ue": true, "zona": "propia", "servicio": "Correos Standard", "envio_a_consultar": false, "precio_1": 20, "precio_4kg": 20, "precio_5kg": 20, "montaje": false, "prefijo": "+351"},
     {"code": "PR", "nombre_es": "Puerto Rico", "ue": false, "zona": "AM", "servicio": "", "envio_a_consultar": true, "precio_1": null, "precio_4kg": null, "precio_5kg": null, "montaje": false, "prefijo": "+1787"},
     {"code": "GB", "nombre_es": "Reino Unido", "ue": false, "zona": "propia", "servicio": "Correos Standard", "envio_a_consultar": false, "precio_1": 20, "precio_4kg": 20, "precio_5kg": 22, "montaje": false, "prefijo": "+44"},

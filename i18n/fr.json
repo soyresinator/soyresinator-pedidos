@@ -125,9 +125,7 @@
   "pago.dos_partes": "En deux fois",
   "pago.dos_partes_ayuda": "50 % maintenant et 50 % avant l'expédition.",
   "pago.nada_ahora": "Rien n'est débité ici. Nous t'enverrons les informations de paiement par e-mail.",
-  "pago.metodo_transfer": "Tu paieras par virement bancaire.",
   "pago.metodo_paypal": "Tu paieras avec PayPal.",
-  "pago.metodo_sin_pais": "Virement en Espagne et dans l'UE, PayPal partout ailleurs.",
   "pago.inicio": "L'impression commence dès réception de ton paiement (ou du premier paiement, si tu paies en deux fois).",
   "res.titulo": "Récapitulatif",
   "res.montaje": "Montage",
@@ -246,5 +244,7 @@
   "desc.trench-las-rifle": "Une pièce sobre pour ceux qui vénèrent l'esthétique sombre de la Grande Guerre. Solide, fiable et précis, avec un système d'anneaux autour du canon pour dissiper la chaleur. Baïonnette incluse. Fonctionnel. Élégant. Létal.",
   "desc.trooper-las-rifle": "Le marteau du soldat de ligne : un fusil robuste qui incarne une volonté inébranlable. Pas une relique figée : le chargeur d'énergie s'enlève et se remet, comme sur l'original. Baïonnette incluse.",
   "desc.las-pistol": "L'arme de poing fiable du soldat de ligne. Compacte et légère, son chargeur d'énergie reprend le langage de design des fusils laser. La fiabilité peut faire la différence entre tenir la ligne et tomber.",
-  "desc.renegade-bolt": "Ses détails corrompus trahissent son allégeance aux puissances obscures. Les armes bolt n'ont jamais été faites pour la subtilité, seulement pour la destruction brutale. Plus qu'une réplique : un fragment d'histoire imprégné d'hérésie."
+  "desc.renegade-bolt": "Ses détails corrompus trahissent son allégeance aux puissances obscures. Les armes bolt n'ont jamais été faites pour la subtilité, seulement pour la destruction brutale. Plus qu'une réplique : un fragment d'histoire imprégné d'hérésie.",
+  "desc.founders-bolt-wolf": "Le Founders Bolt en version loup, avec les détails propres à la meute : des runes le long du corps et un emblème de loup. Compact, mais d'une présence imposante, recréé en taille réelle avec chargeur amovible. Édition spéciale aux couleurs fixes.",
+  "desc.pulse-carabine": "Compacte et très maniable, pensée pour des forces qui misent sur la mobilité sans renoncer à la puissance de feu. Sa visée et ses lignes épurées et avancées appartiennent à un arsenal où la précision et l'efficacité comptent autant que la force brute."
 }

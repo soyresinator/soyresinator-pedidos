@@ -1,7 +1,7 @@
 // Soy Resinator · vista de pedido (#pedido en index.html)
 // Tarjeta por unidad, datos y envío, pago, resumen, envío al Apps Script y confirmación.
-import * as C from './core.js?v=20261107';
-import { totales, plazoDias, extrasDe } from './calc.js?v=20261107';
+import * as C from './core.js?v=20261108';
+import { totales, plazoDias, extrasDe } from './calc.js?v=20261108';
 
 const $ = id => document.getElementById(id);
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -292,8 +292,8 @@ function renderPago() {
   if (pais && !prefijoTocado && !$('f-prefijo').value) $('f-prefijo').value = pais.prefijo;
   const modo = cart.modo === 'dos_partes' ? 'dos_partes' : 'completo';
   document.querySelectorAll('input[name="modo"]').forEach(r => { r.checked = r.value === modo; });
-  $('pago-metodo').textContent = !pais ? C.t('pago.metodo_sin_pais')
-    : (pais.ue ? C.t('pago.metodo_transfer') : C.t('pago.metodo_paypal'));
+  // Desde el 08/11/2026 todos los pagos van por PayPal (ya no hay transferencia bancaria).
+  $('pago-metodo').textContent = C.t('pago.metodo_paypal');
 }
 
 function paintLegalLabels() {
@@ -323,7 +323,7 @@ function textoExtra(e) {
   return C.t('extra.linea', { nombre: C.t(S.cat.extras_def[e.tipo].etiqueta), n: e.cantidad });
 }
 
-/** "InPost · 1 caja grande (5 kg) + 1 caja": cuántas cajas de cada tipo. */
+/** "Correos Standard · 1 caja grande (5 kg) + 1 caja": cuántas cajas de cada tipo. */
 function textoCajas(tot, pais) {
   const cuenta = { '1': 0, '4kg': 0, '5kg': 0 };
   tot.listaCajas.forEach(c => { cuenta[c.tipo]++; });

@@ -47,7 +47,7 @@ function libro(hojas) {
 }
 const web = libro([new Hoja('Hoja 1')]);
 
-const ENC_P = ['ID_PEDIDO','FECHA','ID_CLIENTE','CLIENTE','PAIS','PRODUCTOS','ESTADO','PAGO','FORMA_PAGO','IMPORTE_PRODUCTOS','ENVIO_COBRADO','TOTAL','COBRADO','PENDIENTE_COBRO','MONTAJE','ENVIO_IDEAL','SERVICIO_ENVIO','TRAMO_PESO','COSTE_ENVIO_EST','DIF_ENVIO','FECHA_ENVIO','TRACKING','NOTAS_CLIENTE','ID_FORM','CLAVE_FORM','ID_APP'];
+const ENC_P = ['ID_PEDIDO','FECHA','ID_CLIENTE','CLIENTE','PAIS','PRODUCTOS','ESTADO','PAGO','FORMA_PAGO','IMPORTE_PRODUCTOS','ENVIO_COBRADO','TOTAL','COBRADO','PENDIENTE_COBRO','MONTAJE','ENVIO_IDEAL','SERVICIO_ENVIO','TRAMO_PESO','COSTE_ENVIO_EST','DIF_ENVIO','FECHA_ENVIO','TRACKING','NOTAS_CLIENTE','ID_FORM','CLAVE_FORM','ID_APP','PRUEBA'];
 const filaP = (id, cli, est, pago, extra = {}) => ENC_P.map(h => ({ ID_PEDIDO: id, ID_CLIENTE: cli, ESTADO: est, PAGO: pago, ...extra })[h] ?? '');
 const shPed = new Hoja('PEDIDOS', [ENC_P,
   filaP('RES-2026-029', 'CLI-037', 'En producción', 'Pagado'),
@@ -209,6 +209,27 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     // STAND: 6,97 h (2 bandejas de 3 h 29 min), sacado de los extras de catalog.json
     const esperado = Math.round((50.8 * 2 / 3 + 34.2 + 6.97 + 2 * 1.7) * 10) / 10;
     check('HORAS_COLA = lo que queda en producción (STAND del catálogo; 5 balas = 2 bandejas)', cola === esperado, cola + ' (esperado ' + esperado + ')');
+    // Pedido de prueba (columna AA PRUEBA = SÍ) en producción: no suma cola, pero ESTADO_WEB y el aviso siguen igual
+    shPed.data.push(filaP('RES-2026-099', 'CLI-039', 'En producción', 'Pagado', { ID_FORM: 'SR-PRUEBA', PRUEBA: 'SÍ', SERVICIO_ENVIO: 'Standard' }));
+    shLin.data.push(['RES-2026-099', 1, 'BOLTER-PRIMARIS', 'Bolter Primaris', 1, 'Heavy Bolt']);
+    H('PEDIDOS_WEB').data.push(['SR-PRUEBA', 'h', 'es', 'Prueba', 'prueba@example.com', '', '', '', '', '', '', JSON.stringify([{ pid: 'heavy-bolt', nombre: 'Heavy Bolt' }])]);
+    H('PEDIDOS_WEB').data[H('PEDIDOS_WEB').data.length - 1][22] = 'RES-2026-099';
+    H('ESTADO_WEB').data.push(['SR-PRUEBA', 'h', 'recibido', '', '', 'pendiente', '', '', '', '', '']);
+    G.tareaHoraria();
+    e = H('ESTADO_WEB').data.find(r => r[0] === 'SR-PRUEBA');
+    check('Pedido de prueba en producción: la cola no cambia', H('CONFIG').data[1][0] === cola, H('CONFIG').data[1][0] + ' (esperado ' + cola + ')');
+    check('Pedido de prueba: ESTADO_WEB se actualiza igual (en_produccion, pagado, fecha estimada)', e[2] === 'en_produccion' && e[5] === 'pagado' && !!e[7], e.slice(2, 8).join(' | '));
+    const f099 = filaRes('RES-2026-099');
+    f099[c('ESTADO')] = 'Enviado'; f099[c('TRACKING')] = 'PQ000000099ES';
+    G.TAREA.AVISO_PRUEBA = ['SR-PRUEBA'];
+    G.tareaHoraria();
+    check('Pedido de prueba: el aviso "ha salido" se manda igual', mails.some(x => x.subject.includes('SR-PRUEBA') && x.body.includes('PQ000000099ES')), mails.length);
+    G.TAREA.AVISO_PRUEBA = [];
+    f099[c('PRUEBA')] = 'si'; f099[c('ESTADO')] = 'En producción';
+    G.tareaHoraria();
+    check('"si" sin tilde también cuenta como prueba', H('CONFIG').data[1][0] === cola, H('CONFIG').data[1][0]);
+    f099[c('ESTADO')] = 'Entregado';
+    G.tareaHoraria();
     check('PEDIDOS_ABIERTOS (E2) intacto', H('CONFIG').data[1][4] === 'sí');
     check('?accion=config ya devuelve la cola', JSON.parse(G.doGet({ parameter: { accion: 'config' } }).content).horas_cola === cola);
 
@@ -242,7 +263,7 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
       m.map(x => x.subject).join(' / '));
     G.asignarSRFormulario();
     check('Repetir asignarSRFormulario no duplica', H('ESTADO_WEB').getLastRow() === nEst + 2 && H('AVISOS_SR').data.length === 3, H('ESTADO_WEB').getLastRow() - nEst);
-    check('No toca RES · Pedidos ni PEDIDOS_WEB', !shPed.data.some(r => String(r[c('ID_FORM')]).startsWith('SR-') && !['RES-2026-031', 'RES-2026-029'].includes(r[0])) && H('PEDIDOS_WEB').getLastRow() === 4);
+    check('No toca RES · Pedidos ni PEDIDOS_WEB', !shPed.data.some(r => String(r[c('ID_FORM')]).startsWith('SR-') && !['RES-2026-031', 'RES-2026-029', 'RES-2026-099'].includes(r[0])) && H('PEDIDOS_WEB').getLastRow() === 5);
 
     G.quitarTarea();
     check('quitarTarea borra el activador', triggers.length === 0);

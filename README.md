@@ -94,6 +94,9 @@ Los textos están en `legal/<idioma>.json`; si cambiáis uno, cambiad los seis (
 | Cambiar tarifas de envío | Edita `data/shipping.json` y, tras subirlo, ejecuta `limpiarCache` en el Apps Script para no esperar los 10 minutos de caché. |
 | Dar código SR a pedidos del formulario | En el editor del script, ejecuta `asignarSRFormulario` (no duplica). La lista para avisar a los clientes queda en la pestaña **AVISOS_SR**. |
 | Correo "tu pedido ha salido" | Lo manda la tarea horaria cuando un pedido pasa a **Enviado** con TRACKING en RES · Pedidos, una sola vez (fecha en la columna M **AVISO_ENVIO** de ESTADO_WEB; bórrala para reenviarlo). En `Tarea.gs`, `TAREA.AVISO_ENVIO`: `'no'`, `'prueba'` (solo los SR de `AVISO_PRUEBA`) o `'todos'`. Antes de pasar a `'todos'`, ejecuta `marcarAvisosPrevios` una vez. |
+| Pedidos de prueba | En RES · Pedidos, columna AA **PRUEBA** = `SÍ`. La tarea no los suma a la cola (CONFIG A2), pero ESTADO_WEB y el correo "tu pedido ha salido" funcionan igual. |
+| Forma de pago | Desde el 08/11/2026, PayPal en todos los países (ya no hay transferencia). |
+| Subtítulos en los textos legales | En `legal/*.json`, un párrafo que empieza por `## ` se muestra como subtítulo. |
 
 ### Reglas de los colores
 

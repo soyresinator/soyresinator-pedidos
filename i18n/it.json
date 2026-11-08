@@ -125,9 +125,7 @@
   "pago.dos_partes": "In due rate",
   "pago.dos_partes_ayuda": "50% ora e 50% prima della spedizione.",
   "pago.nada_ahora": "Qui non addebitiamo nulla. Ti invieremo i dati di pagamento via email.",
-  "pago.metodo_transfer": "Pagherai con bonifico bancario.",
   "pago.metodo_paypal": "Pagherai con PayPal.",
-  "pago.metodo_sin_pais": "Bonifico in Spagna e nell'UE, PayPal altrove.",
   "pago.inicio": "La stampa inizia quando riceviamo il tuo pagamento (o la prima rata, se paghi in due rate).",
   "res.titulo": "Riepilogo",
   "res.montaje": "Montaggio",
@@ -246,5 +244,7 @@
   "desc.trench-las-rifle": "Un pezzo sobrio per chi venera l'estetica cupa della Grande Guerra. Solido, affidabile e preciso, con un sistema di anelli attorno alla canna per dissipare il calore. Baionetta inclusa. Funzionale. Elegante. Letale.",
   "desc.trooper-las-rifle": "Il martello del soldato di linea: un fucile robusto che incarna una volontà incrollabile. Non è una reliquia statica: il caricatore di energia si estrae e si reinserisce, come nell'originale. Baionetta inclusa.",
   "desc.las-pistol": "L'arma secondaria affidabile del soldato di linea. Compatta e leggera, il suo caricatore di energia riprende il linguaggio di design dei fucili laser. L'affidabilità può fare la differenza tra tenere la linea e cadere.",
-  "desc.renegade-bolt": "I dettagli corrotti tradiscono la sua fedeltà a poteri oscuri. Le armi bolt non sono mai state pensate per la sottigliezza, solo per la distruzione brutale. Più di una replica: un frammento di storia intriso di eresia."
+  "desc.renegade-bolt": "I dettagli corrotti tradiscono la sua fedeltà a poteri oscuri. Le armi bolt non sono mai state pensate per la sottigliezza, solo per la distruzione brutale. Più di una replica: un frammento di storia intriso di eresia.",
+  "desc.founders-bolt-wolf": "Il Founders Bolt in versione lupo, con i dettagli propri del branco: rune lungo il corpo e un emblema di lupo. Compatto, ma dalla presenza imponente, ricreato a grandezza reale e con caricatore estraibile. Edizione speciale a colori fissi.",
+  "desc.pulse-carabine": "Compatta e molto maneggevole, pensata per forze che puntano sulla mobilità senza rinunciare alla potenza di fuoco. Il mirino e le linee pulite e avanzate appartengono a un arsenale dove precisione ed efficienza contano quanto la forza bruta."
 }

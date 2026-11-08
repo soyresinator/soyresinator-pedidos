@@ -586,7 +586,7 @@ function correoTienda(ctx) {
   ].concat(lineas.map(function (l) { return '- ' + l.a + (l.det ? ' (' + l.det + ')' : '') + ': ' + l.b; }))
     .concat([
       (ctx.tot.consultar ? 'Total SIN envío: ' : 'Total: ') + dinero(ctx.tot.total, 'es'),
-      'Pago: ' + (ctx.modo === 'dos_partes' ? 'en dos partes' : 'completo') + ' · ' + (ctx.pais.ue ? 'transferencia' : 'PayPal'),
+      'Pago: ' + (ctx.modo === 'dos_partes' ? 'en dos partes' : 'completo') + ' · PayPal',
       ctx.tot.consultar
         ? 'Envío: A CONSULTAR. ' + ctx.pais.nombre_es + ' no tiene tarifa: escribid al cliente con la mejor opción (' + textoCajas(ctx.tot.listaCajas, es) + '). El total no lo incluye.'
         : 'Envío (aproximado): ' + ctx.pais.servicio + ', ' + textoCajas(ctx.tot.listaCajas, es) + ' = ' + dinero(ctx.tot.envio, 'es'),

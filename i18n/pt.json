@@ -125,9 +125,7 @@
   "pago.dos_partes": "Em duas partes",
   "pago.dos_partes_ayuda": "50 % agora e 50 % antes do envio.",
   "pago.nada_ahora": "Aqui não cobramos nada. Vamos enviar os dados de pagamento por e-mail.",
-  "pago.metodo_transfer": "Você vai pagar por transferência bancária.",
   "pago.metodo_paypal": "Você vai pagar com PayPal.",
-  "pago.metodo_sin_pais": "Transferência na Espanha e na UE, PayPal no resto do mundo.",
   "pago.inicio": "A impressão começa quando recebemos o seu pagamento (ou o primeiro pagamento, se você pagar em duas partes).",
   "res.titulo": "Resumo",
   "res.montaje": "Montagem",
@@ -268,5 +266,8 @@
   "desc.trench-las-rifle": "Uma peça sóbria para quem venera a estética sombria da Grande Guerra. Sólido, confiável e preciso, com um sistema de anéis em volta do cano para dissipar o calor. Baioneta incluída. Funcional. Elegante. Letal.",
   "desc.trooper-las-rifle": "O martelo do soldado de linha: um fuzil robusto que encarna uma vontade inquebrável. Não é uma relíquia estática: o carregador de energia sai e volta a encaixar, como no original. Baioneta incluída.",
   "desc.las-pistol": "A arma secundária confiável do soldado de linha. Compacta e leve, o seu carregador de energia partilha a linguagem de design dos fuzis laser. A confiabilidade pode ser a diferença entre segurar a linha e cair.",
-  "desc.renegade-bolt": "Os seus detalhes corrompidos denunciam a lealdade a poderes sombrios. As armas bolt nunca foram pensadas para a sutileza, só para a destruição brutal. Mais do que uma réplica: um fragmento de história impregnado de heresia."
+  "desc.renegade-bolt": "Os seus detalhes corrompidos denunciam a lealdade a poderes sombrios. As armas bolt nunca foram pensadas para a sutileza, só para a destruição brutal. Mais do que uma réplica: um fragmento de história impregnado de heresia.",
+  "desc.founders-bolt-wolf": "O Founders Bolt na versão lobo, com detalhes próprios da alcateia: runas ao longo do corpo e um emblema de lobo. Compacto, mas com uma presença imponente, recriado em tamanho real e com carregador removível. Edição especial com cores fixas.",
+  "desc.pulse-carabine": "Compacta e muito manobrável, pensada para forças que confiam na mobilidade sem abrir mão do poder de fogo. A sua mira e as suas linhas limpas e avançadas pertencem a um arsenal onde a precisão e a eficiência importam tanto quanto a força bruta.",
+  "color.rojo-escarlata": "Vermelho escarlate"
 }

@@ -125,9 +125,7 @@
   "pago.dos_partes": "In two parts",
   "pago.dos_partes_ayuda": "50% now and 50% before shipping.",
   "pago.nada_ahora": "We don't charge anything here. We'll email you the payment details.",
-  "pago.metodo_transfer": "You'll pay by bank transfer.",
   "pago.metodo_paypal": "You'll pay with PayPal.",
-  "pago.metodo_sin_pais": "Bank transfer in Spain and the EU, PayPal everywhere else.",
   "pago.inicio": "Printing starts when we receive your payment (or the first payment, if you pay in two parts).",
   "res.titulo": "Summary",
   "res.montaje": "Assembly",
@@ -246,5 +244,7 @@
   "desc.trench-las-rifle": "A somber piece for those who revere the grim aesthetic of the Great War. Solid, reliable and precise, with a ringed jacket around the barrel to dissipate heat. Bayonet included. Functional. Elegant. Lethal.",
   "desc.trooper-las-rifle": "The hammer of the line trooper: a robust rifle that embodies an unbreakable will. This is no static relic: the power pack can be removed and reinserted, just like the real thing. Bayonet included.",
   "desc.las-pistol": "The dependable sidearm of the line trooper. Compact and lightweight, its power pack shares the design language of the full-size las rifles. Reliability can mean the difference between holding the line and falling.",
-  "desc.renegade-bolt": "Corrupted details betray its allegiance to dark powers. Bolt weapons were never meant for subtlety, only for brutal destruction. More than a replica: a fragment of history steeped in heresy."
+  "desc.renegade-bolt": "Corrupted details betray its allegiance to dark powers. Bolt weapons were never meant for subtlety, only for brutal destruction. More than a replica: a fragment of history steeped in heresy.",
+  "desc.founders-bolt-wolf": "The Founders Bolt in its wolf version, with the pack's own details: runes along the body and a wolf emblem. Compact, yet with an imposing presence, recreated at full size with a removable magazine. Special edition in fixed colours.",
+  "desc.pulse-carabine": "Compact and highly manoeuvrable, built for forces that rely on speed without giving up firepower. Its targeting optics and clean, advanced lines belong to an arsenal where precision and efficiency matter as much as raw strength."
 }

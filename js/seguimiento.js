@@ -1,6 +1,6 @@
 // Soy Resinator · "Mi pedido" (pedido.html)
 // El ID puede venir en la URL (?id=SR-XXXXXX). El email nunca: se escribe y se envía por POST.
-import * as C from './core.js?v=20261107';
+import * as C from './core.js?v=20261108';
 
 const $ = id => document.getElementById(id);
 const RE_ID = /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/;

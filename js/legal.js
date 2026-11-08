@@ -1,6 +1,6 @@
 // Soy Resinator · privacidad.html, condiciones.html y aviso-legal.html
 // Los textos salen de legal/<idioma>.json; los datos de la titular, de data/config.json ("legal").
-import * as C from './core.js?v=20261107';
+import * as C from './core.js?v=20261108';
 
 let cfg = null;
 const doc = document.body.dataset.legal; // "privacidad" | "condiciones" | "aviso"
@@ -33,13 +33,15 @@ async function pintar() {
   document.getElementById('legal-fecha').textContent = fechaTxt ? C.t('legal.actualizado', { fecha: fechaTxt }) : '';
 
   // Orden de cada sección: primer párrafo, lista (si hay) y el resto de párrafos.
+  // Un párrafo que empieza por "## " es un subtítulo (h3).
+  const par = p => (p.startsWith('## ') ? `<h3>${sub(p.slice(3))}</h3>` : `<p>${sub(p)}</p>`);
   document.getElementById('legal-cuerpo').innerHTML = d.secciones.map(s => {
     const [p0, ...resto] = s.p || [];
     return `<section>
       <h2>${sub(s.h)}</h2>
-      ${p0 ? `<p>${sub(p0)}</p>` : ''}
+      ${p0 ? par(p0) : ''}
       ${s.ul ? `<ul>${s.ul.map(li => `<li>${sub(li)}</li>`).join('')}</ul>` : ''}
-      ${resto.map(p => `<p>${sub(p)}</p>`).join('')}
+      ${resto.map(par).join('')}
     </section>`;
   }).join('');
 }

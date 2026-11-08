@@ -38,7 +38,7 @@
         "h": "Who else sees it",
         "p": [
           "To run the shop we use these services, which process data on our instructions:",
-          "To fulfil your order we also share what is strictly needed with the carrier (Correos: name, address and phone) and, if you pay with PayPal, with PayPal.",
+          "To fulfil your order we also share what is strictly needed with the carrier (Correos: name, address and phone) and with PayPal, which handles the payment.",
           "If your parcel goes to a country outside the European Economic Area (for example, the United States, Switzerland or the United Kingdom), the carrier and its partners at destination process your delivery details in that country. This transfer is necessary to perform the contract you make with us (Article 49(1)(b) GDPR). Switzerland and the United Kingdom also have an adequacy decision from the European Commission."
         ],
         "ul": [
@@ -105,7 +105,7 @@
         "h": "Payment",
         "p": [
           "You can pay for the whole order at once or in two parts: 50% to get started and the remaining 50% before shipping.",
-          "In Spain and the EU you pay by bank transfer; in all other countries, with PayPal. Nothing is charged on the website.",
+          "Payment is made with PayPal, in every country. Nothing is charged on the website.",
           "If we don't receive the first payment within {dias_pago} days of the order, we may cancel it. If you pay in two parts, we ship the replica once we receive the second payment."
         ]
       },
@@ -169,10 +169,18 @@
         ]
       },
       {
-        "h": "Intellectual property",
+        "h": "Intellectual Property & Design Credits",
         "p": [
-          "The texts, photographs, design and code of this website belong to the owner or are used with permission. You may not copy or reuse them without authorisation, except for personal use.",
-          "The replica designs are the work of TameGrips, except the Heavy Bolt Wolf Version, which is a Soy Resinator version based on a TameGrips design. Soy Resinator makes and sells them as an official TameGrips seller, with their authorisation. The rights to the designs belong to their authors: copying, reproducing them or distributing their files is not allowed.",
+          "At Soy Resinator, we believe in respecting creativity and giving credit where it's due.",
+          "## Designs by TameGrips",
+          "Many of our replicas are based on original 3D designs created by TameGrips. Soy Resinator is an authorized seller of physical replicas produced from these designs, with the designer's permission.",
+          "All intellectual property rights to these original designs remain with TameGrips.",
+          "## Original Soy Resinator Creations",
+          "Alongside our licensed replicas, we also develop our own designs and creative adaptations, some inspired by the work of TameGrips.",
+          "These creations reflect our own design work, craftsmanship, and passion for bringing fictional worlds to life.",
+          "## Copyright & Usage",
+          "All original Soy Resinator website content, including photographs, graphics, text, and website design, is owned by Soy Resinator or used with permission.",
+          "The unauthorized reproduction, redistribution, or commercial use of third-party designs, digital files, or original Soy Resinator content is prohibited, except where permitted by applicable law or the relevant rights holder.",
           "Soy Resinator is not affiliated with any studio, publisher or game maker, and does not use their trademarks."
         ]
       },
