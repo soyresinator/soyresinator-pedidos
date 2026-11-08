@@ -23,6 +23,12 @@ EMAIL = "soyresinator@gmail.com"
 en = json.loads((ROOT / "i18n" / f"{LANG}.json").read_text(encoding="utf-8"))
 legal = json.loads((ROOT / "legal" / f"{LANG}.json").read_text(encoding="utf-8"))
 cat = json.loads((ROOT / "data" / "catalog.json").read_text(encoding="utf-8"))
+ship = json.loads((ROOT / "data" / "shipping.json").read_text(encoding="utf-8"))
+# Países con tarifa fija (los "a consultar" no se anuncian a Google)
+PAISES_ENVIO = [p for p in ship["paises"] if not p.get("envio_a_consultar")]
+# Plazo de fabricación por encargo (días desde el pago) y de transporte (días)
+PREPARACION = (21, 35)
+TRANSITO_UE, TRANSITO_FUERA = (2, 7), (5, 15)
 productos = [p for p in cat["productos"] if not p.get("oculto")]
 esc = lambda s: html.escape(str(s), quote=True)
 
@@ -125,6 +131,26 @@ def jsonld():
            "logo": SITE + "img/logo/icono-512.png", "email": EMAIL, "sameAs": [IG]}
     web = {"@type": "WebSite", "@id": SITE + "#web", "name": "Soy Resinator", "url": SITE,
            "publisher": {"@id": SITE + "#org"}, "inLanguage": ["en", "es", "pt", "de", "fr", "it"]}
+    # Envío de UNA réplica por país (precio_1 de shipping.json), compartido por todas las ofertas vía @id.
+    dias = lambda a, b: {"@type": "QuantitativeValue", "minValue": a, "maxValue": b, "unitCode": "DAY"}
+    envios = [{
+        "@type": "OfferShippingDetails", "@id": SITE + f'#envio-{p["code"]}',
+        "shippingRate": {"@type": "MonetaryAmount", "value": f'{float(p["precio_1"]):.2f}', "currency": "EUR"},
+        "shippingDestination": {"@type": "DefinedRegion", "addressCountry": p["code"]},
+        "deliveryTime": {"@type": "ShippingDeliveryTime", "handlingTime": dias(*PREPARACION),
+                         "transitTime": dias(*(TRANSITO_UE if p["ue"] else TRANSITO_FUERA))},
+    } for p in PAISES_ENVIO]
+    # Devoluciones (condiciones de venta): 14 días desde la entrega con los colores de serie,
+    # por correo, gastos de devolución a cargo del cliente. Los colores personalizados no admiten desistimiento.
+    devol = {"@type": "MerchantReturnPolicy", "@id": SITE + "#devoluciones",
+             "applicableCountry": [p["code"] for p in PAISES_ENVIO],
+             "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+             "merchantReturnDays": 14, "returnMethod": "https://schema.org/ReturnByMail",
+             "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility",
+             "refundType": "https://schema.org/FullRefund",
+             "itemCondition": "https://schema.org/NewCondition",
+             "merchantReturnLink": SITE + "condiciones.html"}
+    org["hasMerchantReturnPolicy"] = {"@id": devol["@id"]}
     prods = []
     for p in productos:
         inc = ", ".join(en.get(k, k) for k in p["incluye"])
@@ -134,14 +160,17 @@ def jsonld():
             "description": (en.get("desc." + p["id"], "") +
                 f" Life-size display replica, 3D printed to order in Spain and shipped as a kit. Includes: {inc}.").strip(),
             "offers": {"@type": "Offer", "price": f'{float(p["pvp"]):.2f}', "priceCurrency": "EUR",
-                       "availability": "https://schema.org/MadeToOrder",
+                       # Google no acepta MadeToOrder: se puede pedir ya; el plazo va en handlingTime.
+                       "availability": "https://schema.org/InStock",
                        "itemCondition": "https://schema.org/NewCondition",
-                       "url": SITE + f'#p-{p["id"]}', "seller": {"@id": SITE + "#org"}},
+                       "url": SITE + f'#p-{p["id"]}', "seller": {"@id": SITE + "#org"},
+                       "shippingDetails": [{"@id": e["@id"]} for e in envios],
+                       "hasMerchantReturnPolicy": {"@id": devol["@id"]}},
         }
         if (ROOT / "img" / f'{p["id"]}-1.webp').exists():
             prod["image"] = SITE + f'img/{p["id"]}-1.webp'
         prods.append(prod)
-    data = {"@context": "https://schema.org", "@graph": [org, web] + prods}
+    data = {"@context": "https://schema.org", "@graph": [org, web, devol] + envios + prods}
     txt = json.dumps(data, ensure_ascii=False, indent=1).replace("</", "<\\/")
     return f'  <script type="application/ld+json">\n{txt}\n  </script>'
 
