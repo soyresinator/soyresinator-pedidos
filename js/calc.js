@@ -43,6 +43,16 @@ export function cajasEnvio(items, cat, ship) {
   return cajas.map(c => ({ ...c, tipo: c.n === 1 ? '1' : (c.volumen <= ship.volumen_caja_4kg + 1e-9 ? '4kg' : '5kg') }));
 }
 
+/**
+ * País con el servicio de envío elegido. Si el país tiene `alternativa` (hoy solo EE. UU.: Premium)
+ * y el cliente la eligió (envio === alternativa.id), devuelve el país con su servicio y precios.
+ */
+export function conEnvio(pais, envio) {
+  if (!pais || !pais.alternativa || envio !== pais.alternativa.id) return pais;
+  const { id, ...precios } = pais.alternativa;
+  return { ...pais, ...precios, envioElegido: id };
+}
+
 export function precioCaja(caja, pais) {
   return caja.tipo === '1' ? pais.precio_1 : (caja.tipo === '4kg' ? pais.precio_4kg : pais.precio_5kg);
 }

@@ -228,8 +228,13 @@ function crearPedido(b) {
   }
   const tel = cliente.telefono.match(/^\+(\d{1,4})\s*([\d\s().-]+)$/);
   if (!tel || !/^\d{6,15}$/.test(tel[2].replace(/[\s().-]/g, ''))) return { ok: false, error: 'datos_invalidos' };
-  const pais = ship.paises.filter(function (p) { return p.code === b.pais; })[0];
-  if (!pais) return { ok: false, error: 'datos_invalidos' };
+  const paisBase = ship.paises.filter(function (p) { return p.code === b.pais; })[0];
+  if (!paisBase) return { ok: false, error: 'datos_invalidos' };
+  // Servicio de envío: el de la alternativa (hoy, Premium en EE. UU.) solo si el país la tiene y el cliente la eligió.
+  if (b.envio !== undefined && b.envio !== 'standard' && !(paisBase.alternativa && b.envio === paisBase.alternativa.id)) {
+    return { ok: false, error: 'datos_invalidos' };
+  }
+  const pais = conEnvio(paisBase, b.envio);
   const modo = b.modo_pago === 'dos_partes' ? 'dos_partes' : (b.modo_pago === 'completo' ? 'completo' : null);
   if (!modo || b.consentimiento !== true) return { ok: false, error: 'datos_invalidos' };
   if (!Array.isArray(b.items) || b.items.length < 1 || b.items.length > AJUSTES.MAX_UNIDADES) {
@@ -440,6 +445,16 @@ function cajasEnvio(items, cat, ship) {
     c.tipo = c.n === 1 ? '1' : (c.volumen <= ship.volumen_caja_4kg + 1e-9 ? '4kg' : '5kg');
     return c;
   });
+}
+
+/** Igual que conEnvio de js/calc.js: el país con el servicio de la alternativa si el cliente la eligió. */
+function conEnvio(pais, envio) {
+  if (!pais || !pais.alternativa || envio !== pais.alternativa.id) return pais;
+  const out = {};
+  Object.keys(pais).forEach(function (k) { out[k] = pais[k]; });
+  Object.keys(pais.alternativa).forEach(function (k) { if (k !== 'id') out[k] = pais.alternativa[k]; });
+  out.envioElegido = pais.alternativa.id;
+  return out;
 }
 
 function precioCaja(caja, pais) {

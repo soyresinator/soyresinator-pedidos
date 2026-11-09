@@ -1,7 +1,7 @@
 // Soy Resinator · vista de pedido (#pedido en index.html)
 // Tarjeta por unidad, datos y envío, pago, resumen, envío al Apps Script y confirmación.
-import * as C from './core.js?v=20261109';
-import { totales, plazoDias, extrasDe } from './calc.js?v=20261109';
+import * as C from './core.js?v=20261110';
+import { totales, plazoDias, extrasDe, conEnvio } from './calc.js?v=20261110';
 
 const $ = id => document.getElementById(id);
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -64,7 +64,9 @@ function refresh() {
 /* =================== Datos auxiliares =================== */
 
 const prodDe = pid => S.cat.productos.find(p => p.id === pid);
-const paisDe = code => S.ship.paises.find(p => p.code === code) || null;
+const paisBase = code => S.ship.paises.find(p => p.code === code) || null;
+/** País con el servicio de envío elegido (Standard o, donde exista, la alternativa Premium). */
+const paisDe = code => conEnvio(paisBase(code), C.loadCart().envio);
 const paisActual = () => paisDe(C.loadCart().pais);
 
 /** Colores para una parte de una unidad: los disponibles y, si el script no responde, también el ya guardado. */
@@ -268,6 +270,7 @@ function flushNotas() {
 export function setPais(code) {
   const cart = C.loadCart();
   const pais = paisDe(code);
+  if (cart.pais !== (pais ? code : '')) cart.envio = 'standard'; // al cambiar de país, vuelve al servicio por defecto
   cart.pais = pais ? code : '';
   let quitado = false;
   if (!pais || !pais.montaje) {
@@ -294,6 +297,28 @@ function renderPago() {
   document.querySelectorAll('input[name="modo"]').forEach(r => { r.checked = r.value === modo; });
   // Desde el 08/11/2026 todos los pagos van por PayPal (ya no hay transferencia bancaria).
   $('pago-metodo').textContent = C.t('pago.metodo_paypal');
+}
+
+/** "Tipo de envío": solo en países con dos servicios (hoy, EE. UU.). Cada opción muestra su precio para este pedido. */
+function renderEnvio() {
+  const cart = C.loadCart();
+  const base = paisBase(cart.pais);
+  const box = $('envio-tipo');
+  if (!base || !base.alternativa || base.envio_a_consultar) { box.hidden = true; box.innerHTML = ''; return; }
+  const elegido = cart.envio === base.alternativa.id ? base.alternativa.id : 'standard';
+  const opcion = (id, ayuda) => {
+    const p = conEnvio(base, id);
+    const tot = totales(cart.items, S.cat, p, S.ship);
+    const precio = cart.items.length ? ' · ' + C.money(tot.envio) : '';
+    return `
+      <label class="choice">
+        <input type="radio" name="envio" value="${C.esc(id)}" ${id === elegido ? 'checked' : ''}>
+        <span><strong>${C.esc(p.servicio + precio)}</strong><span class="help">${C.esc(C.t(ayuda))}</span></span>
+      </label>`;
+  };
+  box.innerHTML = `<legend class="block-title">${C.esc(C.t('envio.tipo_titulo'))}</legend>` +
+    opcion('standard', 'envio.standard_ayuda') + opcion(base.alternativa.id, 'envio.premium_ayuda');
+  box.hidden = false;
 }
 
 function paintLegalLabels() {
@@ -381,6 +406,7 @@ function resumenHtml(cart) {
 
 function renderResumen() {
   $('resumen').innerHTML = resumenHtml(C.loadCart());
+  renderEnvio(); // los precios de cada tipo de envío cambian con el número de réplicas
 }
 
 /** Texto plano para copiar y mandarnos por correo o Instagram si el envío falla. */
@@ -501,6 +527,14 @@ function wire() {
 
   $('f-prefijo').addEventListener('input', () => { prefijoTocado = true; });
 
+  $('envio-tipo').addEventListener('change', e => {
+    if (e.target.name !== 'envio') return;
+    const cart = C.loadCart();
+    cart.envio = e.target.value === 'premium' ? 'premium' : 'standard';
+    C.saveCart(cart);
+    $('resumen').innerHTML = resumenHtml(cart); // sin repintar las opciones, para no perder el foco
+  });
+
   document.querySelectorAll('input[name="modo"]').forEach(r => r.addEventListener('change', () => {
     const cart = C.loadCart();
     cart.modo = r.value === 'dos_partes' ? 'dos_partes' : 'completo';
@@ -592,6 +626,7 @@ function payload() {
       instagram: v('f-instagram')
     },
     pais: cart.pais,
+    envio: (paisDe(cart.pais) || {}).envioElegido || 'standard',
     modo_pago: cart.modo === 'dos_partes' ? 'dos_partes' : 'completo',
     items: cart.items.map(it => ({
       pid: it.pid,
