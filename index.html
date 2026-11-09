@@ -1751,8 +1751,8 @@
 }
   </script>
   <!-- /jsonld -->
-  <link rel="stylesheet" href="css/styles.css?v=20261108">
-  <script type="module" src="js/catalogo.js?v=20261108"></script>
+  <link rel="stylesheet" href="css/styles.css?v=20261109">
+  <script type="module" src="js/catalogo.js?v=20261109"></script>
 </head>
 <body data-meta="index">
   <a class="skip" href="#main" data-i18n="nav.saltar">Skip to content</a>
@@ -1785,13 +1785,12 @@
       <div class="wrap">
         <p class="kicker" data-i18n="hero.kicker">Forged layer by layer in Spain</p>
         <h1 data-i18n="hero.titulo">Full-size replicas for your wall, your shelf, your next convention</h1>
-        <p class="lead" data-i18n="hero.texto">Every replica is 3D printed to order and ships as a kit with its final finish: the color comes from the filament you pick. No sanding, no painting.</p>
-        <a class="btn btn-primary" href="#catalogo" data-i18n="hero.cta">Enter the armory</a>
-      </div>
-    </section>
-
-    <section id="como" class="how wrap" aria-labelledby="como-titulo" data-view="catalogo">
-      <h2 id="como-titulo" class="section-title" data-i18n="como.titulo">How we work</h2>
+        <p class="lead" data-i18n="hero.texto">In our forge world, every replica is forged to your specifications and in the colors you choose. It arrives ready to assemble, bolt together and wield: no sanding, no painting.</p>
+        <!-- "Cómo trabajamos": plegado por defecto para que en el móvil se vea el catálogo nada más entrar.
+             El texto sigue en la página (Google lo lee igual). -->
+        <details id="como" class="how">
+          <summary class="how-toggle"><span id="como-titulo" data-i18n="como.titulo">How we work</span></summary>
+          <div class="how-body">
       <p class="lead" data-i18n="como.intro">Replicas designed to be built like a real object, not to keep you at the workbench for weeks.</p>
       <ul class="how-grid">
         <li class="how-item">
@@ -1826,6 +1825,9 @@
           <p data-i18n="info.kit_texto">It arrives disassembled, like flat-pack furniture. Put it together in an evening.</p>
         </li>
       </ol>
+          </div>
+        </details>
+      </div>
     </section>
 
     <section id="catalogo" class="wrap catalog" data-view="catalogo">

@@ -145,4 +145,5 @@ Para probar la web con colores de stock sin el script, pon temporalmente `"api_u
 
 - **Correos**: una cuenta de Gmail gratuita puede enviar unos 100 correos al día con Apps Script. Cada pedido gasta 2.
 - **Antiabuso**: campo trampa oculto, 5 pedidos por email y día, cuerpo de 20 KB como máximo, bloqueo al escribir, y 20 consultas de estado por ID y hora.
-- **Seguridad**: los textos del cliente se guardan con formato de texto, así que algo como `=IMPORTXML(...)` nunca se ejecuta como fórmula.
+- **Freno global**: como mucho 10 pedidos por hora y 30 al día en total (`MAX_PEDIDOS_HORA` y `MAX_PEDIDOS_DIA_TOTAL` en Code.gs). Por encima, la web pide volver a intentarlo más tarde y la tienda recibe un aviso ("la web está frenando pedidos"), uno al día. Si un día hay muchos pedidos de verdad, subid los límites y desplegad una versión nueva.
+- **Seguridad**: los textos del cliente se guardan con formato de texto y sin los caracteres con los que empieza una fórmula (`=`, `+`, `-`, `@`), así que algo como `=IMPORTXML(...)` no se ejecuta ni aquí ni en ninguna hoja a la que se copie. En el correo al cliente, los enlaces que haya escrito en el nombre, la dirección o las notas salen como `[enlace]`.

@@ -128,6 +128,9 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     codigo + '\nreturn { instalar, doGet, doPost, hashEmail, AJUSTES };')(
     SpreadsheetApp, CacheService, LockService, MailApp, UrlFetchApp, Utilities, ContentService);
 
+  // Las pruebas mandan muchos pedidos seguidos: el freno global se prueba al final con sus valores reales.
+  const frenoReal = { hora: G.AJUSTES.MAX_PEDIDOS_HORA, dia: G.AJUSTES.MAX_PEDIDOS_DIA_TOTAL };
+  G.AJUSTES.MAX_PEDIDOS_HORA = G.AJUSTES.MAX_PEDIDOS_DIA_TOTAL = 10000;
   const cat = JSON.parse(ficheros['data/catalog.json']);
   const post = body => JSON.parse(G.doPost({ postData: { contents: typeof body === 'string' ? body : JSON.stringify(body) } }).content);
   const get = p => JSON.parse(G.doGet({ parameter: p }).content);
@@ -287,6 +290,19 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     r = post(pedido([item('las-pistol', {}, false, '=IMPORTXML("http://x","//a")')], { cliente: { nombre: '=HYPERLINK("http://x")', email: 'formula@example.com', telefono: '+34 612345678', direccion: 'Calle 1', cp: '08001', ciudad: 'BCN' } }));
     const fila = ped().getLastRow();
     check('Textos que empiezan por "=" se guardan como texto (formato @)', r.ok && ped().formats[fila][col('NOMBRE')] === '@' && ped().formats[fila][col('NOTAS_ORIGINAL')] === '@' && ped().formats[fila][col('TELEFONO')] === '@', ped().formats[fila].slice(0, 8).join(','));
+    check('Fórmulas neutralizadas: NOMBRE y NOTAS sin el "=" del principio', ped().data[fila - 1][col('NOMBRE')] === 'HYPERLINK("http://x")' && ped().data[fila - 1][col('NOTAS_ORIGINAL')] === '1: IMPORTXML("http://x","//a")', ped().data[fila - 1][col('NOMBRE')] + ' / ' + ped().data[fila - 1][col('NOTAS_ORIGINAL')]);
+    r = post(pedido([item('las-pistol')], { cliente: { nombre: ' +-@=SUM(A1)', email: 'f2@example.com', telefono: '+34 612345678', direccion: '-Calle 2', cp: '=1', ciudad: '@BCN', instagram: '@ana.res' } }));
+    const f2 = ultima();
+    check('Fórmulas neutralizadas también con + - @ y espacios delante (dirección, CP, ciudad, Instagram)', r.ok && f2[col('NOMBRE')] === 'SUM(A1)' && f2[col('DIRECCION')] === 'Calle 2' && f2[col('CP')] === '1' && f2[col('CIUDAD')] === 'BCN' && f2[col('INSTAGRAM')] === 'ana.res', [f2[col('NOMBRE')], f2[col('DIRECCION')], f2[col('CP')], f2[col('CIUDAD')], f2[col('INSTAGRAM')]].join(' | '));
+    r = post(pedido([item('las-pistol')], { cliente: { nombre: 'Ana', email: '=x@example.com', telefono: '+34 612345678', direccion: 'C 1', cp: '1', ciudad: 'X' } }));
+    check('Email que empieza por "=": rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+
+    // Enlaces en el correo al cliente
+    r = post(pedido([item('las-pistol', {}, false, 'Mira https://trampa.example/login y www.malo.net o banco-falso.com/entra')], { cliente: { nombre: 'Tu cuenta caduca: entra en cuenta-segura.com', email: 'enlaces@example.com', telefono: '+34 612345678', direccion: 'Calle Mayor 3', cp: '08001', ciudad: 'Barcelona' } }));
+    const mC = correos[correos.length - 2], mT = correos[correos.length - 1];
+    check('Correo al cliente: los enlaces del nombre y las notas salen como [enlace]', r.ok && !/trampa|malo\.net|banco-falso|cuenta-segura/.test(mC.body + mC.htmlBody) && mC.body.includes('[enlace]'), mC.body.split('\n').filter(l => l.includes('enlace')).join(' / '));
+    check('Copia de la tienda y hoja: texto original', mT.body.includes('cuenta-segura.com') && mT.body.includes('https://trampa.example/login') && ultima()[col('NOMBRE')].includes('cuenta-segura.com'));
+    check('Nombres normales no se tocan en el correo (J.R. Pérez, Mr.Smith)', (() => { post(pedido([item('las-pistol')], { cliente: { nombre: 'J.R. Pérez Mr.Smith', email: 'jr@example.com', telefono: '+34 612345678', direccion: 'Av. Diagonal 5.2B', cp: '08001', ciudad: 'Barcelona' } })); const m = correos[correos.length - 2]; return m.body.includes('J.R. Pérez Mr.Smith') && m.body.includes('Av. Diagonal 5.2B'); })());
 
     // Límite por email y día
     const mismo = 'repetido@example.com';
@@ -310,6 +326,19 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     e = post({ accion: 'estado', id: r.id, email: 'otra@example.com' });
     const e2 = post({ accion: 'estado', id: 'SR-ZZZZZZ', email: 'eva@example.com' });
     check('Email equivocado o ID inexistente: mismo "no_encontrado"', e.error === 'no_encontrado' && e2.error === 'no_encontrado' && JSON.stringify(e) === JSON.stringify(e2));
+
+    // Freno global (valores reales de Code.gs)
+    check('Freno global razonable: 10 por hora y 30 al día', frenoReal.hora === 10 && frenoReal.dia === 30, JSON.stringify(frenoReal));
+    const pedidosAntes = ped().getLastRow(), correosAntes = correos.length;
+    G.AJUSTES.MAX_PEDIDOS_HORA = pedidosAntes - 1 + 2; // caben 2 pedidos más en esta hora
+    let rf = [];
+    for (let i = 0; i < 4; i++) rf.push(post(pedido([item('las-pistol')])));
+    const avisos = correos.slice(correosAntes).filter(c => c.subject === 'Aviso: la web está frenando pedidos');
+    check('Freno por hora: los 2 primeros entran, los siguientes "ocupado" y no se guardan', rf[0].ok && rf[1].ok && rf[2].error === 'ocupado' && rf[3].error === 'ocupado' && ped().getLastRow() === pedidosAntes + 2, rf.map(x => x.ok ? 'ok' : x.error).join(','));
+    check('Freno: un solo aviso a la tienda aunque se rechacen varios', avisos.length === 1 && avisos[0].to === 'soyresinator@gmail.com', avisos.length);
+    G.AJUSTES.MAX_PEDIDOS_HORA = 10000; G.AJUSTES.MAX_PEDIDOS_DIA_TOTAL = ped().getLastRow() - 1;
+    r = post(pedido([item('las-pistol')]));
+    check('Freno por día: rechazado al llegar al máximo diario', r.error === 'ocupado', JSON.stringify(r));
   } catch (err) {
     check('Error inesperado', false, err.stack || err);
   }

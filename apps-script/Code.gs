@@ -21,6 +21,11 @@ const AJUSTES = {
   NOMBRE_REMITENTE: 'Soy Resinator',
   ZONA_HORARIA: 'Europe/Madrid',
   MAX_PEDIDOS_EMAIL_DIA: 5,
+  // Freno global contra abusos (alguien mandando pedidos falsos a muchos emails para usar nuestro Gmail):
+  // por encima de esto la web dice "algo ha fallado, inténtalo más tarde" y avisamos a la tienda una vez al día.
+  // Gmail deja ~100 destinatarios al día y cada pedido gasta 2 (cliente + tienda).
+  MAX_PEDIDOS_HORA: 10,
+  MAX_PEDIDOS_DIA_TOTAL: 30,
   MAX_BYTES: 20 * 1024,
   MAX_UNIDADES: 30,
   MAX_CONSULTAS_ID_HORA: 20,
@@ -32,7 +37,8 @@ const AJUSTES = {
 const IDIOMAS = ['en', 'es', 'pt', 'de', 'fr', 'it'];
 const ALFABETO_ID = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const RE_ID = /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/;
-const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+// El email empieza por letra o número: así nunca puede empezar como una fórmula (=, +, -, @).
+const RE_EMAIL = /^[A-Za-z0-9][^\s@]*@[^\s@]+\.[^\s@]{2,}$/;
 
 const H = { PEDIDOS: 'PEDIDOS_WEB', ESTADO: 'ESTADO_WEB', CONFIG: 'CONFIG', COLORES: 'COLORES' };
 
@@ -206,14 +212,16 @@ function crearPedido(b) {
   // 4. Validación de campos.
   const idioma = IDIOMAS.indexOf(b.idioma) >= 0 ? b.idioma : 'en';
   const cl = b.cliente || {};
+  // sinFormula: ningún texto del cliente empieza por = + - @, así no puede convertirse en fórmula
+  // ni aquí ni en ninguna hoja a la que se copie después. El teléfono ya lo valida su expresión regular.
   const cliente = {
-    nombre: limpiar(cl.nombre, 120),
+    nombre: sinFormula(limpiar(cl.nombre, 120)),
     email: limpiar(cl.email, 160).toLowerCase(),
     telefono: limpiar(cl.telefono, 30),
-    direccion: limpiar(cl.direccion, 200),
-    cp: limpiar(cl.cp, 12),
-    ciudad: limpiar(cl.ciudad, 100),
-    instagram: limpiar(cl.instagram, 60)
+    direccion: sinFormula(limpiar(cl.direccion, 200)),
+    cp: sinFormula(limpiar(cl.cp, 12)),
+    ciudad: sinFormula(limpiar(cl.ciudad, 100)),
+    instagram: sinFormula(limpiar(cl.instagram, 60))
   };
   if (cliente.nombre.length < 2 || !RE_EMAIL.test(cliente.email) || !cliente.direccion || !cliente.cp || !cliente.ciudad) {
     return { ok: false, error: 'datos_invalidos' };
@@ -265,7 +273,7 @@ function crearPedido(b) {
         filamento_serie: part.filamento_serie || ''
       });
     }
-    const nota = limpiar(it.nota, notaMax, true);
+    const nota = sinFormula(limpiar(it.nota, notaMax, true));
 
     // Extras: { tipo: cantidad }. Solo tipos que tiene el producto, enteros entre 0 y el máximo.
     const pedidosEx = it.extras === undefined || it.extras === null ? {} : it.extras;
@@ -300,7 +308,12 @@ function crearPedido(b) {
   const fecha = new Date();
   const fechaIso = fecha.toISOString();
   try {
-    if (pedidosHoy(cliente.email) >= AJUSTES.MAX_PEDIDOS_EMAIL_DIA) return { ok: false, error: 'demasiados_pedidos' };
+    const cuenta = contarPedidos(cliente.email);
+    if (cuenta.hora >= AJUSTES.MAX_PEDIDOS_HORA || cuenta.dia >= AJUSTES.MAX_PEDIDOS_DIA_TOTAL) {
+      avisarFreno(cuenta);
+      return { ok: false, error: 'ocupado' }; // la web no tiene texto para esto: muestra "algo ha fallado, inténtalo en unos minutos"
+    }
+    if (cuenta.email >= AJUSTES.MAX_PEDIDOS_EMAIL_DIA) return { ok: false, error: 'demasiados_pedidos' };
     id = nuevoId();
 
     const itemsJson = unidades.map(function (u) {
@@ -509,7 +522,15 @@ function notasOriginal(unidades) {
 /* =====================================================================
  * CORREOS
  * ===================================================================== */
-function correoCliente(ctx) {
+function correoCliente(ctxOriginal) {
+  // En el correo al cliente los enlaces que haya escrito (nombre, dirección, notas) salen como [enlace]:
+  // así nadie puede usar nuestro Gmail para mandar un enlace trampa a otra persona. La hoja y la copia de la tienda
+  // conservan el texto original.
+  const cl = ctxOriginal.cliente;
+  const ctx = Object.assign({}, ctxOriginal, {
+    cliente: Object.assign({}, cl, { nombre: sinEnlaces(cl.nombre), direccion: sinEnlaces(cl.direccion), cp: sinEnlaces(cl.cp), ciudad: sinEnlaces(cl.ciudad) }),
+    unidades: ctxOriginal.unidades.map(function (u) { return Object.assign({}, u, { nota: sinEnlaces(u.nota) }); })
+  });
   const L = ctx.idioma;
   const d = ficheroPages('i18n/' + L + '.json');
   const t = function (k, v) { return tr(d, k, v); };
@@ -688,18 +709,43 @@ function leerColores() {
     });
 }
 
-function pedidosHoy(email) {
+/** Pedidos de hoy de este email, de hoy en total y de la última hora (mirando los últimos 2000). */
+function contarPedidos(email) {
+  const out = { email: 0, dia: 0, hora: 0 };
   const sh = hoja(H.PEDIDOS);
   const n = sh.getLastRow() - 1;
-  if (n < 1) return 0;
-  const desde = Math.max(2, sh.getLastRow() - 1999); // basta con mirar los últimos 2000
+  if (n < 1) return out;
+  const desde = Math.max(2, sh.getLastRow() - 1999);
   const datos = sh.getRange(desde, 2, sh.getLastRow() - desde + 1, 4).getValues(); // B..E
-  const hoy = Utilities.formatDate(new Date(), AJUSTES.ZONA_HORARIA, 'yyyy-MM-dd');
-  return datos.filter(function (r) {
-    if (String(r[3]).trim().toLowerCase() !== email) return false;
+  const ahora = new Date();
+  const hoy = Utilities.formatDate(ahora, AJUSTES.ZONA_HORARIA, 'yyyy-MM-dd');
+  datos.forEach(function (r) {
     const f = r[0] instanceof Date ? r[0] : new Date(String(r[0]));
-    return !isNaN(f) && Utilities.formatDate(f, AJUSTES.ZONA_HORARIA, 'yyyy-MM-dd') === hoy;
-  }).length;
+    if (isNaN(f) || Utilities.formatDate(f, AJUSTES.ZONA_HORARIA, 'yyyy-MM-dd') !== hoy) return;
+    out.dia++;
+    if (ahora - f < 3600 * 1000) out.hora++;
+    if (String(r[3]).trim().toLowerCase() === email) out.email++;
+  });
+  return out;
+}
+
+/** Un solo correo al día a la tienda cuando salta el freno global. */
+function avisarFreno(cuenta) {
+  const cache = CacheService.getScriptCache();
+  const k = 'freno:' + Utilities.formatDate(new Date(), AJUSTES.ZONA_HORARIA, 'yyyy-MM-dd');
+  if (cache.get(k)) return;
+  cache.put(k, '1', 21600);
+  try {
+    MailApp.sendEmail({
+      to: AJUSTES.EMAIL_TIENDA,
+      name: AJUSTES.NOMBRE_REMITENTE,
+      subject: 'Aviso: la web está frenando pedidos',
+      body: 'La web ha recibido ' + cuenta.hora + ' pedidos en la última hora y ' + cuenta.dia + ' hoy.\n' +
+        'Por encima de ' + AJUSTES.MAX_PEDIDOS_HORA + ' por hora o ' + AJUSTES.MAX_PEDIDOS_DIA_TOTAL + ' al día deja de aceptarlos ' +
+        '(protección contra pedidos falsos).\n\nMirad la pestaña PEDIDOS_WEB: si son pedidos reales, subid los límites ' +
+        '(MAX_PEDIDOS_HORA y MAX_PEDIDOS_DIA_TOTAL en Code.gs) y desplegad una versión nueva.'
+    });
+  } catch (err) { console.error('aviso freno: ' + err); }
 }
 
 function nuevoId() {
@@ -745,6 +791,18 @@ function limpiar(v, max, multilinea) {
   s = multilinea ? s.replace(/[\u0000-\u0009\u000B\u000C\u000E-\u001F\u007F]/g, '').replace(/\r\n?/g, '\n')
     : s.replace(/[\u0000-\u001F\u007F]/g, ' ');
   return s.trim().slice(0, max);
+}
+
+/** Quita del principio los caracteres con los que una hoja de cálculo empieza una fórmula (= + - @). */
+function sinFormula(s) {
+  return String(s).replace(/^[\s=+\-@]+/, '');
+}
+
+/** Cambia por [enlace] las direcciones web (http..., www..., dominio.com/...) de un texto. */
+function sinEnlaces(s) {
+  return String(s === undefined || s === null ? '' : s).replace(
+    /\b(?:https?:\/\/|www\.)\S+|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|net|org|info|biz|io|co|me|xyz|top|site|online|link|click|app|dev|shop|live|ru|cn|tk)\b(?:\/\S*)?/gi,
+    '[enlace]');
 }
 
 function tr(dict, key, vars) {
