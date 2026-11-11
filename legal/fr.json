@@ -38,13 +38,12 @@
         "h": "Qui d'autre y a accès",
         "p": [
           "Pour fonctionner, nous utilisons ces services, qui traitent les données selon nos instructions :",
-          "Pour exécuter la commande, nous partageons aussi le strict nécessaire avec le transporteur (Correos : nom, adresse et téléphone) et avec PayPal, qui gère le paiement.",
+          "Pour exécuter la commande, nous partageons aussi le strict nécessaire avec le transporteur (Correos : nom, adresse et téléphone), avec Stripe (Stripe Payments Europe, Ltd., Irlande), qui traite les paiements par carte, et, si tu paies par virement, avec notre banque.",
           "Si ton colis part vers un pays situé hors de l'Espace économique européen (par exemple les États-Unis, la Suisse ou le Royaume-Uni), le transporteur et ses partenaires sur place traitent tes données de livraison dans ce pays. Ce transfert est nécessaire à l'exécution du contrat que tu conclus avec nous (article 49, paragraphe 1, point b, du RGPD). La Suisse et le Royaume-Uni bénéficient en outre d'une décision d'adéquation de la Commission européenne."
         ],
         "ul": [
           "Google (Google Ireland Limited) : nous enregistrons les commandes dans Google Sheets, les traitons avec Google Apps Script et t'écrivons avec Gmail. Google peut traiter des données hors de l'Espace économique européen avec les garanties du cadre de protection des données UE-États-Unis et des clauses contractuelles types.",
-          "GitHub (GitHub, Inc.) : héberge ce site. Comme tout serveur web, il reçoit ton adresse IP lors de ta visite.",
-          "Google Fonts : les polices de ce site sont chargées depuis des serveurs de Google, qui reçoivent ton adresse IP."
+          "GitHub (GitHub, Inc.) : héberge ce site. Comme tout serveur web, il reçoit ton adresse IP lors de ta visite."
         ]
       },
       {
@@ -81,7 +80,7 @@
         "h": "Ce que nous vendons",
         "p": [
           "Des répliques d'exposition grandeur nature, inspirées de la science-fiction et imprimées en 3D à la commande. Elles sont livrées démontées et non peintes : la couleur de chaque pièce est celle du filament.",
-          "Ce sont des objets décoratifs, sans capacité de tir ni mécanisme fonctionnel. Ce ne sont pas des jouets : elles contiennent de petites pièces et ne conviennent pas aux enfants de moins de 14 ans.",
+          "Ce sont des répliques d'exposition non fonctionnelles en plastique PLA. Elles ne peuvent tirer aucun projectile et n'ont aucun mécanisme fonctionnel. Ce ne sont pas des jouets : elles contiennent de petites pièces et sont déconseillées aux moins de 14 ans. Vérifie la législation locale et le règlement des événements avant d'en porter une en public.",
           "Comme ce sont des impressions FDM, il est normal de voir les lignes de couche et de légères différences de teinte entre lots de filament. Les photos du site sont nos propres impressions réelles ou des rendus de nos modèles."
         ]
       },
@@ -89,7 +88,7 @@
         "h": "Comment passer commande",
         "p": [
           "Tu choisis les répliques, les couleurs et les extras, tu remplis tes coordonnées et tu envoies la commande, sans créer de compte. À l'envoi, tu reçois un identifiant de commande à l'écran et par e-mail.",
-          "Sous 24 heures, nous t'envoyons les informations de paiement. La commande passe en production dès réception du paiement, ou du premier paiement si tu paies en deux fois."
+          "Sous 24 heures, nous t'envoyons un lien de paiement Stripe sécurisé. Ta commande passe en production à réception du paiement, ou du premier paiement si tu paies en deux fois."
         ]
       },
       {
@@ -98,14 +97,14 @@
           "Chaque réplique coûte le même prix dans tous les pays.",
           "Pour les livraisons dans l'Union européenne, les prix incluent la TVA.",
           "Pour les livraisons hors de l'Union européenne, le prix affiché est le prix final de notre vente. La douane du pays de destination peut percevoir des taxes ou droits d'importation à l'arrivée du colis. Ces montants sont à la charge du client.",
-          "Les frais de port dépendent du pays et de la taille du colis : on regroupe les répliques dans le moins de cartons possible. Le montant affiché avant l'envoi de la commande est une estimation ; on te confirme le montant final avec le lien de paiement. Si ton pays n'a pas de tarif de livraison, le total n'inclut pas la livraison : on te contactera pour te proposer la meilleure solution."
+          "La livraison dépend du pays et de la taille du colis : nous mettons les répliques dans le moins de cartons possible et appliquons le tarif fixe de Correos pour ton pays, que tu vois avant d'envoyer la commande. Si ton pays n'a pas de tarif, le total est sans livraison : nous te contactons pour te proposer la meilleure option."
         ]
       },
       {
         "h": "Paiement",
         "p": [
           "Tu peux payer la commande en une fois ou en deux fois : 50 % pour démarrer et les 50 % restants avant l'expédition.",
-          "Le paiement se fait avec PayPal, dans tous les pays. Rien n'est débité sur le site.",
+          "Après confirmation de ta commande, nous t'envoyons un lien de paiement Stripe sécurisé et tu paies par carte. Dans l'Union européenne, tu peux aussi payer par virement bancaire. Rien n'est débité sur le site. Le débit apparaîtra sur ton relevé sous le nom SOYRESINATOR.",
           "Si nous ne recevons pas le premier paiement dans les {dias_pago} jours suivant la commande, nous pouvons l'annuler. Si tu paies en deux fois, nous expédions la réplique à réception du second paiement."
         ]
       },
@@ -129,7 +128,24 @@
           "Si tu choisis des couleurs différentes de celles de série, la réplique est fabriquée selon tes spécifications et, comme le prévoit la loi dans ce cas, ne peut pas faire l'objet d'une rétractation.",
           "Si tu la commandes dans les couleurs de série, tu disposes de 14 jours calendaires à compter de la livraison pour te rétracter : écris-nous et renvoie-la inutilisée dans son carton. Nous remboursons le prix et la livraison standard ; les frais de retour sont à ta charge.",
           "Si une pièce arrive cassée ou défectueuse, ou s'il en manque une, écris-nous dans les {dias_incidencias} jours suivant la livraison avec des photos du colis et de la pièce. Nous la réimprimons et te l'envoyons gratuitement ou, si ce n'est pas possible, nous la remboursons.",
-          "Rien de tout cela ne limite ta garantie légale de conformité en tant que consommateur."
+          "En tant que consommateur, tu bénéficies d'une garantie légale de conformité de 3 ans à compter de la livraison. Elle couvre les défauts des pièces, pas les dommages causés lors du montage."
+        ]
+      },
+      {
+        "id": "formulario-desistimiento",
+        "h": "Modèle de formulaire de rétractation",
+        "p": [
+          "Remplis et renvoie ce formulaire uniquement si tu souhaites te rétracter du contrat. Tu peux l'envoyer par e-mail à {email}."
+        ],
+        "ul": [
+          "À l'attention de : Soy Resinator ({titular}), {domicilio}, {email}",
+          "Je vous notifie par la présente ma rétractation du contrat portant sur la vente du bien ci-dessous : …",
+          "Commandé le … / reçu le …",
+          "ID de commande : …",
+          "Nom du consommateur : …",
+          "Adresse du consommateur : …",
+          "Signature du consommateur (uniquement en cas de notification sur papier) : …",
+          "Date : …"
         ]
       },
       {
@@ -138,7 +154,8 @@
           "Ces conditions sont régies par le droit espagnol, sans préjudice des droits que te reconnaît en tant que consommateur la loi de ton pays de résidence."
         ]
       }
-    ]
+    ],
+    "borrador": "BORRADOR PARA REVISAR POR EL GESTOR (11/11/2026): garantía de 3 años y formulario de desistimiento"
   },
   "aviso": {
     "titulo": "Mentions légales",
@@ -195,6 +212,152 @@
         "h": "Droit applicable",
         "p": [
           "Les présentes mentions légales sont régies par le droit espagnol."
+        ]
+      }
+    ]
+  },
+  "faq": {
+    "titulo": "Questions fréquentes",
+    "secciones": [
+      {
+        "id": "no-funcional",
+        "h": "Est-ce une vraie arme ? Est-ce qu'elle fonctionne ?",
+        "p": [
+          "Non. Réplique d'exposition non fonctionnelle en plastique PLA. Elle ne peut tirer aucun projectile et n'a aucun mécanisme fonctionnel. Ce n'est pas un jouet : déconseillée aux moins de 14 ans. Vérifie la législation locale et le règlement des événements avant de la porter en public.",
+          "Nos répliques sont des pièces décoratives pour l'exposition, la collection et le cosplay."
+        ]
+      },
+      {
+        "h": "En quelle matière est-elle ?",
+        "p": [
+          "Plastique PLA, imprimé en 3D à la commande en Espagne. La couleur de chaque pièce est celle du filament : pas besoin de peindre."
+        ]
+      },
+      {
+        "h": "Est-elle livrée montée ?",
+        "p": [
+          "Elle arrive en kit avec toute la visserie. Tu la montes en une soirée, sans ponçage ni peinture."
+        ]
+      },
+      {
+        "h": "Comment payer ?",
+        "p": [
+          "Après confirmation de ta commande, nous t'envoyons un lien de paiement Stripe sécurisé. Paie par carte. Dans l'UE, tu peux aussi payer par virement bancaire. Le débit apparaîtra sur ton relevé sous le nom SOYRESINATOR."
+        ]
+      },
+      {
+        "h": "Combien de temps faut-il ?",
+        "p": [
+          "Environ 3 semaines à partir du paiement (ou du premier paiement). Lors de la commande, le site t'indique une date estimée selon notre file d'impression."
+        ]
+      },
+      {
+        "h": "Puis-je l'emporter à une convention ?",
+        "p": [
+          "Vérifie d'abord le règlement de l'événement et la législation de ton pays. Beaucoup d'événements contrôlent les accessoires à l'entrée."
+        ]
+      },
+      {
+        "h": "Puis-je la retourner ?",
+        "p": [
+          "Oui, dans les 14 jours suivant la livraison si tu l'as commandée dans les couleurs standard. Les répliques dans des couleurs choisies par toi sont fabriquées sur mesure et ne permettent pas la rétractation. Consulte la page Retours."
+        ]
+      }
+    ]
+  },
+  "envios": {
+    "titulo": "Politique de livraison",
+    "borrador": "BORRADOR PARA REVISAR POR EL GESTOR (11/11/2026)",
+    "secciones": [
+      {
+        "h": "Délai de fabrication et d'expédition",
+        "p": [
+          "Nous imprimons chaque réplique à la commande. Notre délai d'expédition idéal est d'environ 3 semaines à partir du paiement, ou du premier paiement si tu paies en deux fois. Lors de la commande, le site t'indique une date estimée selon notre file d'impression."
+        ]
+      },
+      {
+        "h": "Transporteur",
+        "p": [
+          "Nous expédions avec Correos : Paq Standard Internacional vers l'Europe et les États-Unis, et Paq Premium Internacional vers le reste du monde (aux États-Unis, tu peux choisir l'un ou l'autre). Livraison à domicile contre signature. Dès que le colis part, nous t'envoyons le numéro de suivi par e-mail."
+        ]
+      },
+      {
+        "h": "Où nous livrons",
+        "p": [
+          "Pays avec un tarif fixe : {paises}.",
+          "Ton pays n'y est pas ? Écris-nous à {email} et nous te dirons si nous pouvons y livrer et combien cela coûte."
+        ]
+      },
+      {
+        "h": "Frais de livraison",
+        "p": [
+          "Nous appliquons le tarif fixe de Correos selon ton pays et la taille du colis. Tu vois le montant exact avant d'envoyer la commande."
+        ]
+      },
+      {
+        "h": "Douanes et taxes",
+        "p": [
+          "Dans l'Union européenne, les prix incluent la TVA et il n'y a pas de douane. Hors UE, les taxes et droits d'importation sont à la charge du client à la réception."
+        ]
+      },
+      {
+        "h": "Pièces cassées ou manquantes",
+        "p": [
+          "Vérifie le carton à la réception. Si quelque chose arrive cassé ou s'il manque une pièce, écris-nous dans les {dias_incidencias} jours suivant la livraison avec des photos et nous la réimprimons sans frais."
+        ]
+      }
+    ]
+  },
+  "devoluciones": {
+    "titulo": "Retours et remboursements",
+    "borrador": "BORRADOR PARA REVISAR POR EL GESTOR (11/11/2026)",
+    "secciones": [
+      {
+        "h": "Droit de rétractation (14 jours)",
+        "p": [
+          "Si tu as commandé la réplique dans les couleurs standard, tu disposes de 14 jours calendaires à compter de la livraison pour te rétracter sans donner de motif. Écris-nous à {email} ; tu peux utiliser le modèle de formulaire de rétractation de nos conditions de vente.",
+          "Renvoie-nous la réplique non utilisée, dans son carton, dans les 14 jours suivant ta notification. Les frais de retour sont à ta charge."
+        ]
+      },
+      {
+        "h": "Exception : répliques personnalisées",
+        "p": [
+          "Les répliques dans des couleurs autres que les couleurs standard sont fabriquées selon tes spécifications et sont donc exclues du droit de rétractation (article 103 c) de la loi espagnole de protection des consommateurs)."
+        ]
+      },
+      {
+        "h": "Remboursements",
+        "p": [
+          "Nous remboursons le prix et la livraison standard dans les 14 jours suivant la réception de ta notification, par le même moyen de paiement (carte via Stripe ou virement). Nous pouvons attendre d'avoir reçu la réplique."
+        ]
+      },
+      {
+        "h": "Garantie légale",
+        "p": [
+          "Tu bénéficies d'une garantie légale de conformité de 3 ans à compter de la livraison. Elle couvre les défauts des pièces, pas les dommages causés lors du montage. Si une pièce est défectueuse, écris-nous avec des photos : nous la réimprimons ou, si ce n'est pas possible, nous la remboursons."
+        ]
+      }
+    ]
+  },
+  "contacto": {
+    "titulo": "Contact",
+    "borrador": "BORRADOR PARA REVISAR POR EL GESTOR (11/11/2026)",
+    "secciones": [
+      {
+        "h": "Écris-nous",
+        "p": [
+          "Nous répondons sous 48 heures ouvrées (du lundi au vendredi).",
+          "Si ton message concerne une commande, indique son ID (SR-…)."
+        ],
+        "ul": [
+          "E-mail : {email}",
+          "Instagram : {instagram}"
+        ]
+      },
+      {
+        "h": "Qui sommes-nous",
+        "p": [
+          "Soy Resinator est la marque de {titular}, numéro fiscal {nif}, {domicilio}."
         ]
       }
     ]

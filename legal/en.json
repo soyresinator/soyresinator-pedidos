@@ -38,13 +38,12 @@
         "h": "Who else sees it",
         "p": [
           "To run the shop we use these services, which process data on our instructions:",
-          "To fulfil your order we also share what is strictly needed with the carrier (Correos: name, address and phone) and with PayPal, which handles the payment.",
+          "To fulfill your order we also share what is strictly needed with the carrier (Correos: name, address and phone), with Stripe (Stripe Payments Europe, Ltd., Ireland), which processes card payments, and, if you pay by bank transfer, with our bank.",
           "If your parcel goes to a country outside the European Economic Area (for example, the United States, Switzerland or the United Kingdom), the carrier and its partners at destination process your delivery details in that country. This transfer is necessary to perform the contract you make with us (Article 49(1)(b) GDPR). Switzerland and the United Kingdom also have an adequacy decision from the European Commission."
         ],
         "ul": [
           "Google (Google Ireland Limited): we store orders in Google Sheets, process them with Google Apps Script and email you with Gmail. Google may process data outside the European Economic Area under the EU-US Data Privacy Framework and standard contractual clauses.",
-          "GitHub (GitHub, Inc.): hosts this website. Like any web server, it receives your IP address when you visit.",
-          "Google Fonts: this website's fonts are loaded from Google servers, which receive your IP address."
+          "GitHub (GitHub, Inc.): hosts this website. Like any web server, it receives your IP address when you visit."
         ]
       },
       {
@@ -81,7 +80,7 @@
         "h": "What we sell",
         "p": [
           "Full-size display replicas inspired by science fiction, 3D printed to order. They are delivered disassembled and unpainted: the color of each piece is the color of the filament.",
-          "They are decorative objects with no firing capability and no working mechanism. They are not toys: they contain small parts and are not suitable for children under 14.",
+          "They are non-functional display props made of PLA plastic. They cannot fire any projectile and have no working mechanism. They are not toys: they contain small parts and are not intended for children under 14. Check local laws and event rules before carrying one in public.",
           "Because they are FDM prints, layer lines and small shade differences between filament batches are normal. The photos on the website are our own real prints or renders of our models."
         ]
       },
@@ -89,7 +88,7 @@
         "h": "How ordering works",
         "p": [
           "You choose the replicas, colors and extras, fill in your details and send the order, without creating an account. When you send it, you get an order ID on screen and by email.",
-          "Within 24 hours we send you the payment details. Your order goes into production when we receive the payment, or the first payment if you pay in two parts."
+          "Within 24 hours we send you a secure Stripe payment link. Your order goes into production when we receive the payment, or the first payment if you pay in two parts."
         ]
       },
       {
@@ -98,14 +97,14 @@
           "Each replica costs the same in every country.",
           "For shipments within the European Union, prices include VAT.",
           "For shipments outside the European Union, the price you see is the final price of our sale. Customs in the destination country may charge import taxes or duties when the parcel arrives. Those amounts are paid by the customer.",
-          "Shipping depends on the country and the size of the parcel: we pack the replicas in as few boxes as possible. The amount you see before sending the order is an estimate; we confirm the final amount with the payment link. If your country has no shipping rate, the total does not include shipping: we'll get in touch to offer you the best option."
+          "Shipping depends on the country and the size of the parcel: we pack the replicas in as few boxes as possible and apply the fixed Correos rate for your country, which you see before sending the order. If your country has no shipping rate, the total does not include shipping: we'll get in touch to offer you the best option."
         ]
       },
       {
         "h": "Payment",
         "p": [
           "You can pay for the whole order at once or in two parts: 50% to get started and the remaining 50% before shipping.",
-          "Payment is made with PayPal, in every country. Nothing is charged on the website.",
+          "After we confirm your order, we send you a secure Stripe payment link and you pay by card. Customers in the European Union can also pay by bank transfer. Nothing is charged on the website. The charge will appear on your statement as SOYRESINATOR.",
           "If we don't receive the first payment within {dias_pago} days of the order, we may cancel it. If you pay in two parts, we ship the replica once we receive the second payment."
         ]
       },
@@ -129,7 +128,24 @@
           "If you choose colors other than the standard ones, the replica is made to your specifications and, as the law provides for these cases, cannot be returned under the right of withdrawal.",
           "If you order it in the standard colors, you have 14 calendar days from delivery to withdraw: write to us and return it unused in its box. We refund the price and standard shipping; return shipping is at your expense.",
           "If a piece arrives broken or defective, or something is missing, write to us within {dias_incidencias} days of delivery with photos of the parcel and the piece. We reprint it and send it to you at no cost or, if that isn't possible, refund it.",
-          "None of this limits your legal guarantee of conformity as a consumer."
+          "As a consumer you have a 3-year legal guarantee of conformity from delivery. It covers defects in the pieces, not damage caused during assembly."
+        ]
+      },
+      {
+        "id": "formulario-desistimiento",
+        "h": "Model withdrawal form",
+        "p": [
+          "Complete and return this form only if you wish to withdraw from the contract. You can send it by email to {email}."
+        ],
+        "ul": [
+          "To: Soy Resinator ({titular}), {domicilio}, {email}",
+          "I hereby give notice that I withdraw from my contract of sale of the following goods: …",
+          "Ordered on … / received on …",
+          "Order ID: …",
+          "Name of consumer: …",
+          "Address of consumer: …",
+          "Signature of consumer (only if this form is notified on paper): …",
+          "Date: …"
         ]
       },
       {
@@ -138,7 +154,8 @@
           "These terms are governed by Spanish law, without prejudice to the rights you have as a consumer under the law of your country of residence."
         ]
       }
-    ]
+    ],
+    "borrador": "BORRADOR PARA REVISAR POR EL GESTOR (11/11/2026): garantía de 3 años y formulario de desistimiento"
   },
   "aviso": {
     "titulo": "Legal notice",
@@ -159,7 +176,7 @@
       {
         "h": "What this website offers",
         "p": [
-          "This website lets you browse the Soy Resinator replica catalogue, place orders and track them. Purchases are governed by the terms of sale, and the handling of your data by the privacy policy."
+          "This website lets you browse the Soy Resinator replica catalog, place orders and track them. Purchases are governed by the terms of sale, and the handling of your data by the privacy policy."
         ]
       },
       {
@@ -195,6 +212,152 @@
         "h": "Applicable law",
         "p": [
           "This legal notice is governed by Spanish law."
+        ]
+      }
+    ]
+  },
+  "faq": {
+    "titulo": "Frequently asked questions",
+    "secciones": [
+      {
+        "id": "no-funcional",
+        "h": "Is it a real weapon? Does it work?",
+        "p": [
+          "No. Non-functional display prop made of PLA plastic. It cannot fire any projectile and has no working mechanism. Not a toy: not intended for children under 14. Check local laws and event rules before carrying it in public.",
+          "Our replicas are decorative pieces for display, collecting and cosplay."
+        ]
+      },
+      {
+        "h": "What is it made of?",
+        "p": [
+          "PLA plastic, 3D printed to order in Spain. The color of each piece is the color of the filament: no painting needed."
+        ]
+      },
+      {
+        "h": "Does it arrive assembled?",
+        "p": [
+          "It arrives as a kit with all the screws. You put it together in an evening, without sanding or painting."
+        ]
+      },
+      {
+        "h": "How do I pay?",
+        "p": [
+          "After we confirm your order, we send you a secure Stripe payment link. Pay by card. EU customers can also pay by bank transfer. The charge will appear on your statement as SOYRESINATOR."
+        ]
+      },
+      {
+        "h": "How long does it take?",
+        "p": [
+          "About 3 weeks from your payment (or first payment). When you order, the website shows an estimated date based on our print queue."
+        ]
+      },
+      {
+        "h": "Can I take it to a convention?",
+        "p": [
+          "Check the event's rules and the laws where you live first. Many events ask for props to be checked at the entrance."
+        ]
+      },
+      {
+        "h": "Can I return it?",
+        "p": [
+          "Yes, within 14 days of delivery if you ordered it in the standard colors. Replicas in colors you chose are made to your specifications and cannot be returned under the right of withdrawal. See the Returns page."
+        ]
+      }
+    ]
+  },
+  "envios": {
+    "titulo": "Shipping policy",
+    "borrador": "BORRADOR PARA REVISAR POR EL GESTOR (11/11/2026)",
+    "secciones": [
+      {
+        "h": "Production and shipping time",
+        "p": [
+          "We print each replica to order. Our ideal shipping time is about 3 weeks from your payment, or first payment if you pay in two parts. When you order, the website shows an estimated date based on our print queue."
+        ]
+      },
+      {
+        "h": "Carrier",
+        "p": [
+          "We ship with Correos: Paq Standard Internacional to Europe and the United States, and Paq Premium Internacional to the rest of the world (in the United States you can choose either). Home delivery with signature. When the parcel leaves, we email you the tracking number."
+        ]
+      },
+      {
+        "h": "Where we ship",
+        "p": [
+          "Countries with a fixed rate: {paises}.",
+          "Not on the list? Write to us at {email} and we'll tell you if we can ship there and how much it costs."
+        ]
+      },
+      {
+        "h": "Shipping costs",
+        "p": [
+          "We apply the fixed Correos rate for your country and parcel size. You see the exact amount before you send the order."
+        ]
+      },
+      {
+        "h": "Customs and taxes",
+        "p": [
+          "Within the European Union, prices include VAT and there are no customs charges. Outside the EU, import taxes and customs duties are paid by the customer on arrival."
+        ]
+      },
+      {
+        "h": "Damaged or missing parts",
+        "p": [
+          "Check the box when you receive it. If something arrives broken or missing, write to us within {dias_incidencias} days of delivery with photos and we'll reprint it at no cost."
+        ]
+      }
+    ]
+  },
+  "devoluciones": {
+    "titulo": "Returns and refunds",
+    "borrador": "BORRADOR PARA REVISAR POR EL GESTOR (11/11/2026)",
+    "secciones": [
+      {
+        "h": "Right of withdrawal (14 days)",
+        "p": [
+          "If you ordered the replica in the standard colors, you have 14 calendar days from delivery to withdraw from the purchase without giving any reason. Write to {email}; you can use the model withdrawal form in our terms of sale.",
+          "Return the replica unused in its box within 14 days of telling us. Return shipping is at your expense."
+        ]
+      },
+      {
+        "h": "Exception: personalized replicas",
+        "p": [
+          "Replicas made in colors other than the standard ones are made to your specifications, so they are excluded from the right of withdrawal (Article 103(c) of the Spanish consumer protection law)."
+        ]
+      },
+      {
+        "h": "Refunds",
+        "p": [
+          "We refund the price and standard shipping within 14 days of receiving your notice, using the same payment method (card through Stripe or bank transfer). We may wait until we receive the replica back."
+        ]
+      },
+      {
+        "h": "Legal guarantee",
+        "p": [
+          "You have a 3-year legal guarantee of conformity from delivery. It covers defects in the pieces, not damage caused during assembly. If a piece is defective, write to us with photos: we reprint it or, if that isn't possible, refund it."
+        ]
+      }
+    ]
+  },
+  "contacto": {
+    "titulo": "Contact",
+    "borrador": "BORRADOR PARA REVISAR POR EL GESTOR (11/11/2026)",
+    "secciones": [
+      {
+        "h": "Write to us",
+        "p": [
+          "We reply within 48 business hours (Monday to Friday).",
+          "If your message is about an order, include your order ID (SR-…)."
+        ],
+        "ul": [
+          "Email: {email}",
+          "Instagram: {instagram}"
+        ]
+      },
+      {
+        "h": "Who we are",
+        "p": [
+          "Soy Resinator is the brand of {titular}, tax ID {nif}, {domicilio}."
         ]
       }
     ]

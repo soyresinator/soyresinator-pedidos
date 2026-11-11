@@ -1,7 +1,7 @@
 // Soy Resinator · catálogo (index.html). Arranca también la vista de pedido.
-import * as C from './core.js?v=20261110';
-import * as P from './carrito.js?v=20261110';
-import { plazoDias } from './calc.js?v=20261110';
+import * as C from './core.js?v=20261111';
+import * as P from './carrito.js?v=20261111';
+import { plazoDias } from './calc.js?v=20261111';
 
 const state = {
   cfg: null, cat: null, ship: null, serie: [],
@@ -166,6 +166,7 @@ function card(p, tax) {
           <p class="sr-only">${C.esc(C.t('cat.incluye'))}</p>
           <ul class="includes">${includes}</ul>
         </div>
+        <p class="nf-line">${C.esc(C.t('aviso.nf_corto'))} · <a href="faq.html#no-funcional">${C.esc(C.t('aviso.mas'))}</a></p>
         ${plazo}
         ${colors}
         ${extras}

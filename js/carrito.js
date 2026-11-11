@@ -1,7 +1,7 @@
 // Soy Resinator · vista de pedido (#pedido en index.html)
 // Tarjeta por unidad, datos y envío, pago, resumen, envío al Apps Script y confirmación.
-import * as C from './core.js?v=20261110';
-import { totales, plazoDias, extrasDe, conEnvio } from './calc.js?v=20261110';
+import * as C from './core.js?v=20261111';
+import { totales, plazoDias, extrasDe, conEnvio } from './calc.js?v=20261111';
 
 const $ = id => document.getElementById(id);
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -295,8 +295,8 @@ function renderPago() {
   if (pais && !prefijoTocado && !$('f-prefijo').value) $('f-prefijo').value = pais.prefijo;
   const modo = cart.modo === 'dos_partes' ? 'dos_partes' : 'completo';
   document.querySelectorAll('input[name="modo"]').forEach(r => { r.checked = r.value === modo; });
-  // Desde el 08/11/2026 todos los pagos van por PayPal (ya no hay transferencia bancaria).
-  $('pago-metodo').textContent = C.t('pago.metodo_paypal');
+  // Desde el 11/11/2026: enlace de pago de Stripe enviado a mano (tarjeta) y, en la UE, también transferencia.
+  $('pago-metodo').textContent = C.t('pago.metodo');
 }
 
 /** "Tipo de envío": solo en países con dos servicios (hoy, EE. UU.). Cada opción muestra su precio para este pedido. */
