@@ -170,6 +170,7 @@
           "NIF: {nif}",
           "Domicílio: {domicilio}",
           "E-mail: {email}",
+          "Telefone: +34 672 065 300",
           "Instagram: {instagram}"
         ]
       },
@@ -351,6 +352,7 @@
         ],
         "ul": [
           "E-mail: {email}",
+          "Telefone: +34 672 065 300",
           "Instagram: {instagram}"
         ]
       },

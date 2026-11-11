@@ -170,6 +170,7 @@
           "Tax ID (NIF): {nif}",
           "Address: {domicilio}",
           "Email: {email}",
+          "Phone: +34 672 065 300",
           "Instagram: {instagram}"
         ]
       },
@@ -351,6 +352,7 @@
         ],
         "ul": [
           "Email: {email}",
+          "Phone: +34 672 065 300",
           "Instagram: {instagram}"
         ]
       },

@@ -170,6 +170,7 @@
           "Codice fiscale (NIF): {nif}",
           "Indirizzo: {domicilio}",
           "E-mail: {email}",
+          "Telefono: +34 672 065 300",
           "Instagram: {instagram}"
         ]
       },
@@ -351,6 +352,7 @@
         ],
         "ul": [
           "E-mail: {email}",
+          "Telefono: +34 672 065 300",
           "Instagram: {instagram}"
         ]
       },
