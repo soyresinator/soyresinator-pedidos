@@ -62,7 +62,8 @@
       {
         "h": "Cookies and storage",
         "p": [
-          "This website uses no cookies and no analytics. It only stores in your browser (localStorage) the order you're putting together and your chosen language, so you don't lose them when you come back. You can delete them at any time from your browser settings."
+          "This website uses no cookies. It only stores in your browser (localStorage) the order you're putting together and your chosen language, so you don't lose them when you come back. You can delete them at any time from your browser settings.",
+          "To know how many visits we get, we use Cloudflare Web Analytics, by Cloudflare, Inc. It uses no cookies, stores nothing in your browser and does not identify you: it only shows us aggregate figures, such as page views, country of origin or device type."
         ]
       }
     ]
@@ -170,7 +171,7 @@
           "Tax ID (NIF): {nif}",
           "Address: {domicilio}",
           "Email: {email}",
-          "Phone: +34 672 065 300",
+          "Phone: {telefono}",
           "Instagram: {instagram}"
         ]
       },
@@ -352,7 +353,7 @@
         ],
         "ul": [
           "Email: {email}",
-          "Phone: +34 672 065 300",
+          "Phone: {telefono}",
           "Instagram: {instagram}"
         ]
       },

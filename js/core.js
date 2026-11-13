@@ -322,6 +322,21 @@ export function colorName(c) {
   return n[lang] || dict['color.' + c.id] || n.es || c.id;
 }
 
+/* ---------- Contador de visitas (Cloudflare Web Analytics, sin cookies) ----------
+ * Solo se carga si data/config.json tiene "analitica_cf" con el token del sitio. El token no es
+ * secreto: Cloudflare lo publica en el código de cualquier web que use el contador.
+ * No se carga en localhost, para no contar nuestras pruebas. */
+function contadorVisitas(cfg) {
+  const token = String(cfg.analitica_cf || '').trim();
+  if (!/^[0-9a-f]{32}$/i.test(token) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return;
+  if (document.querySelector('script[data-cf-beacon]')) return;
+  const s = document.createElement('script');
+  s.defer = true;
+  s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  s.setAttribute('data-cf-beacon', JSON.stringify({ token }));
+  document.head.appendChild(s);
+}
+
 /* ---------- Cabecera y pie comunes ---------- */
 export function setupChrome(cfg) {
   // Selector de idioma
@@ -368,6 +383,8 @@ export function setupChrome(cfg) {
   };
   paintIg();
   document.addEventListener('sr:lang', paintIg);
+
+  contadorVisitas(cfg);
 
   // Contador del carrito
   const paintCount = () => {

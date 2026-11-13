@@ -62,7 +62,8 @@
       {
         "h": "Cookies e armazenamento",
         "p": [
-          "Este site não usa cookies nem análises. Só guarda no seu navegador (localStorage) o pedido que você está preparando e o idioma escolhido, para não perdê-los ao voltar. Você pode apagá-los quando quiser nas configurações do navegador."
+          "Este site não usa cookies. Só guarda no seu navegador (localStorage) o pedido que você está preparando e o idioma escolhido, para não perdê-los ao voltar. Você pode apagá-los quando quiser nas configurações do navegador.",
+          "Para saber quantas visitas recebemos, usamos o Cloudflare Web Analytics, da Cloudflare, Inc. Ele não usa cookies, não guarda nada no seu navegador e não identifica você: só nos mostra números agregados, como páginas vistas, país de origem ou tipo de dispositivo."
         ]
       }
     ]
@@ -170,7 +171,7 @@
           "NIF: {nif}",
           "Domicílio: {domicilio}",
           "E-mail: {email}",
-          "Telefone: +34 672 065 300",
+          "Telefone: {telefono}",
           "Instagram: {instagram}"
         ]
       },
@@ -352,7 +353,7 @@
         ],
         "ul": [
           "E-mail: {email}",
-          "Telefone: +34 672 065 300",
+          "Telefone: {telefono}",
           "Instagram: {instagram}"
         ]
       },

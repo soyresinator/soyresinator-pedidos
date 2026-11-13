@@ -158,7 +158,10 @@
         { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
       ],
       "caja": "larga",
-      "partes": []
+      "partes": [
+        { "grupo": "negro", "etiqueta": "parte.partes_negras", "gramos": 399, "de_serie": "negro", "opciones": ["negro", "verde-oscuro"],
+          "placas": [3, 7], "filamento_serie": "FIL-PLAM-CHARCOAL" }
+      ]
     },
     {
       "id": "trooper-las-rifle",
@@ -200,7 +203,9 @@
       "caja": "pistola",
       "partes": [
         { "grupo": "verde", "etiqueta": "parte.cuerpo_verde", "gramos": 156, "de_serie": "verde-oscuro", "opciones": ["verde-oscuro", "negro"],
-          "placas": [3], "filamento_serie": "FIL-PLAM-DARKGREEN" }
+          "placas": [7], "filamento_serie": "FIL-PLAM-DARKGREEN" },
+        { "grupo": "negro", "etiqueta": "parte.partes_negras", "gramos": 171, "de_serie": "negro", "opciones": ["negro", "verde-oscuro"],
+          "placas": [1, 2, 5, 6], "filamento_serie": "FIL-PLAM-CHARCOAL" }
       ]
     },
     {

@@ -1,6 +1,8 @@
 {
   "api_url": "https://script.google.com/macros/s/AKfycbxme_1BIKcj4dvzoqQN2ZDa-y88-6L7766GSZ-XQe4FNf6-wz8uS3i6jo7MwsFuFCIB/exec",
   "email": "soyresinator@gmail.com",
+  "telefono": "+34 672 065 300",
+  "analitica_cf": "",
   "instagram": "soyresinator",
   "legal": {
     "titular": "Nicole Canesin Costa",
@@ -8,7 +10,7 @@
     "domicilio": "Paseo de la Chopera 15, 2.º C, 28045 Madrid (España)",
     "dias_pago": 7,
     "dias_incidencias": 7,
-    "actualizado": "2026-11-11"
+    "actualizado": "2026-11-13"
   },
   "idiomas": ["en", "es", "de", "fr", "it"],
   "idioma_defecto": "en",

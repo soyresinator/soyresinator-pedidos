@@ -62,7 +62,8 @@
       {
         "h": "Cookie e memorizzazione",
         "p": [
-          "Questo sito non usa cookie né strumenti di analisi. Salva nel tuo browser (localStorage) solo l'ordine che stai preparando e la lingua scelta, così non li perdi quando torni. Puoi cancellarli quando vuoi dalle impostazioni del browser."
+          "Questo sito non usa cookie. Salva nel tuo browser (localStorage) solo l'ordine che stai preparando e la lingua scelta, così non li perdi quando torni. Puoi cancellarli quando vuoi dalle impostazioni del browser.",
+          "Per sapere quante visite riceviamo usiamo Cloudflare Web Analytics, di Cloudflare, Inc. Non usa cookie, non salva nulla nel tuo browser e non ti identifica: ci mostra solo dati aggregati, come pagine viste, paese di provenienza o tipo di dispositivo."
         ]
       }
     ]
@@ -170,7 +171,7 @@
           "Codice fiscale (NIF): {nif}",
           "Indirizzo: {domicilio}",
           "E-mail: {email}",
-          "Telefono: +34 672 065 300",
+          "Telefono: {telefono}",
           "Instagram: {instagram}"
         ]
       },
@@ -352,7 +353,7 @@
         ],
         "ul": [
           "E-mail: {email}",
-          "Telefono: +34 672 065 300",
+          "Telefono: {telefono}",
           "Instagram: {instagram}"
         ]
       },

@@ -1,7 +1,7 @@
 // Soy Resinator · páginas de texto: privacidad, condiciones, aviso legal, preguntas frecuentes, envíos,
 // devoluciones y contacto. Los textos salen de legal/<idioma>.json; los datos de la titular, de
 // data/config.json ("legal"), y la lista de países con tarifa, de data/shipping.json.
-import * as C from './core.js?v=20261111';
+import * as C from './core.js?v=20261113';
 
 let cfg = null;
 let ship = null;
@@ -29,7 +29,14 @@ async function pintar() {
     email: cfg.email, instagram: '@' + cfg.instagram,
     paises: paisesConTarifa()
   };
-  const sub = s => C.esc(s).replace(/\{(\w+)\}/g, (m, k) => (vars[k] !== undefined ? C.esc(vars[k]) : m));
+  // Correo y teléfono salen como enlaces (en el móvil, tocar el número abre la llamada).
+  const tel = String(cfg.telefono || '');
+  const enlaces = {
+    email: cfg.email ? `<a href="mailto:${C.esc(cfg.email)}">${C.esc(cfg.email)}</a>` : undefined,
+    telefono: tel ? `<a href="tel:${C.esc(tel.replace(/[^\d+]/g, ''))}">${C.esc(tel)}</a>` : undefined
+  };
+  const sub = s => C.esc(s).replace(/\{(\w+)\}/g, (m, k) =>
+    (enlaces[k] !== undefined ? enlaces[k] : vars[k] !== undefined ? C.esc(vars[k]) : m));
 
   document.title = `${d.titulo} · Soy Resinator`;
   document.getElementById('legal-titulo').textContent = d.titulo;
