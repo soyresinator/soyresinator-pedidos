@@ -286,7 +286,7 @@
   "resena.enviar": "Invia recensione",
   "resena.enviando": "Invio…",
   "resena.gracias": "Grazie!",
-  "resena.gracias_texto": "Abbiamo ricevuto la tua recensione. La pubblicheremo sul sito appena l'avremo letta.",
+  "resena.gracias_texto": "Abbiamo ricevuto la tua recensione. Apparirà a breve sul sito.",
   "resena.ya": "Ci hai già inviato la tua recensione per questo ordine. Grazie!",
   "resena.invalido": "Questo link non è valido. Usa il pulsante dell'e-mail che ti abbiamo inviato o scrivici.",
   "resena.no_entregado": "Potrai lasciare la tua recensione quando l'ordine sarà consegnato.",
@@ -295,8 +295,8 @@
   "resena.err_texto": "Scrivi almeno 10 caratteri.",
   "resena.err_consent": "Ci serve il tuo permesso per pubblicarla.",
   "resena.err_datos": "Controlla i dati della recensione.",
-  "rev.titulo": "Cosa si dice nella forgia",
-  "rev.verificadas": "Recensioni di clienti con ordine consegnato, controllate prima della pubblicazione. Pubblichiamo sia le belle sia le brutte.",
+  "rev.titulo": "Cosa dicono i nostri clienti",
+  "rev.verificadas": "Solo i clienti con un ordine consegnato possono recensire. Pubblichiamo sia le belle sia le brutte; tratteniamo solo quelle con insulti o dati personali.",
   "rev.media_total": "{media} su 5 · {n} recensioni",
   "rev.media_aria": "{media} su 5 stelle, {n} recensioni",
   "rev.estrellas_aria": "{n} su 5 stelle",
@@ -304,5 +304,7 @@
   "mail.res_intro": "Speriamo che tu abbia già montato il tuo ordine ({productos}). Ci racconti cosa ne pensi? La tua opinione aiuta altri collezionisti a decidere e noi a migliorare la forgia. Bastano due minuti.",
   "mail.res_boton": "Lascia la mia recensione",
   "mail.res_publicar": "La pubblicheremo su soyresinator.com con il nome che scegli, bella o brutta. Se qualcosa non è andato bene, rispondi a questa e-mail e lo sistemiamo.",
-  "mail.res_baja": "Ti scriviamo solo questa volta per il tuo ordine. Se non vuoi ricevere e-mail come questa, rispondi con la parola STOP."
+  "mail.res_baja": "Ti scriviamo solo questa volta per il tuo ordine. Se non vuoi ricevere e-mail come questa, rispondi con la parola STOP.",
+  "rev.media_total_1": "{media} su 5 · 1 recensione",
+  "rev.media_aria_1": "{media} su 5 stelle, 1 recensione"
 }

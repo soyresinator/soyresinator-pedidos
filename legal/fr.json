@@ -275,7 +275,7 @@
         "id": "resenas",
         "h": "Les avis sont-ils réels ?",
         "p": [
-          "Oui. Seules les personnes ayant reçu une commande de notre part peuvent laisser un avis : le lien arrive par e-mail une fois la commande livrée et ne vaut que pour un seul avis. Nous les lisons avant de les publier et publions les bons comme les mauvais ; nous ne retirons que ceux qui contiennent des insultes, des données personnelles ou qui ne parlent pas du produit. Nous ne payons pas les avis et n'offrons pas de réduction en échange."
+          "Oui. Seules les personnes ayant reçu une commande de notre part peuvent laisser un avis : le lien arrive par e-mail une fois la commande livrée et ne vaut que pour un seul avis. Les avis sont publiés tels que le client les écrit, bons ou mauvais. Un filtre automatique retient ceux qui contiennent des insultes, des données personnelles, des marques tierces ou qui parlent de vraies armes, et nous les vérifions à la main. Nous ne payons pas les avis et n'offrons pas de réduction en échange."
         ]
       }
     ]

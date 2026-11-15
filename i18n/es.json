@@ -286,7 +286,7 @@
   "resena.enviar": "Enviar reseña",
   "resena.enviando": "Enviando…",
   "resena.gracias": "¡Gracias!",
-  "resena.gracias_texto": "Hemos recibido tu reseña. La publicaremos en la web en cuanto la leamos.",
+  "resena.gracias_texto": "Hemos recibido tu reseña. Saldrá en la web en breve.",
   "resena.ya": "Ya nos enviaste tu reseña de este pedido. ¡Gracias!",
   "resena.invalido": "Este enlace no es válido. Usa el botón del correo que te enviamos o escríbenos.",
   "resena.no_entregado": "Podrás dejar tu reseña cuando tu pedido esté entregado.",
@@ -295,8 +295,8 @@
   "resena.err_texto": "Escribe al menos 10 caracteres.",
   "resena.err_consent": "Para publicarla necesitamos tu permiso.",
   "resena.err_datos": "Revisa los datos de la reseña.",
-  "rev.titulo": "Lo que dicen en la forja",
-  "rev.verificadas": "Reseñas de clientes con pedido entregado, revisadas antes de publicarse. Publicamos las buenas y las malas.",
+  "rev.titulo": "Lo que dicen nuestros clientes",
+  "rev.verificadas": "Solo pueden opinar clientes con un pedido entregado. Publicamos las buenas y las malas; solo retenemos las que tienen insultos o datos personales.",
   "rev.media_total": "{media} de 5 · {n} reseñas",
   "rev.media_aria": "{media} de 5 estrellas, {n} reseñas",
   "rev.estrellas_aria": "{n} de 5 estrellas",
@@ -304,5 +304,7 @@
   "mail.res_intro": "Esperamos que ya hayas montado tu pedido ({productos}). ¿Nos cuentas qué te ha parecido? Tu opinión ayuda a otros coleccionistas a decidirse y a nosotros a mejorar la forja. Son dos minutos.",
   "mail.res_boton": "Dejar mi reseña",
   "mail.res_publicar": "La publicaremos en soyresinator.com con el nombre que elijas, sea buena o mala. Si algo no ha ido bien, responde a este correo y lo arreglamos.",
-  "mail.res_baja": "Solo te escribimos esta vez por tu pedido. Si no quieres recibir más correos así, responde con la palabra BAJA."
+  "mail.res_baja": "Solo te escribimos esta vez por tu pedido. Si no quieres recibir más correos así, responde con la palabra BAJA.",
+  "rev.media_total_1": "{media} de 5 · 1 reseña",
+  "rev.media_aria_1": "{media} de 5 estrellas, 1 reseña"
 }

@@ -308,7 +308,7 @@
   "resena.enviar": "Enviar avaliação",
   "resena.enviando": "Enviando…",
   "resena.gracias": "Obrigado!",
-  "resena.gracias_texto": "Recebemos sua avaliação. Vamos publicá-la no site assim que a lermos.",
+  "resena.gracias_texto": "Recebemos sua avaliação. Ela vai aparecer no site em breve.",
   "resena.ya": "Você já nos enviou sua avaliação deste pedido. Obrigado!",
   "resena.invalido": "Este link não é válido. Use o botão do e-mail que enviamos ou fale conosco.",
   "resena.no_entregado": "Você poderá deixar sua avaliação quando o pedido for entregue.",
@@ -317,8 +317,8 @@
   "resena.err_texto": "Escreva pelo menos 10 caracteres.",
   "resena.err_consent": "Precisamos da sua permissão para publicá-la.",
   "resena.err_datos": "Revise os dados da avaliação.",
-  "rev.titulo": "O que dizem na forja",
-  "rev.verificadas": "Avaliações de clientes com pedido entregue, revisadas antes de publicar. Publicamos as boas e as ruins.",
+  "rev.titulo": "O que dizem nossos clientes",
+  "rev.verificadas": "Só clientes com pedido entregue podem avaliar. Publicamos as boas e as ruins; só retemos as que têm insultos ou dados pessoais.",
   "rev.media_total": "{media} de 5 · {n} avaliações",
   "rev.media_aria": "{media} de 5 estrelas, {n} avaliações",
   "rev.estrellas_aria": "{n} de 5 estrelas",
@@ -326,5 +326,7 @@
   "mail.res_intro": "Esperamos que você já tenha montado seu pedido ({productos}). Conta o que achou? Sua opinião ajuda outros colecionadores a decidir e nos ajuda a melhorar a forja. São dois minutos.",
   "mail.res_boton": "Deixar minha avaliação",
   "mail.res_publicar": "Vamos publicá-la em soyresinator.com com o nome que você escolher, boa ou ruim. Se algo deu errado, responda a este e-mail e resolvemos.",
-  "mail.res_baja": "Só escrevemos esta vez por causa do seu pedido. Se não quiser receber e-mails assim, responda com a palavra SAIR."
+  "mail.res_baja": "Só escrevemos esta vez por causa do seu pedido. Se não quiser receber e-mails assim, responda com a palavra SAIR.",
+  "rev.media_total_1": "{media} de 5 · 1 avaliação",
+  "rev.media_aria_1": "{media} de 5 estrelas, 1 avaliação"
 }

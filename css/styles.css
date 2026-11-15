@@ -329,6 +329,7 @@ body.has-float .toast { bottom: 80px; }
 .extra-op .select { flex: 1; min-width: 0; }
 /* Reseñas: portada, nota en cada tarjeta y formulario (resena.html) */
 .reviews { margin-top: 40px; }
+.reviews-note { margin: -4px 0 12px; }
 .reviews-avg { font-size: 1.05rem; margin: 0 0 16px; }
 .reviews-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); margin-bottom: 12px; }
 .review { border: 1px solid var(--line); border-radius: 8px; padding: 16px; background: var(--surface); display: grid; gap: 8px; align-content: start; }
@@ -338,6 +339,8 @@ body.has-float .toast { bottom: 80px; }
 .rating-line { margin: -4px 0 0; font-size: .95rem; }
 .rating-line a { color: var(--gold-hi); text-decoration: none; }
 .stars-field { border: 0; padding: 0; margin: 0 0 16px; }
+/* El título "¡Gracias!" recibe el foco para los lectores de pantalla; no es un control, no necesita el recuadro. */
+#r-gracias-tit:focus { outline: none; }
 .stars-field legend { font-weight: 600; margin-bottom: 6px; }
 .stars { display: inline-flex; gap: 4px; }
 .star { position: relative; cursor: pointer; }

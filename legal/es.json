@@ -275,7 +275,7 @@
         "id": "resenas",
         "h": "¿Las reseñas son reales?",
         "p": [
-          "Sí. Solo puede opinar quien ha recibido un pedido nuestro: el enlace llega por correo cuando el pedido está entregado y vale para una sola reseña. Las leemos antes de publicarlas y publicamos tanto las buenas como las malas; solo quitamos las que tienen insultos, datos personales o no hablan del producto. No pagamos ni damos descuentos por reseñas."
+          "Sí. Solo puede opinar quien ha recibido un pedido nuestro: el enlace llega por correo cuando el pedido está entregado y vale para una sola reseña. Las reseñas se publican tal como las escribe el cliente, buenas o malas. Un filtro automático retiene las que tienen insultos, datos personales, marcas de terceros o hablan de armas reales, y esas las revisamos a mano. No pagamos ni damos descuentos por reseñas."
         ]
       }
     ]

@@ -275,7 +275,7 @@
         "id": "resenas",
         "h": "Are the reviews real?",
         "p": [
-          "Yes. Only people who have received an order from us can leave one: the link arrives by email once the order is delivered and works for a single review. We read them before publishing and publish both good and bad ones; we only remove those with insults, personal data or nothing to do with the product. We don't pay or give discounts for reviews."
+          "Yes. Only people who have received an order from us can leave one: the link arrives by email once the order is delivered and works for a single review. Reviews are published as the customer writes them, good or bad. An automatic filter holds back those with insults, personal data, third-party brands or talk of real weapons, and we review those by hand. We don't pay or give discounts for reviews."
         ]
       }
     ]

@@ -286,7 +286,7 @@
   "resena.enviar": "Envoyer l'avis",
   "resena.enviando": "Envoi…",
   "resena.gracias": "Merci !",
-  "resena.gracias_texto": "Nous avons bien reçu ton avis. Nous le publierons sur le site dès que nous l'aurons lu.",
+  "resena.gracias_texto": "Nous avons bien reçu ton avis. Il apparaîtra bientôt sur le site.",
   "resena.ya": "Tu nous as déjà envoyé ton avis sur cette commande. Merci !",
   "resena.invalido": "Ce lien n'est pas valide. Utilise le bouton de l'e-mail que nous t'avons envoyé ou écris-nous.",
   "resena.no_entregado": "Tu pourras laisser ton avis une fois ta commande livrée.",
@@ -295,8 +295,8 @@
   "resena.err_texto": "Écris au moins 10 caractères.",
   "resena.err_consent": "Nous avons besoin de ton accord pour le publier.",
   "resena.err_datos": "Vérifie ton avis.",
-  "rev.titulo": "Ce qu'on dit à la forge",
-  "rev.verificadas": "Avis de clients dont la commande a été livrée, vérifiés avant publication. Nous publions les bons comme les mauvais.",
+  "rev.titulo": "Ce que disent nos clients",
+  "rev.verificadas": "Seuls les clients dont la commande a été livrée peuvent laisser un avis. Nous publions les bons comme les mauvais ; nous ne retenons que ceux contenant des insultes ou des données personnelles.",
   "rev.media_total": "{media} sur 5 · {n} avis",
   "rev.media_aria": "{media} sur 5 étoiles, {n} avis",
   "rev.estrellas_aria": "{n} sur 5 étoiles",
@@ -304,5 +304,7 @@
   "mail.res_intro": "Nous espérons que tu as déjà monté ta commande ({productos}). Tu nous dis ce que tu en penses ? Ton avis aide d'autres collectionneurs à se décider et nous aide à améliorer la forge. Ça prend deux minutes.",
   "mail.res_boton": "Laisser mon avis",
   "mail.res_publicar": "Nous le publierons sur soyresinator.com sous le nom que tu choisis, qu'il soit bon ou mauvais. Si quelque chose ne va pas, réponds à cet e-mail et nous arrangerons ça.",
-  "mail.res_baja": "Nous t'écrivons une seule fois au sujet de ta commande. Si tu ne veux pas recevoir ce type d'e-mail, réponds avec le mot STOP."
+  "mail.res_baja": "Nous t'écrivons une seule fois au sujet de ta commande. Si tu ne veux pas recevoir ce type d'e-mail, réponds avec le mot STOP.",
+  "rev.media_total_1": "{media} sur 5 · 1 avis",
+  "rev.media_aria_1": "{media} sur 5 étoiles, 1 avis"
 }

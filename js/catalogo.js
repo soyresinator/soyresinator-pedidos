@@ -1,7 +1,7 @@
 // Soy Resinator · catálogo (index.html). Arranca también la vista de pedido.
-import * as C from './core.js?v=20261115c';
-import * as P from './carrito.js?v=20261115c';
-import { plazoDias } from './calc.js?v=20261115c';
+import * as C from './core.js?v=20261115d';
+import * as P from './carrito.js?v=20261115d';
+import { plazoDias } from './calc.js?v=20261115d';
 
 const state = {
   cfg: null, cat: null, ship: null, serie: [],
@@ -76,7 +76,7 @@ function pintarResenas() {
   const media = String(r.total.media).replace('.', C.locale().startsWith('en') ? '.' : ',');
   document.getElementById('rev-media').innerHTML =
     `<span class="stars-ro" aria-hidden="true">${estrellasTxt(Math.round(r.total.media))}</span> ` +
-    C.esc(C.t('rev.media_total', { media, n: r.total.n }));
+    C.esc(C.t(r.total.n === 1 ? 'rev.media_total_1' : 'rev.media_total', { media, n: r.total.n }));
   const nombreProd = pid => (state.cat.productos.find(p => p.id === pid) || {}).nombre || '';
   document.getElementById('rev-lista').innerHTML = r.resenas.slice(0, 12).map(x => `
     <article class="review">
@@ -217,7 +217,7 @@ function notaProducto(pid) {
   const m = state.resenas && state.resenas.medias && state.resenas.medias[pid];
   if (!m || !m.n) return '';
   const media = String(m.media).replace('.', C.locale().startsWith('en') ? '.' : ',');
-  return `<p class="rating-line"><a href="#resenas" aria-label="${C.esc(C.t('rev.media_aria', { media, n: m.n }))}"><span aria-hidden="true">★ ${C.esc(media)} (${m.n})</span></a></p>`;
+  return `<p class="rating-line"><a href="#resenas" aria-label="${C.esc(C.t(m.n === 1 ? 'rev.media_aria_1' : 'rev.media_aria', { media, n: m.n }))}"><span aria-hidden="true">★ ${C.esc(media)} (${m.n})</span></a></p>`;
 }
 
 function add(pid) {
