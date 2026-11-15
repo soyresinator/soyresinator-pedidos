@@ -90,6 +90,7 @@
   "ped.elegido": "Escolhido: {color}",
   "ped.notas": "Observações para esta unidade",
   "ped.caracteres": "Opcional · restam {n} caracteres",
+  "ped.caracteres_oblig": "Obrigatório para o Custom Badge · restam {n} caracteres",
   "ped.montaje": "Serviço de montagem +{precio}",
   "ped.montaje_ayuda": "Nós montamos para você antes do envio. Só para envios dentro da Espanha.",
   "extra.titulo": "Extras",
@@ -278,5 +279,18 @@
   "pie.faq": "Perguntas frequentes",
   "pie.envios": "Envios",
   "pie.devoluciones": "Devoluções",
-  "pie.contacto": "Contato"
+  "pie.contacto": "Contato",
+  "extra.badge": "Custom Badge",
+  "extra.op_version": "Versão",
+  "extra.op_color": "Cor do badge",
+  "extra.op.bolt": "Para a família Bolt",
+  "extra.op.las": "Para rifles laser",
+  "extra.op.dorado": "Dourado",
+  "extra.op.gris-titan": "Cinza titânio",
+  "extra.badge_ayuda": "Descreva nas notas desta réplica qual badge você quer (símbolo, capítulo, texto…).",
+  "err.nota_obligatoria": "Você escolheu um Custom Badge: diga nas notas dessa réplica qual badge quer.",
+  "acc.titulo": "Acessórios",
+  "acc.stand_texto": "Suporte de exposição para mostrar sua réplica na horizontal. Duas versões: para a família Bolt e para rifles laser.",
+  "acc.solo_extra": "É adicionado como extra ao pedir uma réplica: escolha a versão no seu pedido.",
+  "desc.plague-bolt": "Forjada na podridão: réplica de exposição em tamanho real com carcaça corroída, detalhes em cobre e ornamentos da praga. Kit de PLA não funcional nas cores padrão, com parafusos incluídos, para montar sem lixar nem pintar. Com carregador de exposição removível."
 }

@@ -318,13 +318,18 @@ body.has-float .toast { bottom: 80px; }
   background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
   padding: 16px; margin-bottom: 16px; display: grid; gap: 14px; min-width: 0;
 }
-.unit-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.unit-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+/* Foto de la réplica en el pedido: a todo el ancho en móvil (encima del nombre) y 240 × 135 en pantallas grandes. */
 .unit-thumb {
-  width: 96px; height: 54px; flex: none; object-fit: cover; border-radius: 6px;
+  width: 100%; height: auto; aspect-ratio: 16 / 9; flex: none; object-fit: cover; border-radius: 6px;
   background: #000; border: 1px solid var(--line);
 }
+.unit-head .unit-title { flex: 1; min-width: 0; }
+.extra-op { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-left: 4px; }
+.extra-op .select { flex: 1; min-width: 0; }
+.extra-aviso { margin: 0; color: var(--gold-hi); }
 .unit-title { font-size: 1.6rem; text-transform: uppercase; margin: 0; margin-right: auto; min-width: 0; overflow-wrap: anywhere; }
-@media (min-width: 640px) { .unit-thumb { width: 128px; height: 72px; } }
+@media (min-width: 640px) { .unit-thumb { width: 240px; height: 135px; } }
 @media (max-width: 420px) { .unit-title { font-size: 1.25rem; } .unit .price { font-size: 1.2rem; } }
 
 /* Extras (balas, cargadores, stand) dentro de cada unidad */

@@ -1,7 +1,7 @@
 // Soy Resinator · vista de pedido (#pedido en index.html)
 // Tarjeta por unidad, datos y envío, pago, resumen, envío al Apps Script y confirmación.
-import * as C from './core.js?v=20261113';
-import { totales, plazoDias, extrasDe, conEnvio } from './calc.js?v=20261113';
+import * as C from './core.js?v=20261115';
+import { totales, plazoDias, extrasDe, conEnvio, opcionExtra } from './calc.js?v=20261115';
 
 const $ = id => document.getElementById(id);
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -116,6 +116,10 @@ function validarCarrito() {
     const validos = {};
     extrasDe(it, prod, S.cat).forEach(e => { validos[e.tipo] = e.cantidad; });
     if (JSON.stringify(validos) !== JSON.stringify(it.extras)) { it.extras = validos; cambiado = true; }
+    // Opciones de extras (versión del soporte, color del badge): solo de extras elegidos y con un id válido.
+    const ops = {};
+    extrasDe(it, prod, S.cat).forEach(e => { if (e.opcion) ops[e.tipo] = e.opcion.id; });
+    if (JSON.stringify(ops) !== JSON.stringify(it.extras_op || {})) { it.extras_op = ops; cambiado = true; }
     const grupos = prod.partes.map(p => p.grupo);
     Object.keys(it.colores).forEach(g => { if (!grupos.includes(g)) { delete it.colores[g]; cambiado = true; } });
     for (const part of prod.partes) {
@@ -215,8 +219,8 @@ function itemCard(it, i, pais) {
       ${extrasHtml(it, prod)}
       <div class="field">
         <label for="n-${it.uid}">${C.esc(C.t('ped.notas'))}</label>
-        <textarea id="n-${it.uid}" class="nota" data-uid="${it.uid}" rows="2" maxlength="${max}" aria-describedby="nc-${it.uid}">${C.esc(it.nota)}</textarea>
-        <p class="help" id="nc-${it.uid}">${C.esc(C.t('ped.caracteres', { n: max - it.nota.length }))}</p>
+        <textarea id="n-${it.uid}" class="nota" data-uid="${it.uid}" rows="2" maxlength="${max}" aria-describedby="nc-${it.uid}"${notaOblig(it, prod) ? ' aria-required="true" data-oblig="1"' : ''}>${C.esc(it.nota)}</textarea>
+        <p class="help" id="nc-${it.uid}">${C.esc(C.t(notaOblig(it, prod) ? 'ped.caracteres_oblig' : 'ped.caracteres', { n: max - it.nota.length }))}</p>
       </div>
       ${montaje}
       <div class="btn-row">
@@ -234,6 +238,19 @@ function extrasHtml(it, prod) {
     const n = Number((it.extras || {})[ex.tipo]) || 0;
     const nombre = C.t(def.etiqueta);
     const id = `x-${it.uid}-${ex.tipo}`;
+    // Con el extra elegido: su opción (versión o color) y, si hace falta, el aviso de las notas.
+    let opciones = '';
+    if (n > 0 && (def.opciones || []).length) {
+      const sel = opcionExtra(def, ex, (it.extras_op || {})[ex.tipo]);
+      opciones = `
+      <div class="extra-op">
+        <label for="${id}-op">${C.esc(C.t(ex.tipo === 'badge' ? 'extra.op_color' : 'extra.op_version'))}</label>
+        <select id="${id}-op" class="select extra-op-sel"data-uid="${it.uid}" data-tipo="${ex.tipo}">
+          ${def.opciones.map(o => `<option value="${C.esc(o.id)}" ${o.id === sel.id ? 'selected' : ''}>${C.esc(C.t(o.etiqueta))}</option>`).join('')}
+        </select>
+      </div>`;
+    }
+    if (n > 0 && def.nota_obligatoria) opciones += `<p class="help extra-aviso">${C.esc(C.t('extra.badge_ayuda'))}</p>`;
     return `
       <div class="extra-row">
         <span class="extra-name" id="${id}-l">${C.esc(nombre)} <span class="extra-price">${C.esc(C.t('extra.precio_ud', { precio: C.money(ex.pvp) }))}</span></span>
@@ -242,7 +259,7 @@ function extrasHtml(it, prod) {
           <output id="${id}" class="step-n" aria-live="polite">${n}</output>
           <button type="button" class="step" data-act="extra" data-uid="${it.uid}" data-tipo="${ex.tipo}" data-d="1" ${n >= (def.max || 0) ? 'disabled' : ''} aria-label="${C.esc(C.t('extra.mas', { nombre }))}">+</button>
         </span>
-      </div>`;
+      </div>${opciones}`;
   }).join('');
   return `
       <fieldset class="part extras">
@@ -345,7 +362,22 @@ function plazoTexto(horas) {
 
 /** Texto de un extra: "Cargador extra × 2". */
 function textoExtra(e) {
-  return C.t('extra.linea', { nombre: C.t(S.cat.extras_def[e.tipo].etiqueta), n: e.cantidad });
+  const nombre = C.t(S.cat.extras_def[e.tipo].etiqueta) + (e.opcion ? ` (${C.t(e.opcion.etiqueta)})` : '');
+  return C.t('extra.linea', { nombre, n: e.cantidad });
+}
+
+/** ¿Esta unidad lleva un extra que exige explicarlo en las notas (Custom Badge)? */
+function notaOblig(it, prod) {
+  return extrasDe(it, prod, S.cat).some(e => S.cat.extras_def[e.tipo].nota_obligatoria);
+}
+
+/** Unidades con un extra que exige explicar en las notas (Custom Badge) y la nota vacía. */
+function notasQueFaltan(cart) {
+  return cart.items.filter(it => {
+    const prod = prodDe(it.pid);
+    return prod && !(it.nota || '').trim()
+      && extrasDe(it, prod, S.cat).some(e => S.cat.extras_def[e.tipo].nota_obligatoria);
+  });
 }
 
 /** "Correos Standard · 1 caja grande (5 kg) + 1 caja": cuántas cajas de cada tipo. */
@@ -462,6 +494,11 @@ function wire() {
       if (out) out.textContent = chosenText(c);
       $('ped-avisos').hidden = true;
       renderResumen();
+    } else if (el.classList.contains('extra-op-sel')) {
+      it.extras_op = it.extras_op || {};
+      it.extras_op[el.dataset.tipo] = el.value;
+      C.saveCart(cart);
+      renderResumen();
     } else if (el.classList.contains('montaje')) {
       const pais = paisDe(cart.pais);
       it.montaje = el.checked && !!(pais && pais.montaje);
@@ -475,7 +512,8 @@ function wire() {
     const el = e.target;
     if (!el.classList.contains('nota')) return;
     const cnt = $(`nc-${el.dataset.uid}`);
-    if (cnt) cnt.textContent = C.t('ped.caracteres', { n: S.cfg.nota_max - el.value.length });
+    if (cnt) cnt.textContent = C.t(el.dataset.oblig ? 'ped.caracteres_oblig' : 'ped.caracteres', { n: S.cfg.nota_max - el.value.length });
+    if (el.value.trim()) el.removeAttribute('aria-invalid');
     clearTimeout(notaTimer);
     notaTimer = setTimeout(flushNotas, 300);
   });
@@ -632,6 +670,7 @@ function payload() {
       pid: it.pid,
       colores: prodDe(it.pid).partes.map(p => ({ grupo: p.grupo, color_id: it.colores[p.grupo] || p.de_serie })),
       extras: Object.fromEntries(extrasDe(it, prodDe(it.pid), S.cat).map(e => [e.tipo, e.cantidad])),
+      extras_op: Object.fromEntries(extrasDe(it, prodDe(it.pid), S.cat).filter(e => e.opcion).map(e => [e.tipo, e.opcion.id])),
       montaje: !!it.montaje,
       nota: (it.nota || '').trim().slice(0, S.cfg.nota_max)
     })),
@@ -648,6 +687,15 @@ async function enviar(e) {
   $('fallo').hidden = true;
 
   if (!C.loadCart().items.length) { C.toast(C.t('err.carrito_vacio')); return; }
+  // Custom Badge sin explicar: llevamos al cliente a las notas de esa unidad.
+  const sinNota = notasQueFaltan(C.loadCart());
+  if (sinNota.length) {
+    const ta = $(`n-${sinNota[0].uid}`);
+    ta.setAttribute('aria-invalid', 'true');
+    C.toast(C.t('err.nota_obligatoria'));
+    ta.focus();
+    return;
+  }
   const errs = validarFormulario();
   mostrarErrores(errs);
   if (errs.length) return;

@@ -90,6 +90,7 @@
   "ped.elegido": "Scelto: {color}",
   "ped.notas": "Note per questa unità",
   "ped.caracteres": "Facoltativo · restano {n} caratteri",
+  "ped.caracteres_oblig": "Obbligatorio per il Custom Badge · restano {n} caratteri",
   "ped.montaje": "Servizio di montaggio +{precio}",
   "ped.montaje_ayuda": "La montiamo noi prima della spedizione. Solo per spedizioni in Spagna.",
   "extra.titulo": "Extra",
@@ -256,5 +257,18 @@
   "pie.faq": "FAQ",
   "pie.envios": "Spedizioni",
   "pie.devoluciones": "Resi",
-  "pie.contacto": "Contatti"
+  "pie.contacto": "Contatti",
+  "extra.badge": "Custom Badge",
+  "extra.op_version": "Versione",
+  "extra.op_color": "Colore del badge",
+  "extra.op.bolt": "Per la famiglia Bolt",
+  "extra.op.las": "Per fucili laser",
+  "extra.op.dorado": "Oro",
+  "extra.op.gris-titan": "Grigio titanio",
+  "extra.badge_ayuda": "Descrivi nelle note di questa replica quale badge vuoi (simbolo, capitolo, testo…).",
+  "err.nota_obligatoria": "Hai scelto un Custom Badge: scrivi nelle note di quella replica quale badge vuoi.",
+  "acc.titulo": "Accessori",
+  "acc.stand_texto": "Supporto espositivo per mostrare la tua replica in orizzontale. Due versioni: per la famiglia Bolt e per i fucili laser.",
+  "acc.solo_extra": "Si aggiunge come extra a una replica: scegli la versione nel tuo ordine.",
+  "desc.plague-bolt": "Forgiata nella putrefazione: replica espositiva a grandezza naturale con carcassa corrosa, dettagli in rame e ornamenti della pestilenza. Kit in PLA non funzionante nei colori standard, viti incluse, da montare senza carteggiare né verniciare. Con caricatore espositivo rimovibile."
 }

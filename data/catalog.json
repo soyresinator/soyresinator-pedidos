@@ -5,7 +5,20 @@
   "extras_def": {
     "bala": { "etiqueta": "extra.bala", "max": 20, "por_bandeja": 4 },
     "cargador": { "etiqueta": "extra.cargador", "max": 5 },
-    "stand": { "etiqueta": "extra.stand", "max": 1 }
+    "stand": {
+      "etiqueta": "extra.stand",
+      "max": 1,
+      "opciones": [{"id": "bolt", "etiqueta": "extra.op.bolt"}, {"id": "las", "etiqueta": "extra.op.las"}]
+    },
+    "badge": {
+      "etiqueta": "extra.badge",
+      "max": 1,
+      "nota_obligatoria": true,
+      "opciones": [
+        { "id": "dorado", "etiqueta": "extra.op.dorado", "filamento": "FIL-SILK-GOLD" },
+        { "id": "gris-titan", "etiqueta": "extra.op.gris-titan", "filamento": "FIL-SILK-GREYTITAN" }
+      ]
+    }
   },
   "colecciones": [
     { "id": "iron-crusade", "nombre": "Iron Crusade" },
@@ -27,12 +40,20 @@
       "extras": [
         { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
         { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PF", "pvp": 30, "horas": 7.97 },
-        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+        { "tipo": "badge", "id_replica": "BADGE-CUSTOM", "pvp": 10, "horas": 2, "opcion_defecto": "dorado" },
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "bolt" }
       ],
       "caja": "larga",
       "partes": [
-        { "grupo": "rojo", "etiqueta": "parte.detalles_rojos", "gramos": 296, "de_serie": "rojo-oscuro", "opciones": "stock",
-          "placas": [1], "filamento_serie": "FIL-PLAM-DARKRED" }
+        {
+          "grupo": "rojo",
+          "etiqueta": "parte.detalles_rojos",
+          "gramos": 296,
+          "de_serie": "rojo-oscuro",
+          "opciones": "stock",
+          "placas": [1],
+          "filamento_serie": "FIL-PLAM-DARKRED"
+        }
       ]
     },
     {
@@ -49,12 +70,20 @@
       "extras": [
         { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
         { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PRIMARIS", "pvp": 30, "horas": 9.25 },
-        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+        { "tipo": "badge", "id_replica": "BADGE-CUSTOM", "pvp": 10, "horas": 2, "opcion_defecto": "dorado" },
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "bolt" }
       ],
       "caja": "larga",
       "partes": [
-        { "grupo": "rojo", "etiqueta": "parte.partes_rojas", "gramos": 728, "de_serie": "rojo-oscuro", "opciones": "stock",
-          "placas": [8, 9], "filamento_serie": "FIL-PLAM-DARKRED" }
+        {
+          "grupo": "rojo",
+          "etiqueta": "parte.partes_rojas",
+          "gramos": 728,
+          "de_serie": "rojo-oscuro",
+          "opciones": "stock",
+          "placas": [8, 9],
+          "filamento_serie": "FIL-PLAM-DARKRED"
+        }
       ]
     },
     {
@@ -71,14 +100,28 @@
       "extras": [
         { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
         { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PRIMARIS", "pvp": 30, "horas": 9.25 },
-        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "bolt" }
       ],
       "caja": "larga",
       "partes": [
-        { "grupo": "principal", "etiqueta": "parte.color_principal", "gramos": 754, "de_serie": "amarillo", "opciones": ["amarillo", "azul-marino"],
-          "placas": [8, 9], "filamento_serie": "FIL-PLAM-LEMONYELLOW" },
-        { "grupo": "metalicos", "etiqueta": "parte.detalles_metalicos", "gramos": 571, "de_serie": "gris-titan", "opciones": ["gris-titan", "dorado"],
-          "placas": [2, 3, 4, 11, 12], "filamento_serie": "FIL-SILK-GREYTITAN" }
+        {
+          "grupo": "principal",
+          "etiqueta": "parte.color_principal",
+          "gramos": 754,
+          "de_serie": "amarillo",
+          "opciones": ["amarillo", "azul-marino"],
+          "placas": [8, 9],
+          "filamento_serie": "FIL-PLAM-LEMONYELLOW"
+        },
+        {
+          "grupo": "metalicos",
+          "etiqueta": "parte.detalles_metalicos",
+          "gramos": 571,
+          "de_serie": "gris-titan",
+          "opciones": ["gris-titan", "dorado"],
+          "placas": [2, 3, 4, 11, 12],
+          "filamento_serie": "FIL-SILK-GREYTITAN"
+        }
       ]
     },
     {
@@ -95,7 +138,7 @@
       "extras": [
         { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
         { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PF", "pvp": 30, "horas": 7.97 },
-        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "bolt" }
       ],
       "caja": "larga",
       "partes": []
@@ -117,8 +160,15 @@
       ],
       "caja": "pistola",
       "partes": [
-        { "grupo": "rojo", "etiqueta": "parte.detalle_rojo", "gramos": 145, "de_serie": "rojo-oscuro", "opciones": "stock",
-          "placas": [6], "filamento_serie": "FIL-PLAM-DARKRED" }
+        {
+          "grupo": "rojo",
+          "etiqueta": "parte.detalle_rojo",
+          "gramos": 145,
+          "de_serie": "rojo-oscuro",
+          "opciones": "stock",
+          "placas": [6],
+          "filamento_serie": "FIL-PLAM-DARKRED"
+        }
       ]
     },
     {
@@ -138,8 +188,15 @@
       ],
       "caja": "pistola",
       "partes": [
-        { "grupo": "rojo", "etiqueta": "parte.partes_rojas", "gramos": 404, "de_serie": "rojo-oscuro", "opciones": "stock",
-          "placas": [2], "filamento_serie": "FIL-PLAM-DARKRED" }
+        {
+          "grupo": "rojo",
+          "etiqueta": "parte.partes_rojas",
+          "gramos": 404,
+          "de_serie": "rojo-oscuro",
+          "opciones": "stock",
+          "placas": [2],
+          "filamento_serie": "FIL-PLAM-DARKRED"
+        }
       ]
     },
     {
@@ -155,12 +212,19 @@
       "volumen": 2.5,
       "extras": [
         { "tipo": "cargador", "id_replica": "CARGADOR-RIFLE-KRIEG", "pvp": 10, "horas": 1.72 },
-        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "las" }
       ],
       "caja": "larga",
       "partes": [
-        { "grupo": "negro", "etiqueta": "parte.partes_negras", "gramos": 399, "de_serie": "negro", "opciones": ["negro", "verde-oscuro"],
-          "placas": [3, 7], "filamento_serie": "FIL-PLAM-CHARCOAL" }
+        {
+          "grupo": "negro",
+          "etiqueta": "parte.partes_negras",
+          "gramos": 399,
+          "de_serie": "negro",
+          "opciones": ["negro", "verde-oscuro"],
+          "placas": [3, 7],
+          "filamento_serie": "FIL-PLAM-CHARCOAL"
+        }
       ]
     },
     {
@@ -176,14 +240,28 @@
       "volumen": 2.5,
       "extras": [
         { "tipo": "cargador", "id_replica": "CARGADOR-RIFLE-CADIA", "pvp": 10, "horas": 2.1 },
-        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "las" }
       ],
       "caja": "larga",
       "partes": [
-        { "grupo": "verde", "etiqueta": "parte.cuerpo_verde", "gramos": 331, "de_serie": "verde-oscuro", "opciones": "stock",
-          "placas": [2], "filamento_serie": "FIL-PLAM-DARKGREEN" },
-        { "grupo": "dorado", "etiqueta": "parte.detalle_dorado", "gramos": 19, "de_serie": "dorado", "opciones": "stock",
-          "placas": [3], "filamento_serie": "FIL-SILK-GOLD" }
+        {
+          "grupo": "verde",
+          "etiqueta": "parte.cuerpo_verde",
+          "gramos": 331,
+          "de_serie": "verde-oscuro",
+          "opciones": "stock",
+          "placas": [2],
+          "filamento_serie": "FIL-PLAM-DARKGREEN"
+        },
+        {
+          "grupo": "dorado",
+          "etiqueta": "parte.detalle_dorado",
+          "gramos": 19,
+          "de_serie": "dorado",
+          "opciones": "stock",
+          "placas": [3],
+          "filamento_serie": "FIL-SILK-GOLD"
+        }
       ]
     },
     {
@@ -197,15 +275,27 @@
       "incluye": ["inc.kit"],
       "horas": 17.0,
       "volumen": 1,
-      "extras": [
-        { "tipo": "cargador", "id_replica": "CARGADOR-PISTOLA-LASER", "pvp": 10, "horas": 2.15 }
-      ],
+      "extras": [{"tipo": "cargador", "id_replica": "CARGADOR-PISTOLA-LASER", "pvp": 10, "horas": 2.15}],
       "caja": "pistola",
       "partes": [
-        { "grupo": "verde", "etiqueta": "parte.cuerpo_verde", "gramos": 156, "de_serie": "verde-oscuro", "opciones": ["verde-oscuro", "negro"],
-          "placas": [7], "filamento_serie": "FIL-PLAM-DARKGREEN" },
-        { "grupo": "negro", "etiqueta": "parte.partes_negras", "gramos": 171, "de_serie": "negro", "opciones": ["negro", "verde-oscuro"],
-          "placas": [1, 2, 5, 6], "filamento_serie": "FIL-PLAM-CHARCOAL" }
+        {
+          "grupo": "verde",
+          "etiqueta": "parte.cuerpo_verde",
+          "gramos": 156,
+          "de_serie": "verde-oscuro",
+          "opciones": ["verde-oscuro", "negro"],
+          "placas": [7],
+          "filamento_serie": "FIL-PLAM-DARKGREEN"
+        },
+        {
+          "grupo": "negro",
+          "etiqueta": "parte.partes_negras",
+          "gramos": 171,
+          "de_serie": "negro",
+          "opciones": ["negro", "verde-oscuro"],
+          "placas": [1, 2, 5, 6],
+          "filamento_serie": "FIL-PLAM-CHARCOAL"
+        }
       ]
     },
     {
@@ -222,14 +312,29 @@
       "extras": [
         { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
         { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PF", "pvp": 30, "horas": 7.97 },
-        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
+        { "tipo": "badge", "id_replica": "BADGE-CUSTOM", "pvp": 10, "horas": 2, "opcion_defecto": "dorado" },
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "bolt" }
       ],
       "caja": "larga",
       "partes": [
-        { "grupo": "principal", "etiqueta": "parte.pieza_principal", "gramos": 315, "de_serie": "negro", "opciones": "stock",
-          "placas": [1], "filamento_serie": "FIL-PLAM-CHARCOAL" },
-        { "grupo": "metalicos", "etiqueta": "parte.detalles_metalicos", "gramos": 259, "de_serie": "gris-titan", "opciones": ["gris-titan", "dorado"],
-          "placas": [4, 8], "filamento_serie": "FIL-SILK-GREYTITAN" }
+        {
+          "grupo": "principal",
+          "etiqueta": "parte.pieza_principal",
+          "gramos": 315,
+          "de_serie": "negro",
+          "opciones": "stock",
+          "placas": [1],
+          "filamento_serie": "FIL-PLAM-CHARCOAL"
+        },
+        {
+          "grupo": "metalicos",
+          "etiqueta": "parte.detalles_metalicos",
+          "gramos": 259,
+          "de_serie": "gris-titan",
+          "opciones": ["gris-titan", "dorado"],
+          "placas": [4, 8],
+          "filamento_serie": "FIL-SILK-GREYTITAN"
+        }
       ]
     },
     {
@@ -243,15 +348,27 @@
       "incluye": ["inc.kit"],
       "horas": 42.2,
       "volumen": 2.5,
-      "extras": [
-        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97 }
-      ],
+      "extras": [{"tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "las"}],
       "caja": "larga",
       "partes": [
-        { "grupo": "rojo", "etiqueta": "parte.partes_rojas", "gramos": 596, "de_serie": "rojo-escarlata", "opciones": "stock",
-          "placas": [4, 6], "filamento_serie": "FIL-PLAM-REDSCARLET" },
-        { "grupo": "dorado", "etiqueta": "parte.detalle_dorado", "gramos": 39, "de_serie": "dorado", "opciones": ["dorado", "gris-titan"],
-          "placas": [1], "filamento_serie": "FIL-SILK-GOLD" }
+        {
+          "grupo": "rojo",
+          "etiqueta": "parte.partes_rojas",
+          "gramos": 596,
+          "de_serie": "rojo-escarlata",
+          "opciones": "stock",
+          "placas": [4, 6],
+          "filamento_serie": "FIL-PLAM-REDSCARLET"
+        },
+        {
+          "grupo": "dorado",
+          "etiqueta": "parte.detalle_dorado",
+          "gramos": 39,
+          "de_serie": "dorado",
+          "opciones": ["dorado", "gris-titan"],
+          "placas": [1],
+          "filamento_serie": "FIL-SILK-GOLD"
+        }
       ]
     },
     {
@@ -259,16 +376,29 @@
       "nombre": "Plague Bolt",
       "modelo": "bolter-plague",
       "id_replica": "BOLTER-PLAGUE",
-      "oculto": true,
       "coleccion": "the-outer-dark",
       "pvp": 220,
       "especial": true,
       "incluye": ["inc.kit", "inc.balas4"],
       "horas": 54.6,
       "volumen": 3,
-      "extras": [],
+      "extras": [
+        { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
+        { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PF", "pvp": 30, "horas": 7.97 },
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "bolt" }
+      ],
       "caja": "larga",
       "partes": []
+    }
+  ],
+  "accesorios": [
+    {
+      "id": "display-stand",
+      "nombre": "Display Stand",
+      "pvp": 30,
+      "img": "display-stand-1.webp",
+      "texto": "acc.stand_texto",
+      "versiones": ["extra.op.bolt", "extra.op.las"]
     }
   ]
 }

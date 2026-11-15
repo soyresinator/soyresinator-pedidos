@@ -5,6 +5,13 @@
  * Extras elegidos de una unidad, como lista: [{ tipo, id_replica, cantidad, pvp, importe, horas, bandejas }].
  * `it.extras` es { tipo: cantidad }. Lo que no está en el catálogo del producto o es 0 no cuenta.
  */
+/** Opción de un extra: { id, etiqueta, filamento? } o null si el extra no tiene opciones. */
+export function opcionExtra(def, ex, pedida) {
+  const ops = (def && def.opciones) || [];
+  if (!ops.length) return null;
+  return ops.find(o => o.id === pedida) || ops.find(o => o.id === ex.opcion_defecto) || ops[0];
+}
+
 export function extrasDe(it, prod, cat) {
   const elegidos = (it && it.extras) || {};
   const out = [];
@@ -14,8 +21,12 @@ export function extrasDe(it, prod, cat) {
     if (!n) continue;
     // Las balas se imprimen en bandejas de `por_bandeja`: `horas` es por bandeja.
     const bandejas = def.por_bandeja ? Math.ceil(n / def.por_bandeja) : n;
-    out.push({ tipo: ex.tipo, id_replica: ex.id_replica, cantidad: n, pvp: ex.pvp, importe: n * ex.pvp,
-      horas: bandejas * ex.horas, bandejas });
+    const e = { tipo: ex.tipo, id_replica: ex.id_replica, cantidad: n, pvp: ex.pvp, importe: n * ex.pvp,
+      horas: bandejas * ex.horas, bandejas };
+    // Extras con opciones (versión del soporte, color del badge): la elegida si es válida; si no, la de serie.
+    const op = opcionExtra(def, ex, ((it && it.extras_op) || {})[ex.tipo]);
+    if (op) e.opcion = op;
+    out.push(e);
   }
   return out;
 }
