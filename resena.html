@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your review · Soy Resinator</title>
+  <meta name="description" content="Tell us what you think of your Soy Resinator replica.">
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" href="/img/logo/favicon-48.png" sizes="48x48">
+  <link rel="icon" type="image/png" href="/img/logo/favicon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/img/logo/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/fonts.css?v=20261115c">
+  <link rel="stylesheet" href="css/styles.css?v=20261115c">
+  <script type="module" src="js/resena.js?v=20261115c"></script>
+</head>
+<body data-meta="resena">
+  <a class="skip" href="#main" data-i18n="nav.saltar">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="brand" href="./">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Soy Resinator</span>
+      </a>
+      <div class="header-tools">
+        <label class="sr-only" for="lang" data-i18n="nav.idioma">Language</label>
+        <select id="lang" class="select select-sm"></select>
+        <button id="theme" class="icon-btn" type="button">
+          <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+          <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+          <span class="sr-only" id="theme-label"></span>
+        </button>
+        <a href="./#catalogo" class="nav-link" data-i18n="nav.catalogo">Collection</a>
+      </div>
+      <a href="./#pedido" id="cart-link" class="cart-btn">
+        <span data-i18n="nav.pedido">Your order</span>
+        <span id="cart-count" class="count" aria-hidden="true">0</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main" class="wrap order">
+    <h1 class="page-title" data-i18n="resena.titulo">Your review</h1>
+
+    <p id="r-cargando" class="lead" data-i18n="resena.cargando">Checking your link…</p>
+
+    <div id="r-aviso" class="notice" role="alert" hidden>
+      <p id="r-aviso-txt"></p>
+    </div>
+
+    <!-- Sin atributos name ni action: los datos solo se envían por POST desde el JS. -->
+    <form id="r-form" class="block" novalidate hidden>
+      <p class="lead" data-i18n="resena.intro">Tell other collectors what you think of your replica. We read every review and publish it under the name you choose.</p>
+      <p id="r-productos" class="muted"></p>
+
+      <fieldset class="field stars-field" aria-describedby="e-r-estrellas">
+        <legend data-i18n="resena.estrellas">Your rating</legend>
+        <div class="stars" id="r-estrellas"></div>
+        <p class="field-err" id="e-r-estrellas"></p>
+      </fieldset>
+
+      <div class="field">
+        <label for="r-texto" data-i18n="resena.texto">Your review</label>
+        <textarea id="r-texto" rows="5" maxlength="1000" required aria-describedby="r-texto-ayuda e-r-texto"></textarea>
+        <p class="help" id="r-texto-ayuda"></p>
+        <p class="field-err" id="e-r-texto"></p>
+      </div>
+
+      <div class="field">
+        <label for="r-nombre" data-i18n="resena.nombre">Name to show</label>
+        <input id="r-nombre" maxlength="40" autocomplete="given-name" required aria-describedby="r-nombre-ayuda e-r-nombre">
+        <p class="help" id="r-nombre-ayuda" data-i18n="resena.nombre_ayuda">Your first name or a nickname. It will appear next to your review.</p>
+        <p class="field-err" id="e-r-nombre"></p>
+      </div>
+
+      <div class="field">
+        <label for="r-pais" data-i18n="resena.pais">Country (optional)</label>
+        <input id="r-pais" maxlength="40" autocomplete="country-name">
+      </div>
+
+      <!-- Campo trampa: oculto para personas -->
+      <div class="hp" aria-hidden="true">
+        <label for="r-web">Web</label>
+        <input id="r-web" tabindex="-1" autocomplete="off">
+      </div>
+
+      <label class="check">
+        <input type="checkbox" id="r-consent" aria-describedby="e-r-consent">
+        <span id="r-consent-txt">I agree that Soy Resinator may publish this review on its website with the name and country above, as explained in the <a href="privacidad.html">privacy policy</a>.</span>
+      </label>
+      <p class="field-err" id="e-r-consent"></p>
+
+      <button id="r-btn" class="btn btn-primary btn-block btn-lg" type="submit" data-i18n="resena.enviar">Send review</button>
+    </form>
+
+    <section id="r-gracias" class="block" hidden>
+      <h2 class="status-title" tabindex="-1" id="r-gracias-tit" data-i18n="resena.gracias">Thank you!</h2>
+      <p data-i18n="resena.gracias_texto">We have received your review. We will publish it on the website once we have read it.</p>
+      <p><a class="btn btn-ghost" href="./#catalogo" data-i18n="conf.volver">Back to the collection</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <p class="brand-name">Soy Resinator</p>
+        <p class="muted" data-i18n="pie.texto">Non-functional display prop made of PLA plastic. It cannot fire any projectile and has no working mechanism. Not a toy: not intended for children under 14. Check local laws and event rules before carrying it in public.</p>
+        <p class="muted small" data-i18n="pie.aviso">Official Seller of TameGrips design. Not affiliated with or endorsed by any game publisher.</p>
+      </div>
+      <nav class="footer-links">
+        <a href="privacidad.html" data-i18n="pie.privacidad">Privacy</a>
+        <a href="condiciones.html" data-i18n="pie.condiciones">Terms</a>
+        <a href="aviso-legal.html" data-i18n="pie.aviso_legal">Legal notice</a>
+        <a href="faq.html" data-i18n="pie.faq">FAQ</a>
+        <a href="envios.html" data-i18n="pie.envios">Shipping</a>
+        <a href="devoluciones.html" data-i18n="pie.devoluciones">Returns</a>
+        <a href="contacto.html" data-i18n="pie.contacto">Contact</a>
+        <a class="contact-email" href="#"></a>
+        <a class="contact-ig" href="#" rel="noopener" target="_blank"></a>
+      </nav>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

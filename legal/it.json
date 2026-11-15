@@ -53,6 +53,12 @@
         ]
       },
       {
+        "h": "Recensioni",
+        "p": [
+          "Qualche giorno dopo aver ricevuto l'ordine ti inviamo un'unica e-mail per chiederti una recensione. Se ce la invii, conserviamo il tuo voto, il testo, il nome e il paese che scegli e l'ID dell'ordine. La pubblichiamo su questo sito solo se spunti la casella di consenso, e solo con quel nome e quel paese, mai con la tua e-mail o il tuo indirizzo. Puoi chiederci di rimuoverla in qualsiasi momento scrivendo a {email}."
+        ]
+      },
+      {
         "h": "I tuoi diritti",
         "p": [
           "Puoi chiederci di accedere ai tuoi dati, correggerli, cancellarli, opporti al trattamento, limitarlo o portarli a un altro servizio. Scrivici a {email} indicando il tuo ID ordine.",
@@ -263,6 +269,13 @@
         "h": "Posso restituirla?",
         "p": [
           "Sì, entro 14 giorni dalla consegna se l'hai ordinata nei colori standard. Le repliche nei colori scelti da te sono realizzate su misura e non ammettono il recesso. Consulta la pagina Resi."
+        ]
+      },
+      {
+        "id": "resenas",
+        "h": "Le recensioni sono vere?",
+        "p": [
+          "Sì. Può recensire solo chi ha ricevuto un nostro ordine: il link arriva per e-mail quando l'ordine è consegnato e vale per una sola recensione. Le leggiamo prima di pubblicarle e pubblichiamo sia quelle belle sia quelle brutte; togliamo solo quelle con insulti, dati personali o che non parlano del prodotto. Non paghiamo e non diamo sconti in cambio di recensioni."
         ]
       }
     ]

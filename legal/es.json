@@ -53,6 +53,12 @@
         ]
       },
       {
+        "h": "Reseñas",
+        "p": [
+          "Unos días después de recibir tu pedido te enviamos un único correo para pedirte una reseña. Si nos la mandas, guardamos tu valoración, tu texto, el nombre y el país que elijas y el ID del pedido. Solo la publicamos en esta web si marcas la casilla de permiso, y solo con ese nombre y ese país, nunca con tu email ni tu dirección. Puedes pedirnos que la retiremos cuando quieras escribiendo a {email}."
+        ]
+      },
+      {
         "h": "Tus derechos",
         "p": [
           "Puedes pedirnos acceder a tus datos, corregirlos, borrarlos, oponerte a que los tratemos, limitar su uso o llevártelos a otro servicio. Escríbenos a {email} con tu ID de pedido.",
@@ -263,6 +269,13 @@
         "h": "¿Puedo devolverla?",
         "p": [
           "Sí, en los 14 días siguientes a la entrega si la pediste en los colores de serie. Las réplicas en colores elegidos por ti se fabrican a tu medida y no admiten desistimiento. Consulta la página de devoluciones."
+        ]
+      },
+      {
+        "id": "resenas",
+        "h": "¿Las reseñas son reales?",
+        "p": [
+          "Sí. Solo puede opinar quien ha recibido un pedido nuestro: el enlace llega por correo cuando el pedido está entregado y vale para una sola reseña. Las leemos antes de publicarlas y publicamos tanto las buenas como las malas; solo quitamos las que tienen insultos, datos personales o no hablan del producto. No pagamos ni damos descuentos por reseñas."
         ]
       }
     ]

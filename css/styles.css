@@ -327,6 +327,27 @@ body.has-float .toast { bottom: 80px; }
 .unit-head .unit-title { flex: 1; min-width: 0; }
 .extra-op { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-left: 4px; }
 .extra-op .select { flex: 1; min-width: 0; }
+/* Reseñas: portada, nota en cada tarjeta y formulario (resena.html) */
+.reviews { margin-top: 40px; }
+.reviews-avg { font-size: 1.05rem; margin: 0 0 16px; }
+.reviews-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); margin-bottom: 12px; }
+.review { border: 1px solid var(--line); border-radius: 8px; padding: 16px; background: var(--surface); display: grid; gap: 8px; align-content: start; }
+.review-text { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
+.review-who { margin: 0; color: var(--muted); font-size: .9rem; }
+.stars-ro { color: var(--gold); letter-spacing: 2px; margin: 0; }
+.rating-line { margin: -4px 0 0; font-size: .95rem; }
+.rating-line a { color: var(--gold-hi); text-decoration: none; }
+.stars-field { border: 0; padding: 0; margin: 0 0 16px; }
+.stars-field legend { font-weight: 600; margin-bottom: 6px; }
+.stars { display: inline-flex; gap: 4px; }
+.star { position: relative; cursor: pointer; }
+.star input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.star span[aria-hidden] { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; font-size: 2rem; color: var(--line); }
+/* La elegida y las anteriores, en dorado */
+.star input:checked ~ span[aria-hidden],
+.star:has(~ .star input:checked) span[aria-hidden] { color: var(--gold); }
+.star input:focus-visible ~ span[aria-hidden] { outline: 2px solid var(--gold-hi); outline-offset: 2px; border-radius: 6px; }
+
 /* Versión de un producto (Display Stand): botones a elegir, como las muestras de color */
 .pills { display: flex; flex-wrap: wrap; gap: 8px; }
 .pill { position: relative; cursor: pointer; }

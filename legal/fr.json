@@ -53,6 +53,12 @@
         ]
       },
       {
+        "h": "Avis",
+        "p": [
+          "Quelques jours après la réception de ta commande, nous t'envoyons un seul e-mail pour te demander un avis. Si tu nous l'envoies, nous conservons ta note, ton texte, le nom et le pays que tu choisis et l'identifiant de la commande. Nous ne le publions sur ce site que si tu coches la case d'autorisation, et seulement avec ce nom et ce pays, jamais avec ton e-mail ni ton adresse. Tu peux nous demander de le retirer à tout moment en écrivant à {email}."
+        ]
+      },
+      {
         "h": "Tes droits",
         "p": [
           "Tu peux nous demander d'accéder à tes données, de les rectifier ou de les effacer, t'opposer à leur traitement, le limiter ou récupérer tes données pour un autre service. Écris-nous à {email} en indiquant ton identifiant de commande.",
@@ -263,6 +269,13 @@
         "h": "Puis-je la retourner ?",
         "p": [
           "Oui, dans les 14 jours suivant la livraison si tu l'as commandée dans les couleurs standard. Les répliques dans des couleurs choisies par toi sont fabriquées sur mesure et ne permettent pas la rétractation. Consulte la page Retours."
+        ]
+      },
+      {
+        "id": "resenas",
+        "h": "Les avis sont-ils réels ?",
+        "p": [
+          "Oui. Seules les personnes ayant reçu une commande de notre part peuvent laisser un avis : le lien arrive par e-mail une fois la commande livrée et ne vaut que pour un seul avis. Nous les lisons avant de les publier et publions les bons comme les mauvais ; nous ne retirons que ceux qui contiennent des insultes, des données personnelles ou qui ne parlent pas du produit. Nous ne payons pas les avis et n'offrons pas de réduction en échange."
         ]
       }
     ]

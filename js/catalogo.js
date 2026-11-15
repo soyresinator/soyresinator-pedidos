@@ -1,11 +1,12 @@
 // Soy Resinator · catálogo (index.html). Arranca también la vista de pedido.
-import * as C from './core.js?v=20261115b';
-import * as P from './carrito.js?v=20261115b';
-import { plazoDias } from './calc.js?v=20261115b';
+import * as C from './core.js?v=20261115c';
+import * as P from './carrito.js?v=20261115c';
+import { plazoDias } from './calc.js?v=20261115c';
 
 const state = {
   cfg: null, cat: null, ship: null, serie: [],
   remote: { ok: false },
+  resenas: null,
   abiertos: true
 };
 
@@ -43,12 +44,47 @@ async function main() {
   document.addEventListener('sr:view', paintFloat);
 
   // Colores y estado de la forja desde el Apps Script. Si falla, seguimos abiertos y con colores de serie.
+  const resenasP = cargarResenas();
   state.remote = await C.loadRemote(state.cfg);
   if (state.remote.ok) {
     state.abiertos = !(state.remote.pedidos_abiertos === false || state.remote.pedidos_abiertos === 'no');
     render();
     P.onRemote();
   }
+  await resenasP;
+}
+
+/* ---------- Reseñas aprobadas ---------- */
+async function cargarResenas() {
+  if (!state.cfg.api_url) return;
+  try {
+    const r = await fetch(state.cfg.api_url + '?accion=resenas').then(x => x.json());
+    if (!r || !r.ok) return;
+    state.resenas = r;
+    render();
+    pintarResenas();
+    document.addEventListener('sr:lang', pintarResenas);
+  } catch (e) { /* sin reseñas: no se enseña nada */ }
+}
+
+const estrellasTxt = n => '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(0, 5 - n);
+
+function pintarResenas() {
+  const r = state.resenas;
+  const box = document.getElementById('resenas');
+  if (!r || !r.resenas || !r.resenas.length) { box.hidden = true; return; }
+  const media = String(r.total.media).replace('.', C.locale().startsWith('en') ? '.' : ',');
+  document.getElementById('rev-media').innerHTML =
+    `<span class="stars-ro" aria-hidden="true">${estrellasTxt(Math.round(r.total.media))}</span> ` +
+    C.esc(C.t('rev.media_total', { media, n: r.total.n }));
+  const nombreProd = pid => (state.cat.productos.find(p => p.id === pid) || {}).nombre || '';
+  document.getElementById('rev-lista').innerHTML = r.resenas.slice(0, 12).map(x => `
+    <article class="review">
+      <p class="stars-ro" role="img" aria-label="${C.esc(C.t('rev.estrellas_aria', { n: x.estrellas }))}">${estrellasTxt(x.estrellas)}</p>
+      <p class="review-text">${C.esc(x.texto)}</p>
+      <p class="review-who">${C.esc(x.nombre)}${x.pais ? ' · ' + C.esc(x.pais) : ''}${x.pids.length ? ' · ' + C.esc(x.pids.map(nombreProd).filter(Boolean).join(', ')) : ''}</p>
+    </article>`).join('');
+  box.hidden = false;
 }
 
 /* ---------- País de envío (para el texto de precios) ---------- */
@@ -157,6 +193,7 @@ function card(p, tax) {
       </div>
       <div class="card-body">
         <h4>${C.esc(p.nombre)}</h4>
+        ${notaProducto(p.id)}
         ${C.hasKey('desc.' + p.id) ? `<p class="card-desc">${C.esc(C.t('desc.' + p.id))}</p>` : ''}
         <div class="price-row">
           <span class="price">${C.esc(C.money(p.pvp))}</span>
@@ -173,6 +210,14 @@ function card(p, tax) {
         <div class="card-actions">${action}</div>
       </div>
     </article>`;
+}
+
+/** "★ 4,9 (12)" bajo el nombre, si el producto tiene reseñas publicadas; enlaza a la sección de reseñas. */
+function notaProducto(pid) {
+  const m = state.resenas && state.resenas.medias && state.resenas.medias[pid];
+  if (!m || !m.n) return '';
+  const media = String(m.media).replace('.', C.locale().startsWith('en') ? '.' : ',');
+  return `<p class="rating-line"><a href="#resenas" aria-label="${C.esc(C.t('rev.media_aria', { media, n: m.n }))}"><span aria-hidden="true">★ ${C.esc(media)} (${m.n})</span></a></p>`;
 }
 
 function add(pid) {

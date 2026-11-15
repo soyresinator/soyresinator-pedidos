@@ -53,6 +53,12 @@
         ]
       },
       {
+        "h": "Avaliações",
+        "p": [
+          "Alguns dias depois de você receber o pedido, enviamos um único e-mail pedindo uma avaliação. Se você enviar, guardamos sua nota, seu texto, o nome e o país que escolher e o ID do pedido. Só a publicamos neste site se você marcar a caixa de permissão, e apenas com esse nome e país, nunca com seu e-mail ou endereço. Você pode pedir que a retiremos quando quiser escrevendo para {email}."
+        ]
+      },
+      {
         "h": "Os seus direitos",
         "p": [
           "Você pode pedir para acessar os seus dados, corrigi-los, apagá-los, se opor ao tratamento, limitar o uso ou levá-los para outro serviço. Escreva para {email} com o ID do seu pedido.",
@@ -263,6 +269,13 @@
         "h": "Posso devolver?",
         "p": [
           "Sim, nos 14 dias seguintes à entrega se você pediu nas cores padrão. As réplicas nas cores escolhidas por você são feitas sob medida e não admitem desistência. Consulte a página de devoluções."
+        ]
+      },
+      {
+        "id": "resenas",
+        "h": "As avaliações são reais?",
+        "p": [
+          "Sim. Só pode avaliar quem recebeu um pedido nosso: o link chega por e-mail quando o pedido é entregue e vale para uma única avaliação. Lemos todas antes de publicar e publicamos tanto as boas quanto as ruins; só retiramos as que têm insultos, dados pessoais ou não falam do produto. Não pagamos nem damos descontos por avaliações."
         ]
       }
     ]

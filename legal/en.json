@@ -53,6 +53,12 @@
         ]
       },
       {
+        "h": "Reviews",
+        "p": [
+          "A few days after you receive your order we send you a single email asking for a review. If you send one, we keep your rating, your text, the name and country you choose and the order ID. We only publish it on this website if you tick the permission box, and only with that name and country, never with your email or address. You can ask us to remove it at any time by writing to {email}."
+        ]
+      },
+      {
         "h": "Your rights",
         "p": [
           "You can ask us to access, correct or delete your data, object to or restrict its use, or take it to another service. Write to {email} with your order ID.",
@@ -263,6 +269,13 @@
         "h": "Can I return it?",
         "p": [
           "Yes, within 14 days of delivery if you ordered it in the standard colors. Replicas in colors you chose are made to your specifications and cannot be returned under the right of withdrawal. See the Returns page."
+        ]
+      },
+      {
+        "id": "resenas",
+        "h": "Are the reviews real?",
+        "p": [
+          "Yes. Only people who have received an order from us can leave one: the link arrives by email once the order is delivered and works for a single review. We read them before publishing and publish both good and bad ones; we only remove those with insults, personal data or nothing to do with the product. We don't pay or give discounts for reviews."
         ]
       }
     ]

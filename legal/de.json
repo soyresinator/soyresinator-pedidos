@@ -53,6 +53,12 @@
         ]
       },
       {
+        "h": "Bewertungen",
+        "p": [
+          "Einige Tage nach Erhalt deiner Bestellung schicken wir dir eine einzige E-Mail mit der Bitte um eine Bewertung. Wenn du eine abgibst, speichern wir deine Wertung, deinen Text, den gewählten Namen und das Land sowie die Bestell-ID. Wir veröffentlichen sie auf dieser Website nur, wenn du das Feld zur Erlaubnis ankreuzt, und nur mit diesem Namen und Land, nie mit deiner E-Mail oder Adresse. Du kannst jederzeit verlangen, dass wir sie entfernen, indem du an {email} schreibst."
+        ]
+      },
+      {
         "h": "Deine Rechte",
         "p": [
           "Du kannst Auskunft über deine Daten verlangen, sie berichtigen oder löschen lassen, der Verarbeitung widersprechen, sie einschränken oder deine Daten zu einem anderen Dienst mitnehmen. Schreib an {email} und nenne deine Bestell-ID.",
@@ -263,6 +269,13 @@
         "h": "Kann ich sie zurückgeben?",
         "p": [
           "Ja, innerhalb von 14 Tagen nach der Lieferung, wenn du sie in den Standardfarben bestellt hast. Repliken in von dir gewählten Farben werden nach deinen Vorgaben gefertigt und sind vom Widerruf ausgeschlossen. Siehe die Seite Rückgaben."
+        ]
+      },
+      {
+        "id": "resenas",
+        "h": "Sind die Bewertungen echt?",
+        "p": [
+          "Ja. Bewerten kann nur, wer eine Bestellung von uns erhalten hat: Der Link kommt per E-Mail, sobald die Bestellung zugestellt ist, und gilt für eine einzige Bewertung. Wir lesen sie vor der Veröffentlichung und veröffentlichen gute wie schlechte; wir entfernen nur solche mit Beleidigungen, persönlichen Daten oder ohne Bezug zum Produkt. Für Bewertungen zahlen wir nichts und geben keine Rabatte."
         ]
       }
     ]

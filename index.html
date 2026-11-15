@@ -23,7 +23,7 @@
   <link rel="icon" type="image/png" href="/img/logo/favicon-48.png" sizes="48x48">
   <link rel="icon" type="image/png" href="/img/logo/favicon-192.png" sizes="192x192">
   <link rel="apple-touch-icon" href="/img/logo/apple-touch-icon.png">
-  <link rel="stylesheet" href="css/fonts.css?v=20261115b">
+  <link rel="stylesheet" href="css/fonts.css?v=20261115c">
   <!-- jsonld -->
   <script type="application/ld+json">
 {
@@ -1937,8 +1937,8 @@
 }
   </script>
   <!-- /jsonld -->
-  <link rel="stylesheet" href="css/styles.css?v=20261115b">
-  <script type="module" src="js/catalogo.js?v=20261115b"></script>
+  <link rel="stylesheet" href="css/styles.css?v=20261115c">
+  <script type="module" src="js/catalogo.js?v=20261115c"></script>
 </head>
 <body data-meta="index">
   <a class="skip" href="#main" data-i18n="nav.saltar">Skip to content</a>
@@ -2072,6 +2072,14 @@
         </section>
         <!-- /prerender:catalogo -->
       </div>
+
+      <!-- Reseñas aprobadas (?accion=resenas). Oculta mientras no haya ninguna. -->
+      <section id="resenas" class="collection reviews" aria-labelledby="rev-titulo" hidden>
+        <h3 class="collection-title" id="rev-titulo" data-i18n="rev.titulo">What they say in the forge</h3>
+        <p id="rev-media" class="reviews-avg"></p>
+        <div id="rev-lista" class="reviews-grid"></div>
+        <p class="help" data-i18n="rev.verificadas">Reviews from customers with a delivered order, checked before publishing. We publish good and bad ones alike.</p>
+      </section>
     </section>
 
     <!-- Pedido: se muestra con #pedido -->
