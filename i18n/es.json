@@ -268,7 +268,6 @@
   "extra.badge_ayuda": "Describe en las notas de esta réplica qué badge quieres (símbolo, capítulo, texto…).",
   "err.nota_obligatoria": "Has elegido un Custom Badge: cuéntanos en las notas de esa réplica qué badge quieres.",
   "acc.titulo": "Accesorios",
-  "acc.stand_texto": "Soporte de exposición para lucir tu réplica en horizontal. Dos versiones: para la familia Bolt y para rifles láser.",
-  "acc.solo_extra": "Se añade como extra al pedir una réplica: elige la versión en tu pedido.",
-  "desc.plague-bolt": "Forjada en la podredumbre: réplica de exposición a tamaño real con carcasa corroída, detalles de cobre y ornamentos de la plaga. Kit de PLA no funcional en sus colores de serie, con tornillería incluida, para montar sin lijar ni pintar. Con cargador de exposición extraíble."
+  "desc.plague-bolt": "Forjada en la podredumbre: réplica de exposición a tamaño real con carcasa corroída, detalles de cobre y ornamentos de la plaga. Kit de PLA no funcional en sus colores de serie, con tornillería incluida, para montar sin lijar ni pintar. Con cargador de exposición extraíble.",
+  "desc.display-stand": "Soporte de exposición para lucir tu réplica en horizontal. Elige la versión en tu pedido: para la familia Bolt (Founders, Heavy, Renegade, Plague) o para rifles láser (Trench, Trooper, Pulse Carabine). Kit de PLA negro con tornillería."
 }

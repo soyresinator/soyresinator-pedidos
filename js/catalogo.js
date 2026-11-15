@@ -1,7 +1,7 @@
 // Soy Resinator · catálogo (index.html). Arranca también la vista de pedido.
-import * as C from './core.js?v=20261115';
-import * as P from './carrito.js?v=20261115';
-import { plazoDias } from './calc.js?v=20261115';
+import * as C from './core.js?v=20261115b';
+import * as P from './carrito.js?v=20261115b';
+import { plazoDias } from './calc.js?v=20261115b';
 
 const state = {
   cfg: null, cat: null, ship: null, serie: [],
@@ -112,10 +112,10 @@ function render() {
     if (!prods.length) return '';
     return `
       <section class="collection" aria-labelledby="col-${col.id}">
-        <h3 class="collection-title" id="col-${col.id}">${C.esc(col.nombre)}</h3>
+        <h3 class="collection-title" id="col-${col.id}">${C.esc(col.etiqueta ? C.t(col.etiqueta) : col.nombre)}</h3>
         <div class="grid">${prods.map(p => card(p, tax)).join('')}</div>
       </section>`;
-  }).join('') + accesorios(tax);
+  }).join('');
 
   box.querySelectorAll('img[data-ph]').forEach(img => {
     img.addEventListener('error', () => img.remove(), { once: true });
@@ -166,41 +166,13 @@ function card(p, tax) {
           <p class="sr-only">${C.esc(C.t('cat.incluye'))}</p>
           <ul class="includes">${includes}</ul>
         </div>
-        <p class="nf-line">${C.esc(C.t('aviso.nf_corto'))} · <a href="faq.html#no-funcional">${C.esc(C.t('aviso.mas'))}</a></p>
+        ${p.accesorio ? '' : `<p class="nf-line">${C.esc(C.t('aviso.nf_corto'))} · <a href="faq.html#no-funcional">${C.esc(C.t('aviso.mas'))}</a></p>`}
         ${plazo}
         ${colors}
         ${extras}
         <div class="card-actions">${action}</div>
       </div>
     </article>`;
-}
-
-/* Accesorios: escaparate. No se compran solos: se añaden como extra dentro de una réplica. */
-function accesorios(tax) {
-  const lista = state.cat.accesorios || [];
-  if (!lista.length) return '';
-  return `
-      <section class="collection" aria-labelledby="col-accesorios">
-        <h3 class="collection-title" id="col-accesorios">${C.esc(C.t('acc.titulo'))}</h3>
-        <div class="grid">${lista.map(a => `
-          <article class="card card-acc" id="a-${C.esc(a.id)}">
-            <div class="media">
-              <span class="ph-name" aria-hidden="true">${C.esc(a.nombre)}</span>
-              <img data-ph src="img/${C.esc(a.img)}" alt="${C.esc(a.nombre)}" loading="lazy" decoding="async" width="1200" height="675">
-            </div>
-            <div class="card-body">
-              <h4>${C.esc(a.nombre)}</h4>
-              <p class="card-desc">${C.esc(C.t(a.texto))}</p>
-              <div class="price-row">
-                <span class="price">${C.esc(C.money(a.pvp))}</span>
-                ${tax ? `<span class="tax">${C.esc(tax)}</span>` : ''}
-              </div>
-              <ul class="includes">${(a.versiones || []).map(v => `<li>${C.esc(C.t(v))}</li>`).join('')}</ul>
-              <p class="extras-line">${C.esc(C.t('acc.solo_extra'))}</p>
-            </div>
-          </article>`).join('')}
-        </div>
-      </section>`;
 }
 
 function add(pid) {

@@ -268,7 +268,6 @@
   "extra.badge_ayuda": "Beschreibe in den Notizen dieser Replik, welches Badge du möchtest (Symbol, Orden, Text …).",
   "err.nota_obligatoria": "Du hast ein Custom Badge gewählt: Schreib in die Notizen dieser Replik, welches Badge du möchtest.",
   "acc.titulo": "Zubehör",
-  "acc.stand_texto": "Displayständer, um deine Replik waagerecht zu präsentieren. Zwei Versionen: für die Bolt-Familie und für Lasergewehre.",
-  "acc.solo_extra": "Wird als Extra zu einer Replik bestellt: Wähle die Version in deiner Bestellung.",
-  "desc.plague-bolt": "In Fäulnis geschmiedet: Displayreplik in Originalgröße mit korrodiertem Gehäuse, Kupferdetails und Seuchenornamenten. Nicht funktionsfähiger PLA-Bausatz in den Standardfarben, Schrauben inklusive, ohne Schleifen oder Lackieren zu montieren. Mit abnehmbarem Display-Magazin."
+  "desc.plague-bolt": "In Fäulnis geschmiedet: Displayreplik in Originalgröße mit korrodiertem Gehäuse, Kupferdetails und Seuchenornamenten. Nicht funktionsfähiger PLA-Bausatz in den Standardfarben, Schrauben inklusive, ohne Schleifen oder Lackieren zu montieren. Mit abnehmbarem Display-Magazin.",
+  "desc.display-stand": "Displayständer, um deine Replik waagerecht zu präsentieren. Wähle die Version in deiner Bestellung: für die Bolt-Familie (Founders, Heavy, Renegade, Plague) oder für Lasergewehre (Trench, Trooper, Pulse Carabine). Schwarzer PLA-Bausatz mit Schrauben."
 }

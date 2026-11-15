@@ -23,7 +23,8 @@
   "colecciones": [
     { "id": "iron-crusade", "nombre": "Iron Crusade" },
     { "id": "ash-regiments", "nombre": "Ash Regiments" },
-    { "id": "the-outer-dark", "nombre": "The Outer Dark" }
+    { "id": "the-outer-dark", "nombre": "The Outer Dark" },
+    { "id": "accesorios", "nombre": "Accessories", "etiqueta": "acc.titulo" }
   ],
   "productos": [
     {
@@ -389,16 +390,27 @@
       ],
       "caja": "larga",
       "partes": []
-    }
-  ],
-  "accesorios": [
+    },
     {
       "id": "display-stand",
       "nombre": "Display Stand",
+      "modelo": "stand",
+      "id_replica": "STAND",
+      "coleccion": "accesorios",
+      "accesorio": true,
       "pvp": 30,
-      "img": "display-stand-1.webp",
-      "texto": "acc.stand_texto",
-      "versiones": ["extra.op.bolt", "extra.op.las"]
+      "especial": false,
+      "incluye": ["inc.kit"],
+      "horas": 6.97,
+      "volumen": 1,
+      "extras": [],
+      "caja": "pistola",
+      "partes": [],
+      "variantes": {
+        "etiqueta": "extra.op_version",
+        "defecto": "bolt",
+        "opciones": [{"id": "bolt", "etiqueta": "extra.op.bolt"}, {"id": "las", "etiqueta": "extra.op.las"}]
+      }
     }
   ]
 }

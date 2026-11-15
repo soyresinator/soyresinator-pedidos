@@ -327,6 +327,16 @@ body.has-float .toast { bottom: 80px; }
 .unit-head .unit-title { flex: 1; min-width: 0; }
 .extra-op { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-left: 4px; }
 .extra-op .select { flex: 1; min-width: 0; }
+/* Versión de un producto (Display Stand): botones a elegir, como las muestras de color */
+.pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { position: relative; cursor: pointer; }
+.pill input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.pill span {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; border-radius: 6px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--text);
+}
+.pill input:checked + span { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold) inset; color: var(--gold-hi); }
+.pill input:focus-visible + span { outline: 2px solid var(--gold-hi); outline-offset: 2px; }
 .extra-aviso { margin: 0; color: var(--gold-hi); }
 .unit-title { font-size: 1.6rem; text-transform: uppercase; margin: 0; margin-right: auto; min-width: 0; overflow-wrap: anywhere; }
 @media (min-width: 640px) { .unit-thumb { width: 240px; height: 135px; } }

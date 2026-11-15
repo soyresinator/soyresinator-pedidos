@@ -1,7 +1,7 @@
 // Soy Resinator · vista de pedido (#pedido en index.html)
 // Tarjeta por unidad, datos y envío, pago, resumen, envío al Apps Script y confirmación.
-import * as C from './core.js?v=20261115';
-import { totales, plazoDias, extrasDe, conEnvio, opcionExtra } from './calc.js?v=20261115';
+import * as C from './core.js?v=20261115b';
+import { totales, plazoDias, extrasDe, conEnvio, opcionExtra } from './calc.js?v=20261115b';
 
 const $ = id => document.getElementById(id);
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -136,6 +136,8 @@ function validarCarrito() {
         }
       }
     }
+    const vv = varianteDe(it, prod);
+    if ((vv ? vv.id : undefined) !== it.variante) { if (vv) it.variante = vv.id; else delete it.variante; cambiado = true; }
     if (it.montaje && !(pais && pais.montaje)) { it.montaje = false; cambiado = true; }
   }
   if (cambiados.length) avisos.push(C.esc(C.t('ped.colores_cambiados', { lista: cambiados.join(', ') })));
@@ -197,6 +199,19 @@ function itemCard(it, i, pais) {
       </fieldset>`;
   }).join('');
 
+  // Versión (Display Stand): botones como los de los colores.
+  const vSel = varianteDe(it, prod);
+  const variantes = vSel ? `
+      <fieldset class="part">
+        <legend>${C.esc(C.t(prod.variantes.etiqueta))}</legend>
+        <div class="pills">${prod.variantes.opciones.map(o => `
+          <label class="pill">
+            <input type="radio" class="variante" name="v-${it.uid}" value="${C.esc(o.id)}" data-uid="${it.uid}" ${o.id === vSel.id ? 'checked' : ''}>
+            <span>${C.esc(C.t(o.etiqueta))}</span>
+          </label>`).join('')}
+        </div>
+      </fieldset>` : '';
+
   const offline = !S.remote.ok && prod.partes.length
     ? `<p class="help">${C.esc(C.t('colores.nota_offline'))}</p>` : '';
 
@@ -214,7 +229,7 @@ function itemCard(it, i, pais) {
         <h3 class="unit-title" id="u-${it.uid}" tabindex="-1">${n}. ${C.esc(prod.nombre)}</h3>
         <span class="price">${C.esc(C.money(prod.pvp))}</span>
       </div>
-      ${partes || `<p class="colors-line">${C.esc(C.t('cat.colores_serie'))}</p>`}
+      ${variantes || partes || `<p class="colors-line">${C.esc(C.t('cat.colores_serie'))}</p>`}
       ${offline}
       ${extrasHtml(it, prod)}
       <div class="field">
@@ -347,7 +362,16 @@ function paintLegalLabels() {
   });
 }
 
+/** Versión elegida de un producto con variantes (Display Stand: Bolt o Las); null si no tiene. */
+function varianteDe(it, prod) {
+  const v = prod.variantes;
+  if (!v || !(v.opciones || []).length) return null;
+  return v.opciones.find(o => o.id === it.variante) || v.opciones.find(o => o.id === v.defecto) || v.opciones[0];
+}
+
 function textoColores(it, prod) {
+  const v = varianteDe(it, prod);
+  if (v) return `${C.t(prod.variantes.etiqueta)}: ${C.t(v.etiqueta)}`;
   if (!prod.partes.length) return C.t('cat.colores_serie');
   return prod.partes.map(part => `${C.t(part.etiqueta)}: ${C.colorName(colorElegido(part, it))}`).join(' · ');
 }
@@ -481,7 +505,11 @@ function wire() {
     const cart = C.loadCart();
     const it = cart.items.find(i => i.uid === uid);
     if (!it) return;
-    if (el.type === 'radio') {
+    if (el.classList.contains('variante')) {
+      it.variante = el.value;
+      C.saveCart(cart);
+      renderResumen();
+    } else if (el.type === 'radio') {
       const grupo = el.dataset.grupo;
       const part = prodDe(it.pid).partes.find(p => p.grupo === grupo);
       const c = coloresDe(part, it).find(x => x.id === el.value);
@@ -671,6 +699,7 @@ function payload() {
       colores: prodDe(it.pid).partes.map(p => ({ grupo: p.grupo, color_id: it.colores[p.grupo] || p.de_serie })),
       extras: Object.fromEntries(extrasDe(it, prodDe(it.pid), S.cat).map(e => [e.tipo, e.cantidad])),
       extras_op: Object.fromEntries(extrasDe(it, prodDe(it.pid), S.cat).filter(e => e.opcion).map(e => [e.tipo, e.opcion.id])),
+      ...(varianteDe(it, prodDe(it.pid)) ? { variante: varianteDe(it, prodDe(it.pid)).id } : {}),
       montaje: !!it.montaje,
       nota: (it.nota || '').trim().slice(0, S.cfg.nota_max)
     })),

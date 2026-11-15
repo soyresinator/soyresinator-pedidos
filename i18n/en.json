@@ -268,7 +268,6 @@
   "extra.badge_ayuda": "Describe in this replica's notes which badge you want (symbol, chapter, text…).",
   "err.nota_obligatoria": "You chose a Custom Badge: tell us in that replica's notes which badge you want.",
   "acc.titulo": "Accessories",
-  "acc.stand_texto": "Display stand to show off your replica horizontally. Two versions: for the Bolt family and for las rifles.",
-  "acc.solo_extra": "Added as an extra when you order a replica: choose the version in your order.",
-  "desc.plague-bolt": "Forged in rot: a full-size display replica with a corroded casing, copper details and plague ornaments. Non-functional PLA kit in its standard colors, screws included, to assemble with no sanding or painting. Removable display magazine."
+  "desc.plague-bolt": "Forged in rot: a full-size display replica with a corroded casing, copper details and plague ornaments. Non-functional PLA kit in its standard colors, screws included, to assemble with no sanding or painting. Removable display magazine.",
+  "desc.display-stand": "Display stand to show off your replica horizontally. Choose the version in your order: for the Bolt family (Founders, Heavy, Renegade, Plague) or for las rifles (Trench, Trooper, Pulse Carabine). Black PLA kit with screws."
 }

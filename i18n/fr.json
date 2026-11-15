@@ -268,7 +268,6 @@
   "extra.badge_ayuda": "Décris dans les notes de cette réplique le badge que tu veux (symbole, chapitre, texte…).",
   "err.nota_obligatoria": "Tu as choisi un Custom Badge : indique dans les notes de cette réplique le badge que tu veux.",
   "acc.titulo": "Accessoires",
-  "acc.stand_texto": "Support d'exposition pour mettre ta réplique en valeur à l'horizontale. Deux versions : pour la famille Bolt et pour les fusils laser.",
-  "acc.solo_extra": "S'ajoute en extra à une réplique : choisis la version dans ta commande.",
-  "desc.plague-bolt": "Forgée dans la pourriture : réplique d'exposition grandeur nature au boîtier corrodé, aux détails cuivrés et aux ornements de la peste. Kit en PLA non fonctionnel dans ses couleurs standard, visserie incluse, à monter sans poncer ni peindre. Avec chargeur d'exposition amovible."
+  "desc.plague-bolt": "Forgée dans la pourriture : réplique d'exposition grandeur nature au boîtier corrodé, aux détails cuivrés et aux ornements de la peste. Kit en PLA non fonctionnel dans ses couleurs standard, visserie incluse, à monter sans poncer ni peindre. Avec chargeur d'exposition amovible.",
+  "desc.display-stand": "Support d'exposition pour mettre ta réplique en valeur à l'horizontale. Choisis la version dans ta commande : pour la famille Bolt (Founders, Heavy, Renegade, Plague) ou pour les fusils laser (Trench, Trooper, Pulse Carabine). Kit en PLA noir avec visserie."
 }
