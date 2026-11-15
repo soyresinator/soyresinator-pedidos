@@ -1,11 +1,15 @@
 // Soy Resinator · reseña de un pedido entregado (resena.html?id=SR-XXXXXX&k=…&lang=xx).
 // El enlace llega en el correo que manda la tarea unos días después de la entrega. El servidor comprueba
 // que id + k son de ese pedido y que está Entregado; una reseña por pedido. Se publica cuando la aprobamos.
-import * as C from './core.js?v=20261115d';
+import * as C from './core.js?v=20261116';
 
 const $ = id => document.getElementById(id);
 const RE_ID = /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/;
 const MIN = 10, MAX = 1000;
+// Fotos: se reducen aquí (JPEG, lado mayor 1600 px) antes de enviarlas. Al redibujarlas se pierden los datos ocultos
+// del móvil (ubicación GPS, modelo…). El servidor admite hasta 900 KB por foto.
+const MAX_FOTOS = 3, MAX_CHARS_FOTO = 1150000;
+let fotos = []; // data URLs ya reducidas
 
 const q = new URLSearchParams(location.search);
 const id = String(q.get('id') || '').trim().toUpperCase();
@@ -40,6 +44,62 @@ async function main() {
   $('r-nombre').addEventListener('input', () => limpiarErr('r-nombre'));
   $('r-consent').addEventListener('change', () => limpiarErr('r-consent'));
   $('r-estrellas').addEventListener('change', () => limpiarErr('r-estrellas'));
+  $('r-fotos').addEventListener('change', anadirFotos);
+  $('r-fotos-lista').addEventListener('click', e => {
+    const b = e.target.closest('button[data-quitar]');
+    if (!b) return;
+    fotos.splice(Number(b.dataset.quitar), 1);
+    pintarFotos();
+    $('r-fotos').focus();
+  });
+}
+
+/* ---------- Fotos ---------- */
+async function anadirFotos() {
+  const input = $('r-fotos');
+  limpiarErr('r-fotos');
+  const nuevas = [...input.files];
+  input.value = ''; // permite volver a elegir la misma foto
+  if (fotos.length + nuevas.length > MAX_FOTOS) setErr('r-fotos', 'resena.fotos_max');
+  for (const f of nuevas.slice(0, MAX_FOTOS - fotos.length)) {
+    try { fotos.push(await reducir(f)); }
+    catch (e) { setErr('r-fotos', 'resena.fotos_error'); }
+  }
+  pintarFotos();
+}
+
+/** Lee la imagen, la gira según la foto original y la redibuja como JPEG de hasta 1600 px (o menos si aún pesa mucho). */
+async function reducir(file) {
+  let img;
+  try {
+    img = await createImageBitmap(file, { imageOrientation: 'from-image' });
+  } catch (e) {
+    img = await new Promise((ok, mal) => {
+      const im = new Image();
+      im.onload = () => ok(im);
+      im.onerror = mal;
+      im.src = URL.createObjectURL(file);
+    });
+  }
+  for (const [lado, calidad] of [[1600, 0.82], [1280, 0.75], [1024, 0.7]]) {
+    const w0 = img.width || img.naturalWidth, h0 = img.height || img.naturalHeight;
+    const k = Math.min(1, lado / Math.max(w0, h0));
+    const c = document.createElement('canvas');
+    c.width = Math.round(w0 * k); c.height = Math.round(h0 * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    const url = c.toDataURL('image/jpeg', calidad);
+    if (url.startsWith('data:image/jpeg') && url.length <= MAX_CHARS_FOTO) return url;
+  }
+  throw new Error('demasiado grande');
+}
+
+function pintarFotos() {
+  $('r-fotos-lista').innerHTML = fotos.map((u, i) => `
+    <figure class="foto-prev">
+      <img src="${u}" alt="${C.esc(C.t('rev.foto_aria', { n: i + 1 }))}">
+      <button type="button" class="btn btn-ghost btn-sm" data-quitar="${i}">${C.esc(C.t('resena.fotos_quitar'))}</button>
+    </figure>`).join('');
+  $('r-fotos').disabled = fotos.length >= MAX_FOTOS;
 }
 
 /** Estrellas (radios), contador y texto del permiso: cambian con el idioma. */
@@ -88,10 +148,10 @@ function limpiarErr(campo) {
   if (el) el.removeAttribute('aria-invalid');
 }
 
-async function llamar(body) {
+async function llamar(body, espera = 15000) {
   try {
     const ctl = new AbortController();
-    const timer = setTimeout(() => ctl.abort(), 15000);
+    const timer = setTimeout(() => ctl.abort(), espera); // con fotos, la subida tarda más
     try {
       const r = await fetch(cfg.api_url, {
         method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -127,12 +187,14 @@ async function enviar(e) {
   btn.textContent = C.t('resena.enviando');
   const r = await llamar({
     accion: 'resena', id, k, estrellas, texto, nombre, pais: $('r-pais').value.trim(),
-    idioma: C.getLang(), consentimiento: true, web: $('r-web').value
-  });
+    idioma: C.getLang(), consentimiento: true, web: $('r-web').value,
+    ...(fotos.length ? { fotos } : {})
+  }, fotos.length ? 60000 : 15000);
   enviando = false;
   btn.disabled = false;
   btn.textContent = C.t('resena.enviar');
   if (r.ok) {
+    $('r-gracias-fotos').hidden = !r.fotos;
     $('r-form').hidden = true;
     $('r-gracias').hidden = false;
     $('r-gracias-tit').focus();

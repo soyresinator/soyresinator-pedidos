@@ -281,7 +281,7 @@
   "resena.nombre": "Name to show",
   "resena.nombre_ayuda": "Your first name or a nickname. It will appear next to your review.",
   "resena.pais": "Country (optional)",
-  "resena.consent": "I agree that Soy Resinator may publish this review on its website with the name and country above, as explained in the {privacidad}.",
+  "resena.consent": "I agree that Soy Resinator may publish this review (and the photos, if approved) on its website with the name and country above, as explained in the {privacidad}.",
   "resena.privacidad_enlace": "privacy policy",
   "resena.enviar": "Send review",
   "resena.enviando": "Sending…",
@@ -306,5 +306,14 @@
   "mail.res_publicar": "We will publish it on soyresinator.com under the name you choose, good or bad. If something went wrong, reply to this email and we will fix it.",
   "mail.res_baja": "We are only writing to you this once about your order. If you don't want emails like this, reply with the word STOP.",
   "rev.media_total_1": "{media} out of 5 · 1 review",
-  "rev.media_aria_1": "{media} out of 5 stars, 1 review"
+  "rev.media_aria_1": "{media} out of 5 stars, 1 review",
+  "resena.fotos": "Photos (optional, up to 3)",
+  "resena.fotos_ayuda": "Show your replica: no people pointing it, no real weapons and no logos of other brands. We review photos before publishing them.",
+  "resena.fotos_quitar": "Remove",
+  "resena.fotos_max": "3 photos at most.",
+  "resena.fotos_error": "We couldn't read that photo. Try another one in JPG or PNG.",
+  "resena.gracias_fotos": "We review photos before publishing them, so they may take a little longer to appear.",
+  "rev.foto_aria": "Photo {n}",
+  "rev.foto_ver": "View photo {n} by {nombre}",
+  "rev.cerrar": "Close"
 }

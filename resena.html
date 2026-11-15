@@ -11,9 +11,9 @@
   <link rel="icon" type="image/png" href="/img/logo/favicon-48.png" sizes="48x48">
   <link rel="icon" type="image/png" href="/img/logo/favicon-192.png" sizes="192x192">
   <link rel="apple-touch-icon" href="/img/logo/apple-touch-icon.png">
-  <link rel="stylesheet" href="css/fonts.css?v=20261115d">
-  <link rel="stylesheet" href="css/styles.css?v=20261115d">
-  <script type="module" src="js/resena.js?v=20261115d"></script>
+  <link rel="stylesheet" href="css/fonts.css?v=20261116">
+  <link rel="stylesheet" href="css/styles.css?v=20261116">
+  <script type="module" src="js/resena.js?v=20261116"></script>
 </head>
 <body data-meta="resena">
   <a class="skip" href="#main" data-i18n="nav.saltar">Skip to content</a>
@@ -69,6 +69,14 @@
       </div>
 
       <div class="field">
+        <label for="r-fotos" data-i18n="resena.fotos">Photos (optional, up to 3)</label>
+        <input id="r-fotos" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple aria-describedby="r-fotos-ayuda e-r-fotos">
+        <p class="help" id="r-fotos-ayuda" data-i18n="resena.fotos_ayuda">Show your replica: please no people pointing it, no real weapons and no logos of other brands. We review photos before publishing them.</p>
+        <div id="r-fotos-lista" class="fotos-preview"></div>
+        <p class="field-err" id="e-r-fotos"></p>
+      </div>
+
+      <div class="field">
         <label for="r-nombre" data-i18n="resena.nombre">Name to show</label>
         <input id="r-nombre" maxlength="40" autocomplete="given-name" required aria-describedby="r-nombre-ayuda e-r-nombre">
         <p class="help" id="r-nombre-ayuda" data-i18n="resena.nombre_ayuda">Your first name or a nickname. It will appear next to your review.</p>
@@ -97,7 +105,8 @@
 
     <section id="r-gracias" class="block" hidden>
       <h2 class="status-title" tabindex="-1" id="r-gracias-tit" data-i18n="resena.gracias">Thank you!</h2>
-      <p data-i18n="resena.gracias_texto">We have received your review. We will publish it on the website once we have read it.</p>
+      <p data-i18n="resena.gracias_texto">We have received your review. It will appear on the website shortly.</p>
+      <p id="r-gracias-fotos" data-i18n="resena.gracias_fotos" hidden>We review photos before publishing them, so they may take a little longer to appear.</p>
       <p><a class="btn btn-ghost" href="./#catalogo" data-i18n="conf.volver">Back to the collection</a></p>
     </section>
   </main>

@@ -55,7 +55,7 @@
       {
         "h": "Reseñas",
         "p": [
-          "Unos días después de recibir tu pedido te enviamos un único correo para pedirte una reseña. Si nos la mandas, guardamos tu valoración, tu texto, el nombre y el país que elijas y el ID del pedido. Solo la publicamos en esta web si marcas la casilla de permiso, y solo con ese nombre y ese país, nunca con tu email ni tu dirección. Puedes pedirnos que la retiremos cuando quieras escribiendo a {email}."
+          "Unos días después de recibir tu pedido te enviamos un único correo para pedirte una reseña. Si nos la mandas, guardamos tu valoración, tu texto, el nombre y el país que elijas, el ID del pedido y, si las añades, hasta 3 fotos (las reducimos y les quitamos los datos ocultos, como la ubicación). Solo la publicamos en esta web si marcas la casilla de permiso, y solo con ese nombre y ese país, nunca con tu email ni tu dirección. Las fotos se guardan en nuestro Google Drive y no se ven hasta que las aprobamos. Puedes pedirnos que retiremos la reseña o las fotos cuando quieras escribiendo a {email}."
         ]
       },
       {

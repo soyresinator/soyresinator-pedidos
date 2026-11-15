@@ -55,7 +55,7 @@
       {
         "h": "Recensioni",
         "p": [
-          "Qualche giorno dopo aver ricevuto l'ordine ti inviamo un'unica e-mail per chiederti una recensione. Se ce la invii, conserviamo il tuo voto, il testo, il nome e il paese che scegli e l'ID dell'ordine. La pubblichiamo su questo sito solo se spunti la casella di consenso, e solo con quel nome e quel paese, mai con la tua e-mail o il tuo indirizzo. Puoi chiederci di rimuoverla in qualsiasi momento scrivendo a {email}."
+          "Qualche giorno dopo aver ricevuto l'ordine ti inviamo un'unica e-mail per chiederti una recensione. Se ce la invii, conserviamo il tuo voto, il testo, il nome e il paese che scegli, l'ID dell'ordine e, se le aggiungi, fino a 3 foto (le riduciamo e togliamo i dati nascosti, come la posizione). La pubblichiamo su questo sito solo se spunti la casella di consenso, e solo con quel nome e quel paese, mai con la tua e-mail o il tuo indirizzo. Le foto sono salvate nel nostro Google Drive e non si vedono finché non le approviamo. Puoi chiederci di rimuovere la recensione o le foto in qualsiasi momento scrivendo a {email}."
         ]
       },
       {

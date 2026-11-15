@@ -281,7 +281,7 @@
   "resena.nombre": "Nom affiché",
   "resena.nombre_ayuda": "Ton prénom ou un pseudo. Il apparaîtra à côté de ton avis.",
   "resena.pais": "Pays (facultatif)",
-  "resena.consent": "J'accepte que Soy Resinator publie cet avis sur son site avec le nom et le pays indiqués, comme expliqué dans la {privacidad}.",
+  "resena.consent": "J'accepte que Soy Resinator publie cet avis (et les photos, si elles sont approuvées) sur son site avec le nom et le pays indiqués, comme expliqué dans la {privacidad}.",
   "resena.privacidad_enlace": "politique de confidentialité",
   "resena.enviar": "Envoyer l'avis",
   "resena.enviando": "Envoi…",
@@ -306,5 +306,14 @@
   "mail.res_publicar": "Nous le publierons sur soyresinator.com sous le nom que tu choisis, qu'il soit bon ou mauvais. Si quelque chose ne va pas, réponds à cet e-mail et nous arrangerons ça.",
   "mail.res_baja": "Nous t'écrivons une seule fois au sujet de ta commande. Si tu ne veux pas recevoir ce type d'e-mail, réponds avec le mot STOP.",
   "rev.media_total_1": "{media} sur 5 · 1 avis",
-  "rev.media_aria_1": "{media} sur 5 étoiles, 1 avis"
+  "rev.media_aria_1": "{media} sur 5 étoiles, 1 avis",
+  "resena.fotos": "Photos (facultatif, jusqu'à 3)",
+  "resena.fotos_ayuda": "Montre ta réplique : personne ne doit viser avec, pas de vraies armes ni de logos d'autres marques. Nous vérifions les photos avant de les publier.",
+  "resena.fotos_quitar": "Retirer",
+  "resena.fotos_max": "3 photos maximum.",
+  "resena.fotos_error": "Impossible de lire cette photo. Essaie avec une autre en JPG ou PNG.",
+  "resena.gracias_fotos": "Nous vérifions les photos avant de les publier, elles peuvent donc mettre un peu plus de temps à apparaître.",
+  "rev.foto_aria": "Photo {n}",
+  "rev.foto_ver": "Voir la photo {n} de {nombre}",
+  "rev.cerrar": "Fermer"
 }

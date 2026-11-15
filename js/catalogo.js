@@ -1,7 +1,7 @@
 // Soy Resinator · catálogo (index.html). Arranca también la vista de pedido.
-import * as C from './core.js?v=20261115d';
-import * as P from './carrito.js?v=20261115d';
-import { plazoDias } from './calc.js?v=20261115d';
+import * as C from './core.js?v=20261116';
+import * as P from './carrito.js?v=20261116';
+import { plazoDias } from './calc.js?v=20261116';
 
 const state = {
   cfg: null, cat: null, ship: null, serie: [],
@@ -82,9 +82,47 @@ function pintarResenas() {
     <article class="review">
       <p class="stars-ro" role="img" aria-label="${C.esc(C.t('rev.estrellas_aria', { n: x.estrellas }))}">${estrellasTxt(x.estrellas)}</p>
       <p class="review-text">${C.esc(x.texto)}</p>
+      ${(x.fotos || []).length ? `<div class="review-fotos">${x.fotos.map((f, i) => `
+        <button type="button" class="review-foto" data-grande="${C.esc(f.grande)}" aria-label="${C.esc(C.t('rev.foto_ver', { n: i + 1, nombre: x.nombre }))}">
+          <img src="${C.esc(f.mini)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+        </button>`).join('')}</div>` : ''}
       <p class="review-who">${C.esc(x.nombre)}${x.pais ? ' · ' + C.esc(x.pais) : ''}${x.pids.length ? ' · ' + C.esc(x.pids.map(nombreProd).filter(Boolean).join(', ')) : ''}</p>
     </article>`).join('');
   box.hidden = false;
+  if (!box.dataset.fotos) {
+    box.dataset.fotos = '1';
+    box.addEventListener('click', e => {
+      const b = e.target.closest('.review-foto');
+      if (b) verFoto(b.dataset.grande, b);
+    });
+  }
+}
+
+/** Foto de reseña a pantalla completa (dialog nativo: Esc o clic fuera la cierran). */
+function verFoto(url, origen) {
+  let d = document.getElementById('foto-dialog');
+  if (!d) {
+    d = document.createElement('dialog');
+    d.id = 'foto-dialog';
+    d.className = 'foto-dialog';
+    d.innerHTML = `<img alt="" referrerpolicy="no-referrer"><button type="button" class="btn btn-ghost btn-sm foto-cerrar"></button>`;
+    document.body.appendChild(d);
+    // Al cerrar, el foco vuelve a la miniatura (si la lista se ha vuelto a pintar, a la equivalente).
+    const volver = () => {
+      const o = d._origen && d._origen.isConnected ? d._origen
+        : document.querySelector(`.review-foto[data-grande="${CSS.escape(d._url || '')}"]`);
+      if (o) o.focus();
+    };
+    d.addEventListener('click', e => {
+      if (e.target === d || e.target.closest('.foto-cerrar')) { d.close(); volver(); }
+    });
+    d.addEventListener('close', volver); // Esc
+  }
+  d._url = url;
+  d.querySelector('.foto-cerrar').textContent = C.t('rev.cerrar');
+  d.querySelector('img').src = url;
+  d._origen = origen;
+  d.showModal();
 }
 
 /* ---------- País de envío (para el texto de precios) ---------- */

@@ -55,7 +55,7 @@
       {
         "h": "Avis",
         "p": [
-          "Quelques jours après la réception de ta commande, nous t'envoyons un seul e-mail pour te demander un avis. Si tu nous l'envoies, nous conservons ta note, ton texte, le nom et le pays que tu choisis et l'identifiant de la commande. Nous ne le publions sur ce site que si tu coches la case d'autorisation, et seulement avec ce nom et ce pays, jamais avec ton e-mail ni ton adresse. Tu peux nous demander de le retirer à tout moment en écrivant à {email}."
+          "Quelques jours après la réception de ta commande, nous t'envoyons un seul e-mail pour te demander un avis. Si tu nous l'envoies, nous conservons ta note, ton texte, le nom et le pays que tu choisis, l'identifiant de la commande et, si tu en ajoutes, jusqu'à 3 photos (nous les réduisons et supprimons les données cachées comme la localisation). Nous ne le publions sur ce site que si tu coches la case d'autorisation, et seulement avec ce nom et ce pays, jamais avec ton e-mail ni ton adresse. Les photos sont stockées dans notre Google Drive et ne sont visibles qu'après notre approbation. Tu peux nous demander de retirer l'avis ou les photos à tout moment en écrivant à {email}."
         ]
       },
       {

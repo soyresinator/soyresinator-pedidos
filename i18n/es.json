@@ -281,7 +281,7 @@
   "resena.nombre": "Nombre que se verá",
   "resena.nombre_ayuda": "Tu nombre o un apodo. Saldrá junto a tu reseña.",
   "resena.pais": "País (opcional)",
-  "resena.consent": "Acepto que Soy Resinator publique esta reseña en su web con el nombre y el país indicados, como explica la {privacidad}.",
+  "resena.consent": "Acepto que Soy Resinator publique esta reseña (y las fotos, si las aprueba) en su web con el nombre y el país indicados, como explica la {privacidad}.",
   "resena.privacidad_enlace": "política de privacidad",
   "resena.enviar": "Enviar reseña",
   "resena.enviando": "Enviando…",
@@ -306,5 +306,14 @@
   "mail.res_publicar": "La publicaremos en soyresinator.com con el nombre que elijas, sea buena o mala. Si algo no ha ido bien, responde a este correo y lo arreglamos.",
   "mail.res_baja": "Solo te escribimos esta vez por tu pedido. Si no quieres recibir más correos así, responde con la palabra BAJA.",
   "rev.media_total_1": "{media} de 5 · 1 reseña",
-  "rev.media_aria_1": "{media} de 5 estrellas, 1 reseña"
+  "rev.media_aria_1": "{media} de 5 estrellas, 1 reseña",
+  "resena.fotos": "Fotos (opcional, hasta 3)",
+  "resena.fotos_ayuda": "Enseña tu réplica: sin personas apuntando con ella, sin armas reales y sin logos de otras marcas. Revisamos las fotos antes de publicarlas.",
+  "resena.fotos_quitar": "Quitar",
+  "resena.fotos_max": "Como máximo 3 fotos.",
+  "resena.fotos_error": "No hemos podido leer esa foto. Prueba con otra en JPG o PNG.",
+  "resena.gracias_fotos": "Las fotos las revisamos antes de publicarlas, así que pueden tardar un poco más en aparecer.",
+  "rev.foto_aria": "Foto {n}",
+  "rev.foto_ver": "Ver la foto {n} de {nombre}",
+  "rev.cerrar": "Cerrar"
 }

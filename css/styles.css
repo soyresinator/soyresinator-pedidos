@@ -335,6 +335,18 @@ body.has-float .toast { bottom: 80px; }
 .review { border: 1px solid var(--line); border-radius: 8px; padding: 16px; background: var(--surface); display: grid; gap: 8px; align-content: start; }
 .review-text { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
 .review-who { margin: 0; color: var(--muted); font-size: .9rem; }
+.review-fotos { display: flex; gap: 8px; flex-wrap: wrap; }
+.review-foto { padding: 0; border: 1px solid var(--line); border-radius: 6px; background: #000; cursor: zoom-in; width: 76px; height: 76px; overflow: hidden; }
+.review-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.review-foto:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 2px; }
+.foto-dialog { border: 0; padding: 0; background: transparent; max-width: min(96vw, 1200px); max-height: 92vh; }
+.foto-dialog::backdrop { background: rgba(0, 0, 0, .85); }
+.foto-dialog img { display: block; max-width: 100%; max-height: 84vh; margin: 0 auto; border-radius: 6px; }
+.foto-dialog .foto-cerrar { display: block; margin: 10px auto 0; }
+/* Formulario de reseña: fotos elegidas */
+.fotos-preview { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+.foto-prev { margin: 0; display: grid; gap: 6px; justify-items: center; }
+.foto-prev img { width: 96px; height: 96px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); }
 .stars-ro { color: var(--gold); letter-spacing: 2px; margin: 0; }
 .rating-line { margin: -4px 0 0; font-size: .95rem; }
 .rating-line a { color: var(--gold-hi); text-decoration: none; }
