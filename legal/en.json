@@ -55,7 +55,8 @@
       {
         "h": "Reviews",
         "p": [
-          "A few days after you receive your order we send you a single email asking for a review. If you send one, we keep your rating, your text, the name and country you choose, the order ID and, if you add them, up to 3 photos (we resize them and strip hidden data such as location). We only publish it on this website if you tick the permission box, and only with that name and country, never with your email or address. Photos are stored in our Google Drive and are not visible until we approve them. You can ask us to remove the review or the photos at any time by writing to {email}."
+          "A few days after you receive your order we send you a single email asking for a review. If you send one, we keep your rating, your text, the name and country you choose, the order ID and, if you add them, up to 3 photos (we resize them and strip hidden data such as location). We only publish it on this website if you tick the permission box, and only with that name and country, never with your email or address. Photos are stored in our Google Drive and are not visible until we approve them. You can ask us to remove the review or the photos at any time by writing to {email}.",
+          "The two buttons in that email (leave a review and visit the website) carry your order code. That lets us record, once, whether and when you clicked them, so we know if these emails are useful. We do not store your IP address or browser, and we do not use invisible pixels to see whether you open the email."
         ]
       },
       {

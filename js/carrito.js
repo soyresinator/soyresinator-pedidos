@@ -1,7 +1,7 @@
 // Soy Resinator · vista de pedido (#pedido en index.html)
 // Tarjeta por unidad, datos y envío, pago, resumen, envío al Apps Script y confirmación.
-import * as C from './core.js?v=20261116';
-import { totales, plazoDias, extrasDe, conEnvio, opcionExtra } from './calc.js?v=20261116';
+import * as C from './core.js?v=20261116b';
+import { totales, plazoDias, extrasDe, conEnvio, opcionExtra } from './calc.js?v=20261116b';
 
 const $ = id => document.getElementById(id);
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;

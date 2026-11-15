@@ -55,7 +55,8 @@
       {
         "h": "Avaliações",
         "p": [
-          "Alguns dias depois de você receber o pedido, enviamos um único e-mail pedindo uma avaliação. Se você enviar, guardamos sua nota, seu texto, o nome e o país que escolher, o ID do pedido e, se adicionar, até 3 fotos (reduzimos e removemos os dados ocultos, como a localização). Só a publicamos neste site se você marcar a caixa de permissão, e apenas com esse nome e país, nunca com seu e-mail ou endereço. As fotos ficam no nosso Google Drive e não aparecem até as aprovarmos. Você pode pedir que retiremos a avaliação ou as fotos quando quiser escrevendo para {email}."
+          "Alguns dias depois de você receber o pedido, enviamos um único e-mail pedindo uma avaliação. Se você enviar, guardamos sua nota, seu texto, o nome e o país que escolher, o ID do pedido e, se adicionar, até 3 fotos (reduzimos e removemos os dados ocultos, como a localização). Só a publicamos neste site se você marcar a caixa de permissão, e apenas com esse nome e país, nunca com seu e-mail ou endereço. As fotos ficam no nosso Google Drive e não aparecem até as aprovarmos. Você pode pedir que retiremos a avaliação ou as fotos quando quiser escrevendo para {email}.",
+          "Os dois botões desse e-mail (deixar a avaliação e ir ao site) levam o código do seu pedido. Assim registramos, uma única vez, se você clicou neles e quando, para saber se esses e-mails são úteis. Não guardamos seu IP nem seu navegador e não usamos pixels invisíveis para saber se você abre o e-mail."
         ]
       },
       {

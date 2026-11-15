@@ -337,6 +337,22 @@ function contadorVisitas(cfg) {
   document.head.appendChild(s);
 }
 
+/* ---------- Clic en «Ver novedades» del correo de reseña ----------
+ * El botón lleva ?c=SR-XXXXXX&k=…: avisamos al servidor (solo apunta pedido, botón y fecha) y quitamos
+ * los parámetros de la barra para que no se compartan al copiar el enlace. */
+function clicCorreo(cfg) {
+  const q = new URLSearchParams(location.search);
+  const id = String(q.get('c') || '').trim().toUpperCase();
+  const k = String(q.get('k') || '').trim();
+  if (!id || !k) return;
+  q.delete('c'); q.delete('k');
+  const resto = q.toString();
+  history.replaceState(null, '', location.pathname + (resto ? '?' + resto : '') + location.hash);
+  if (!/^SR-[A-Z0-9]{6}$/.test(id) || !/^[0-9a-f]{24}$/.test(k) || !cfg || !cfg.api_url || /^tools\//.test(cfg.api_url)) return;
+  fetch(cfg.api_url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ accion: 'clic', id, k }), keepalive: true }).catch(() => {});
+}
+
 /* ---------- Cabecera y pie comunes ---------- */
 export function setupChrome(cfg) {
   // Selector de idioma
@@ -385,6 +401,7 @@ export function setupChrome(cfg) {
   document.addEventListener('sr:lang', paintIg);
 
   contadorVisitas(cfg);
+  clicCorreo(cfg);
 
   // Contador del carrito
   const paintCount = () => {
