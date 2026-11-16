@@ -38,7 +38,7 @@
         "h": "Qui d'autre y a accès",
         "p": [
           "Pour fonctionner, nous utilisons ces services, qui traitent les données selon nos instructions :",
-          "Pour exécuter la commande, nous partageons aussi le strict nécessaire avec le transporteur (Correos : nom, adresse et téléphone), avec Stripe (Stripe Payments Europe, Ltd., Irlande), qui traite les paiements par carte, et, si tu paies par virement, avec notre banque.",
+          "Pour exécuter la commande, nous partageons aussi le strict nécessaire avec le transporteur (Correos : nom, adresse et téléphone), avec l'établissement qui traite le paiement par carte (Revolut Bank UAB, Lituanie, ou Stripe Payments Europe, Ltd., Irlande), et, si tu paies par virement, avec notre banque.",
           "Si ton colis part vers un pays situé hors de l'Espace économique européen (par exemple les États-Unis, la Suisse ou le Royaume-Uni), le transporteur et ses partenaires sur place traitent tes données de livraison dans ce pays. Ce transfert est nécessaire à l'exécution du contrat que tu conclus avec nous (article 49, paragraphe 1, point b, du RGPD). La Suisse et le Royaume-Uni bénéficient en outre d'une décision d'adéquation de la Commission européenne."
         ],
         "ul": [
@@ -96,7 +96,7 @@
         "h": "Comment passer commande",
         "p": [
           "Tu choisis les répliques, les couleurs et les extras, tu remplis tes coordonnées et tu envoies la commande, sans créer de compte. À l'envoi, tu reçois un identifiant de commande à l'écran et par e-mail.",
-          "Sous 24 heures, nous t'envoyons un lien de paiement Stripe sécurisé. Ta commande passe en production à réception du paiement, ou du premier paiement si tu paies en deux fois."
+          "Sous 24 heures, nous t'envoyons un lien de paiement sécurisé. Ta commande passe en production à réception du paiement, ou du premier paiement si tu paies en deux fois."
         ]
       },
       {
@@ -112,7 +112,7 @@
         "h": "Paiement",
         "p": [
           "Tu peux payer la commande en une fois ou en deux fois : 50 % pour démarrer et les 50 % restants avant l'expédition.",
-          "Après confirmation de ta commande, nous t'envoyons un lien de paiement Stripe sécurisé et tu paies par carte. Dans l'Union européenne, tu peux aussi payer par virement bancaire. Rien n'est débité sur le site. Le débit apparaîtra sur ton relevé sous le nom SOYRESINATOR.",
+          "Après confirmation de ta commande, nous t'envoyons un lien de paiement sécurisé et tu paies par carte. Dans l'Union européenne, tu peux aussi payer par virement bancaire. Rien n'est débité sur le site. Le débit apparaîtra sur ton relevé sous le nom SOYRESINATOR.",
           "Si nous ne recevons pas le premier paiement dans les {dias_pago} jours suivant la commande, nous pouvons l'annuler. Si tu paies en deux fois, nous expédions la réplique à réception du second paiement."
         ]
       },
@@ -251,7 +251,7 @@
       {
         "h": "Comment payer ?",
         "p": [
-          "Après confirmation de ta commande, nous t'envoyons un lien de paiement Stripe sécurisé. Paie par carte. Dans l'UE, tu peux aussi payer par virement bancaire. Le débit apparaîtra sur ton relevé sous le nom SOYRESINATOR."
+          "Après confirmation de ta commande, nous t'envoyons un lien de paiement sécurisé. Paie par carte. Dans l'UE, tu peux aussi payer par virement bancaire. Le débit apparaîtra sur ton relevé sous le nom SOYRESINATOR."
         ]
       },
       {
@@ -344,7 +344,7 @@
       {
         "h": "Remboursements",
         "p": [
-          "Nous remboursons le prix et la livraison standard dans les 14 jours suivant la réception de ta notification, par le même moyen de paiement (carte via Stripe ou virement). Nous pouvons attendre d'avoir reçu la réplique."
+          "Nous remboursons le prix et la livraison standard dans les 14 jours suivant la réception de ta notification, par le même moyen de paiement (carte ou virement). Nous pouvons attendre d'avoir reçu la réplique."
         ]
       },
       {

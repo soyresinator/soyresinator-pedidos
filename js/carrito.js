@@ -1,7 +1,7 @@
 // Soy Resinator · vista de pedido (#pedido en index.html)
 // Tarjeta por unidad, datos y envío, pago, resumen, envío al Apps Script y confirmación.
-import * as C from './core.js?v=20261116b';
-import { totales, plazoDias, extrasDe, conEnvio, opcionExtra } from './calc.js?v=20261116b';
+import * as C from './core.js?v=20261116c';
+import { totales, plazoDias, extrasDe, conEnvio, opcionExtra } from './calc.js?v=20261116c';
 
 const $ = id => document.getElementById(id);
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -266,6 +266,8 @@ function extrasHtml(it, prod) {
       </div>`;
     }
     if (n > 0 && def.nota_obligatoria) opciones += `<p class="help extra-aviso">${C.esc(C.t('extra.badge_ayuda'))}</p>`;
+    // Descripción corta (asa, culata, tambor): siempre visible, para saber qué es antes de añadirlo.
+    if (def.ayuda) opciones += `<p class="help extra-ayuda">${C.esc(C.t(def.ayuda))}</p>`;
     return `
       <div class="extra-row">
         <span class="extra-name" id="${id}-l">${C.esc(nombre)} <span class="extra-price">${C.esc(C.t('extra.precio_ud', { precio: C.money(ex.pvp) }))}</span></span>
@@ -327,7 +329,7 @@ function renderPago() {
   if (pais && !prefijoTocado && !$('f-prefijo').value) $('f-prefijo').value = pais.prefijo;
   const modo = cart.modo === 'dos_partes' ? 'dos_partes' : 'completo';
   document.querySelectorAll('input[name="modo"]').forEach(r => { r.checked = r.value === modo; });
-  // Desde el 11/11/2026: enlace de pago de Stripe enviado a mano (tarjeta) y, en la UE, también transferencia.
+  // Enlace de pago enviado a mano (tarjeta; hoy Revolut, más adelante también Stripe) y, en la UE, también transferencia.
   $('pago-metodo').textContent = C.t('pago.metodo');
 }
 

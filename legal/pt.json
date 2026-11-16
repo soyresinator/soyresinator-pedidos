@@ -38,7 +38,7 @@
         "h": "Quem mais os vê",
         "p": [
           "Para funcionar usamos estes serviços, que tratam os dados seguindo as nossas instruções:",
-          "Além disso, para cumprir o pedido compartilhamos o indispensável com a transportadora (Correos: nome, endereço e telefone), com a Stripe (Stripe Payments Europe, Ltd., Irlanda), que processa os pagamentos com cartão, e, se você pagar por transferência, com o nosso banco.",
+          "Além disso, para cumprir o pedido compartilhamos o indispensável com a transportadora (Correos: nome, endereço e telefone), com a entidade que processa o pagamento com cartão (Revolut Bank UAB, Lituânia, ou Stripe Payments Europe, Ltd., Irlanda), e, se você pagar por transferência, com o nosso banco.",
           "Se o envio for para um país fora do Espaço Econômico Europeu (por exemplo, Brasil, Estados Unidos, Suíça ou Reino Unido), a transportadora e os seus parceiros no destino tratam os seus dados de entrega nesse país. Essa transferência é necessária para cumprir o contrato que você celebra conosco (artigo 49.1.b do RGPD). A Suíça e o Reino Unido contam além disso com uma decisão de adequação da Comissão Europeia."
         ],
         "ul": [
@@ -96,7 +96,7 @@
         "h": "Como se faz um pedido",
         "p": [
           "Você escolhe as réplicas, as cores e os extras, preenche os seus dados e envia o pedido, sem criar conta. Ao enviar, recebe um ID de pedido na tela e por e-mail.",
-          "Em até 24 horas enviamos um link de pagamento seguro da Stripe. O seu pedido entra em produção quando recebemos o pagamento, ou o primeiro pagamento se você pagar em duas partes."
+          "Em até 24 horas enviamos um link de pagamento seguro. O seu pedido entra em produção quando recebemos o pagamento, ou o primeiro pagamento se você pagar em duas partes."
         ]
       },
       {
@@ -112,7 +112,7 @@
         "h": "Pagamento",
         "p": [
           "Você pode pagar o pedido completo ou em duas partes: 50 % para começar e os 50 % restantes antes do envio.",
-          "Depois de confirmarmos o seu pedido, enviamos um link de pagamento seguro da Stripe e você paga com cartão. Na União Europeia também pode pagar por transferência bancária. No site não se cobra nada. A cobrança aparecerá no seu extrato como SOYRESINATOR.",
+          "Depois de confirmarmos o seu pedido, enviamos um link de pagamento seguro e você paga com cartão. Na União Europeia também pode pagar por transferência bancária. No site não se cobra nada. A cobrança aparecerá no seu extrato como SOYRESINATOR.",
           "Se não recebermos o primeiro pagamento em {dias_pago} dias a partir do pedido, podemos cancelá-lo. Se você pagar em duas partes, enviamos a réplica quando recebemos o segundo pagamento."
         ]
       },
@@ -251,7 +251,7 @@
       {
         "h": "Como se paga?",
         "p": [
-          "Depois de confirmarmos o seu pedido, enviamos um link de pagamento seguro da Stripe. Pague com cartão. Na UE também pode pagar por transferência bancária. A cobrança aparecerá no seu extrato como SOYRESINATOR."
+          "Depois de confirmarmos o seu pedido, enviamos um link de pagamento seguro. Pague com cartão. Na UE também pode pagar por transferência bancária. A cobrança aparecerá no seu extrato como SOYRESINATOR."
         ]
       },
       {
@@ -344,7 +344,7 @@
       {
         "h": "Reembolsos",
         "p": [
-          "Devolvemos o preço e o envio padrão nos 14 dias seguintes a recebermos o seu aviso, pelo mesmo meio de pagamento (cartão através da Stripe ou transferência). Podemos esperar até receber a réplica."
+          "Devolvemos o preço e o envio padrão nos 14 dias seguintes a recebermos o seu aviso, pelo mesmo meio de pagamento (cartão ou transferência). Podemos esperar até receber a réplica."
         ]
       },
       {

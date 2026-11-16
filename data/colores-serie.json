@@ -7,6 +7,7 @@
     { "id": "rojo-oscuro", "hex": "#7a1e1e", "nombres": { "es": "Rojo oscuro", "en": "Dark red", "de": "Dunkelrot", "fr": "Rouge foncé", "it": "Rosso scuro" } },
     { "id": "rojo-escarlata", "hex": "#b3261e", "nombres": { "es": "Rojo escarlata", "en": "Scarlet red", "de": "Scharlachrot", "fr": "Rouge écarlate", "it": "Rosso scarlatto" } },
     { "id": "verde-oscuro", "hex": "#2f4a2a", "nombres": { "es": "Verde oscuro", "en": "Dark green", "de": "Dunkelgrün", "fr": "Vert foncé", "it": "Verde scuro" } },
-    { "id": "amarillo", "hex": "#e3c62c", "nombres": { "es": "Amarillo limón", "en": "Lemon yellow", "de": "Zitronengelb", "fr": "Jaune citron", "it": "Giallo limone" } }
+    { "id": "amarillo", "hex": "#e3c62c", "nombres": { "es": "Amarillo limón", "en": "Lemon yellow", "de": "Zitronengelb", "fr": "Jaune citron", "it": "Giallo limone" } },
+    { "id": "azul-oscuro", "hex": "#042f56", "nombres": { "es": "Azul oscuro", "en": "Dark blue", "de": "Dunkelblau", "fr": "Bleu foncé", "it": "Blu scuro" } }
   ]
 }

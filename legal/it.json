@@ -38,7 +38,7 @@
         "h": "Chi altro li vede",
         "p": [
           "Per funzionare usiamo questi servizi, che trattano i dati secondo le nostre istruzioni:",
-          "Per evadere l'ordine condividiamo inoltre lo stretto necessario con il corriere (Correos: nome, indirizzo e telefono), con Stripe (Stripe Payments Europe, Ltd., Irlanda), che gestisce i pagamenti con carta, e, se paghi con bonifico, con la nostra banca.",
+          "Per evadere l'ordine condividiamo inoltre lo stretto necessario con il corriere (Correos: nome, indirizzo e telefono), con l'ente che gestisce il pagamento con carta (Revolut Bank UAB, Lituania, o Stripe Payments Europe, Ltd., Irlanda), e, se paghi con bonifico, con la nostra banca.",
           "Se la spedizione è diretta a un paese fuori dallo Spazio economico europeo (per esempio Stati Uniti, Svizzera o Regno Unito), il corriere e i suoi partner a destinazione trattano i tuoi dati di consegna in quel paese. Questo trasferimento è necessario per eseguire il contratto che concludi con noi (articolo 49, paragrafo 1, lettera b, del GDPR). Svizzera e Regno Unito dispongono inoltre di una decisione di adeguatezza della Commissione europea."
         ],
         "ul": [
@@ -96,7 +96,7 @@
         "h": "Come si fa un ordine",
         "p": [
           "Scegli le repliche, i colori e gli extra, inserisci i tuoi dati e invii l'ordine, senza creare un account. All'invio ricevi un ID ordine sullo schermo e via e-mail.",
-          "Entro 24 ore ti inviamo un link di pagamento Stripe sicuro. Il tuo ordine entra in produzione quando riceviamo il pagamento, o il primo pagamento se paghi in due parti."
+          "Entro 24 ore ti inviamo un link di pagamento sicuro. Il tuo ordine entra in produzione quando riceviamo il pagamento, o il primo pagamento se paghi in due parti."
         ]
       },
       {
@@ -112,7 +112,7 @@
         "h": "Pagamento",
         "p": [
           "Puoi pagare l'ordine in un'unica soluzione o in due rate: il 50% per iniziare e il restante 50% prima della spedizione.",
-          "Dopo aver confermato il tuo ordine, ti inviamo un link di pagamento Stripe sicuro e paghi con carta. Nell'Unione europea puoi pagare anche con bonifico bancario. Sul sito non viene addebitato nulla. L'addebito comparirà sul tuo estratto conto come SOYRESINATOR.",
+          "Dopo aver confermato il tuo ordine, ti inviamo un link di pagamento sicuro e paghi con carta. Nell'Unione europea puoi pagare anche con bonifico bancario. Sul sito non viene addebitato nulla. L'addebito comparirà sul tuo estratto conto come SOYRESINATOR.",
           "Se non riceviamo il primo pagamento entro {dias_pago} giorni dall'ordine, possiamo annullarlo. Se paghi in due rate, spediamo la replica quando riceviamo la seconda."
         ]
       },
@@ -251,7 +251,7 @@
       {
         "h": "Come si paga?",
         "p": [
-          "Dopo aver confermato il tuo ordine, ti inviamo un link di pagamento Stripe sicuro. Paghi con carta. Nell'UE puoi pagare anche con bonifico bancario. L'addebito comparirà sul tuo estratto conto come SOYRESINATOR."
+          "Dopo aver confermato il tuo ordine, ti inviamo un link di pagamento sicuro. Paghi con carta. Nell'UE puoi pagare anche con bonifico bancario. L'addebito comparirà sul tuo estratto conto come SOYRESINATOR."
         ]
       },
       {
@@ -344,7 +344,7 @@
       {
         "h": "Rimborsi",
         "p": [
-          "Ti rimborsiamo il prezzo e la spedizione standard entro 14 giorni dalla ricezione della tua comunicazione, con lo stesso mezzo di pagamento (carta tramite Stripe o bonifico). Possiamo attendere di ricevere la replica."
+          "Ti rimborsiamo il prezzo e la spedizione standard entro 14 giorni dalla ricezione della tua comunicazione, con lo stesso mezzo di pagamento (carta o bonifico). Possiamo attendere di ricevere la replica."
         ]
       },
       {

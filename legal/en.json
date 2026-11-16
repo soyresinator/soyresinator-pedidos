@@ -38,7 +38,7 @@
         "h": "Who else sees it",
         "p": [
           "To run the shop we use these services, which process data on our instructions:",
-          "To fulfill your order we also share what is strictly needed with the carrier (Correos: name, address and phone), with Stripe (Stripe Payments Europe, Ltd., Ireland), which processes card payments, and, if you pay by bank transfer, with our bank.",
+          "To fulfill your order we also share what is strictly needed with the carrier (Correos: name, address and phone), with the provider that processes the card payment (Revolut Bank UAB, Lithuania, or Stripe Payments Europe, Ltd., Ireland), and, if you pay by bank transfer, with our bank.",
           "If your parcel goes to a country outside the European Economic Area (for example, the United States, Switzerland or the United Kingdom), the carrier and its partners at destination process your delivery details in that country. This transfer is necessary to perform the contract you make with us (Article 49(1)(b) GDPR). Switzerland and the United Kingdom also have an adequacy decision from the European Commission."
         ],
         "ul": [
@@ -96,7 +96,7 @@
         "h": "How ordering works",
         "p": [
           "You choose the replicas, colors and extras, fill in your details and send the order, without creating an account. When you send it, you get an order ID on screen and by email.",
-          "Within 24 hours we send you a secure Stripe payment link. Your order goes into production when we receive the payment, or the first payment if you pay in two parts."
+          "Within 24 hours we send you a secure payment link. Your order goes into production when we receive the payment, or the first payment if you pay in two parts."
         ]
       },
       {
@@ -112,7 +112,7 @@
         "h": "Payment",
         "p": [
           "You can pay for the whole order at once or in two parts: 50% to get started and the remaining 50% before shipping.",
-          "After we confirm your order, we send you a secure Stripe payment link and you pay by card. Customers in the European Union can also pay by bank transfer. Nothing is charged on the website. The charge will appear on your statement as SOYRESINATOR.",
+          "After we confirm your order, we send you a secure payment link and you pay by card. Customers in the European Union can also pay by bank transfer. Nothing is charged on the website. The charge will appear on your statement as SOYRESINATOR.",
           "If we don't receive the first payment within {dias_pago} days of the order, we may cancel it. If you pay in two parts, we ship the replica once we receive the second payment."
         ]
       },
@@ -251,7 +251,7 @@
       {
         "h": "How do I pay?",
         "p": [
-          "After we confirm your order, we send you a secure Stripe payment link. Pay by card. EU customers can also pay by bank transfer. The charge will appear on your statement as SOYRESINATOR."
+          "After we confirm your order, we send you a secure payment link. Pay by card. EU customers can also pay by bank transfer. The charge will appear on your statement as SOYRESINATOR."
         ]
       },
       {
@@ -344,7 +344,7 @@
       {
         "h": "Refunds",
         "p": [
-          "We refund the price and standard shipping within 14 days of receiving your notice, using the same payment method (card through Stripe or bank transfer). We may wait until we receive the replica back."
+          "We refund the price and standard shipping within 14 days of receiving your notice, using the same payment method (card or bank transfer). We may wait until we receive the replica back."
         ]
       },
       {

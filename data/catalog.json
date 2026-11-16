@@ -18,7 +18,10 @@
         { "id": "dorado", "etiqueta": "extra.op.dorado", "filamento": "FIL-SILK-GOLD" },
         { "id": "gris-titan", "etiqueta": "extra.op.gris-titan", "filamento": "FIL-SILK-GREYTITAN" }
       ]
-    }
+    },
+    "asa": { "etiqueta": "extra.asa", "ayuda": "extra.asa_ayuda", "resumen_es": "Asa con rail", "max": 1 },
+    "culata": { "etiqueta": "extra.culata", "ayuda": "extra.culata_ayuda", "resumen_es": "Culata", "max": 1 },
+    "tambor": { "etiqueta": "extra.tambor", "ayuda": "extra.tambor_ayuda", "resumen_es": "Cargador de tambor", "max": 1 }
   },
   "colecciones": [
     { "id": "iron-crusade", "nombre": "Iron Crusade" },
@@ -72,7 +75,10 @@
         { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
         { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PRIMARIS", "pvp": 30, "horas": 9.25 },
         { "tipo": "badge", "id_replica": "BADGE-CUSTOM", "pvp": 10, "horas": 2, "opcion_defecto": "dorado" },
-        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "bolt" }
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "bolt" },
+        { "tipo": "asa", "id_replica": "ASA-RAIL-HB", "pvp": 30, "horas": 4.1 },
+        { "tipo": "culata", "id_replica": "CULATA-HB", "pvp": 30, "horas": 3.4 },
+        { "tipo": "tambor", "id_replica": "TAMBOR-HB", "pvp": 45, "horas": 9.85 }
       ],
       "caja": "larga",
       "partes": [
@@ -101,7 +107,10 @@
       "extras": [
         { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
         { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PRIMARIS", "pvp": 30, "horas": 9.25 },
-        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "bolt" }
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "bolt" },
+        { "tipo": "asa", "id_replica": "ASA-RAIL-HB", "pvp": 30, "horas": 4.1 },
+        { "tipo": "culata", "id_replica": "CULATA-HB", "pvp": 30, "horas": 3.4 },
+        { "tipo": "tambor", "id_replica": "TAMBOR-HB", "pvp": 45, "horas": 9.85 }
       ],
       "caja": "larga",
       "partes": [
@@ -122,6 +131,39 @@
           "opciones": ["gris-titan", "dorado"],
           "placas": [2, 3, 4, 11, 12],
           "filamento_serie": "FIL-SILK-GREYTITAN"
+        }
+      ]
+    },
+    {
+      "id": "heavy-bolt-ultrasea",
+      "nombre": "Ultra-sea Heavy Bolt",
+      "modelo": "bolter-primaris-um",
+      "id_replica": "BOLTER-PRIMARIS-UM",
+      "coleccion": "iron-crusade",
+      "pvp": 250,
+      "especial": true,
+      "incluye": ["inc.kit", "inc.balas4"],
+      "horas": 62.3,
+      "volumen": 3,
+      "extras": [
+        { "tipo": "bala", "id_replica": "BALAS-X4", "pvp": 3, "horas": 1.7 },
+        { "tipo": "cargador", "id_replica": "CARGADOR-BOLTER-PRIMARIS", "pvp": 30, "horas": 9.25 },
+        { "tipo": "badge", "id_replica": "BADGE-CUSTOM", "pvp": 10, "horas": 2, "opcion_defecto": "dorado" },
+        { "tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "bolt" },
+        { "tipo": "asa", "id_replica": "ASA-RAIL-HB", "pvp": 30, "horas": 4.1 },
+        { "tipo": "culata", "id_replica": "CULATA-HB", "pvp": 30, "horas": 3.4 },
+        { "tipo": "tambor", "id_replica": "TAMBOR-HB", "pvp": 45, "horas": 9.85 }
+      ],
+      "caja": "larga",
+      "partes": [
+        {
+          "grupo": "principal",
+          "etiqueta": "parte.color_principal",
+          "gramos": 724,
+          "de_serie": "azul-oscuro",
+          "opciones": ["azul-oscuro", "azul-marino", "negro"],
+          "placas": [8, 9],
+          "filamento_serie": "FIL-PLAM-DARKBLUE"
         }
       ]
     },
@@ -411,6 +453,57 @@
         "defecto": "bolt",
         "opciones": [{"id": "bolt", "etiqueta": "extra.op.bolt"}, {"id": "las", "etiqueta": "extra.op.las"}]
       }
+    },
+    {
+      "id": "heavy-bolt-carry-handle",
+      "nombre": "Heavy Bolt Carry Handle + Picatinny Rail",
+      "modelo": "asa",
+      "id_replica": "ASA-RAIL-HB",
+      "coleccion": "accesorios",
+      "accesorio": true,
+      "compatible": "acc.solo_heavy",
+      "pvp": 30,
+      "especial": false,
+      "incluye": ["inc.kit"],
+      "horas": 4.1,
+      "volumen": 1,
+      "extras": [],
+      "caja": "pistola",
+      "partes": []
+    },
+    {
+      "id": "heavy-bolt-shoulder-stock",
+      "nombre": "Heavy Bolt Shoulder Stock",
+      "modelo": "culata",
+      "id_replica": "CULATA-HB",
+      "coleccion": "accesorios",
+      "accesorio": true,
+      "compatible": "acc.solo_heavy",
+      "pvp": 30,
+      "especial": false,
+      "incluye": ["inc.kit"],
+      "horas": 3.4,
+      "volumen": 1,
+      "extras": [],
+      "caja": "pistola",
+      "partes": []
+    },
+    {
+      "id": "heavy-bolt-drum-magazine",
+      "nombre": "Heavy Bolt Drum Magazine",
+      "modelo": "tambor",
+      "id_replica": "TAMBOR-HB",
+      "coleccion": "accesorios",
+      "accesorio": true,
+      "compatible": "acc.solo_heavy",
+      "pvp": 45,
+      "especial": false,
+      "incluye": ["inc.kit", "inc.balas2"],
+      "horas": 9.85,
+      "volumen": 1,
+      "extras": [],
+      "caja": "pistola",
+      "partes": []
     }
   ]
 }

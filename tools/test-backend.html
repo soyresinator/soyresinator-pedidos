@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pruebas del Apps Script</title>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; margin: 16px; background: #fff; color: #111; }
+  table { border-collapse: collapse; width: 100%; }
+  td, th { border-bottom: 1px solid #ddd; padding: 6px 8px; text-align: left; vertical-align: top; }
+  .ok { color: #116b2c; font-weight: 600; } .ko { color: #b00020; font-weight: 600; }
+  pre { white-space: pre-wrap; background: #f5f5f5; padding: 8px; font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>Pruebas del Apps Script (simulado)</h1>
+<p>Ejecuta <code>apps-script/Code.gs</code> en el navegador con Sheets, caché, correo y UrlFetch simulados.
+Sírvelo con <code>python -m http.server</code> desde la raíz y abre <code>/tools/test-backend.html</code>.</p>
+<p id="resumen">Ejecutando…</p>
+<table><thead><tr><th>Prueba</th><th>Resultado</th><th>Detalle</th></tr></thead><tbody id="filas"></tbody></table>
+<h2>Último correo al cliente</h2><pre id="correo"></pre>
+<script>
+/* ---------- SHA-256 síncrono (para Utilities.computeDigest) ---------- */
+function sha256(bytes) {
+  const K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  let h = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const l = bytes.length, withPad = new Uint8Array(((l + 9 + 63) >> 6) << 6);
+  withPad.set(bytes); withPad[l] = 0x80;
+  const dv = new DataView(withPad.buffer); dv.setUint32(withPad.length - 4, l * 8);
+  const w = new Uint32Array(64), r = (x, n) => (x >>> n) | (x << (32 - n));
+  for (let o = 0; o < withPad.length; o += 64) {
+    for (let i = 0; i < 16; i++) w[i] = dv.getUint32(o + i * 4);
+    for (let i = 16; i < 64; i++) {
+      const s0 = r(w[i-15],7) ^ r(w[i-15],18) ^ (w[i-15] >>> 3), s1 = r(w[i-2],17) ^ r(w[i-2],19) ^ (w[i-2] >>> 10);
+      w[i] = (w[i-16] + s0 + w[i-7] + s1) >>> 0;
+    }
+    let [a,b,c,d,e,f,g,hh] = h;
+    for (let i = 0; i < 64; i++) {
+      const t1 = (hh + (r(e,6) ^ r(e,11) ^ r(e,25)) + ((e & f) ^ (~e & g)) + K[i] + w[i]) >>> 0;
+      const t2 = ((r(a,2) ^ r(a,13) ^ r(a,22)) + ((a & b) ^ (a & c) ^ (b & c))) >>> 0;
+      hh = g; g = f; f = e; e = (d + t1) >>> 0; d = c; c = b; b = a; a = (t1 + t2) >>> 0;
+    }
+    h = h.map((v, i) => (v + [a,b,c,d,e,f,g,hh][i]) >>> 0);
+  }
+  const out = []; h.forEach(v => { for (let s = 24; s >= 0; s -= 8) { const x = (v >>> s) & 255; out.push(x > 127 ? x - 256 : x); } });
+  return out;
+}
+
+/* ---------- Hoja simulada ---------- */
+class Rango {
+  constructor(sh, r, c, nr, nc) { Object.assign(this, { sh, r, c, nr, nc }); }
+  getValues() {
+    const out = [];
+    for (let i = 0; i < this.nr; i++) {
+      const row = this.sh.data[this.r - 1 + i] || [];
+      out.push(Array.from({ length: this.nc }, (_, j) => row[this.c - 1 + j] ?? ''));
+    }
+    return out;
+  }
+  getValue() { return this.getValues()[0][0]; }
+  setValue(v) { return this.setValues([[v]]); }
+  setValues(v) {
+    v.forEach((row, i) => {
+      const idx = this.r - 1 + i;
+      while (this.sh.data.length <= idx) this.sh.data.push([]);
+      row.forEach((val, j) => { this.sh.data[idx][this.c - 1 + j] = val; });
+    });
+    return this;
+  }
+  setNumberFormats(f) {
+    // Como Google: el tamaño tiene que coincidir con el rango.
+    if (f.length !== this.nr || f.some(row => row.length !== this.nc)) throw new Error(`setNumberFormats: ${f.length}×${f[0] && f[0].length} en un rango ${this.nr}×${this.nc}`);
+    this.sh.formats[this.r] = f[0]; return this;
+  }
+  setFontWeight() { return this; }
+  setDataValidation() { return this; }
+}
+class Hoja {
+  constructor(name) { this.name = name; this.data = []; this.formats = {}; }
+  getName() { return this.name; }
+  getLastRow() { let n = this.data.length; while (n && !this.data[n - 1].some(v => v !== '' && v !== undefined)) n--; return n; }
+  getRange(r, c, nr = 1, nc = 1) { return new Rango(this, r, c, nr, nc); }
+  setFrozenRows() {}
+}
+const ss = {
+  hojas: [new Hoja('Hoja 1')],
+  getSheetByName(n) { return this.hojas.find(h => h.name === n) || null; },
+  insertSheet(n) { const h = new Hoja(n); this.hojas.push(h); return h; },
+  getSheets() { return [...this.hojas]; },
+  deleteSheet(h) { this.hojas = this.hojas.filter(x => x !== h); },
+  setSpreadsheetTimeZone() {}
+};
+const validacion = { requireValueInList() { return this; }, setAllowInvalid() { return this; }, build() { return {}; } };
+const SpreadsheetApp = { getActiveSpreadsheet: () => ss, newDataValidation: () => validacion, flush() {} };
+
+const cacheMem = {};
+const CacheService = { getScriptCache: () => ({
+  get: k => cacheMem[k] ?? null, put: (k, v) => { cacheMem[k] = v; }, remove: k => { delete cacheMem[k]; },
+  removeAll: ks => ks.forEach(k => delete cacheMem[k])
+}) };
+const LockService = { getScriptLock: () => ({ waitLock() {}, tryLock: () => true, releaseLock() {} }) };
+const correos = [];
+const MailApp = { sendEmail: o => correos.push(o) };
+const ficheros = {};
+const PAGES = 'https://soyresinator.com/';
+const UrlFetchApp = { fetch: url => {
+  const p = url.replace(PAGES, '');
+  const txt = ficheros[p];
+  return { getResponseCode: () => (txt === undefined ? 404 : 200), getContentText: () => txt };
+} };
+const ScriptApp = { getService: () => ({ getUrl: () => 'https://script.google.com/macros/s/TEST/exec' }) };
+// Drive simulado: carpetas y ficheros en memoria, con su permiso de compartir
+const drive = { carpetas: {}, ficheros: {}, n: 0 };
+const nuevoFichero = blob => {
+  const id = 'F' + (++drive.n);
+  const f = drive.ficheros[id] = { id, blob, acceso: 'PRIVATE', getId: () => id, setSharing(a) { this.acceso = a; return this; } };
+  return f;
+};
+const DriveApp = {
+  Access: { ANYONE_WITH_LINK: 'ANYONE_WITH_LINK', PRIVATE: 'PRIVATE' }, Permission: { VIEW: 'VIEW', NONE: 'NONE' },
+  createFolder: name => { const id = 'C' + (++drive.n); return drive.carpetas[id] = { name, getId: () => id, getName: () => name, getUrl: () => 'https://drive/' + id, createFile: nuevoFichero }; },
+  getFolderById: id => { if (!drive.carpetas[id]) throw new Error('no existe'); return drive.carpetas[id]; },
+  getFileById: id => { if (!drive.ficheros[id]) throw new Error('no existe'); return drive.ficheros[id]; }
+};
+const HtmlService = { createHtmlOutput: s => ({ content: s, setTitle() { return this; } }) };
+const props = {};
+const PropertiesService = { getScriptProperties: () => ({ getProperty: k => props[k] ?? null, setProperty: (k, v) => { props[k] = v; } }) };
+const Utilities = {
+  getUuid: () => crypto.randomUUID(),
+  DigestAlgorithm: { SHA_256: 'SHA_256' }, Charset: { UTF_8: 'UTF_8' },
+  computeDigest: (alg, s) => sha256(new TextEncoder().encode(s)),
+  formatDate: (d, tz, fmt) => new Date(d).toISOString().slice(0, 10),
+  newBlob: (s, mime, name) => {
+    const bytes = typeof s === 'string' ? Array.from(new TextEncoder().encode(s)) : s;
+    return { getBytes: () => bytes, mime, name, getName: () => name };
+  },
+  base64Decode: s => Array.from(atob(s), c => c.charCodeAt(0))
+};
+const ContentService = { MimeType: { JSON: 'json' }, createTextOutput: s => ({ content: s, setMimeType() { return this; } }) };
+
+/* ---------- Pruebas ---------- */
+const resultados = [];
+function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, detalle: detalle === undefined ? '' : String(detalle) }); }
+
+(async () => {
+  const rutas = ['data/catalog.json', 'data/shipping.json', 'data/config.json', 'data/colores-serie.json',
+    'i18n/en.json', 'i18n/es.json', 'i18n/pt.json', 'i18n/de.json', 'i18n/fr.json', 'i18n/it.json'];
+  for (const r of rutas) ficheros[r] = await (await fetch('../' + r, { cache: 'no-cache' })).text();
+  // El montaje está desactivado en todos los países; para seguir probando la regla, simulamos que España lo tiene.
+  const shipReal = JSON.parse(ficheros['data/shipping.json']);
+  check('shipping.json real: ningún país con montaje', shipReal.paises.every(p => p.montaje === false));
+  shipReal.paises.find(p => p.code === 'ES').montaje = true;
+  ficheros['data/shipping.json'] = JSON.stringify(shipReal);
+  const codigo = await (await fetch('../apps-script/Code.gs', { cache: 'no-cache' })).text();
+  const G = new Function('SpreadsheetApp', 'CacheService', 'LockService', 'MailApp', 'UrlFetchApp', 'Utilities', 'ContentService', 'PropertiesService', 'ScriptApp', 'HtmlService', 'DriveApp',
+    codigo + '\nreturn { instalar, doGet, doPost, hashEmail, AJUSTES, tokenResena, enlaceResena, limpiarCache, tokenModeracion, autorizarFotos };')(
+    SpreadsheetApp, CacheService, LockService, MailApp, UrlFetchApp, Utilities, ContentService, PropertiesService, ScriptApp, HtmlService, DriveApp);
+
+  // Las pruebas mandan muchos pedidos seguidos: el freno global se prueba al final con sus valores reales.
+  const frenoReal = { hora: G.AJUSTES.MAX_PEDIDOS_HORA, dia: G.AJUSTES.MAX_PEDIDOS_DIA_TOTAL };
+  G.AJUSTES.MAX_PEDIDOS_HORA = G.AJUSTES.MAX_PEDIDOS_DIA_TOTAL = 10000;
+  const cat = JSON.parse(ficheros['data/catalog.json']);
+  const post = body => JSON.parse(G.doPost({ postData: { contents: typeof body === 'string' ? body : JSON.stringify(body) } }).content);
+  const get = p => JSON.parse(G.doGet({ parameter: p }).content);
+  let n = 0;
+  const pedido = (items, over = {}) => ({
+    accion: 'pedido', idioma: 'es', web: '',
+    cliente: { nombre: 'Ana Prueba', email: `ana${++n}@example.com`, telefono: '+34 612 345 678', direccion: 'Calle Mayor 1', cp: '08001', ciudad: 'Barcelona', instagram: '' },
+    pais: 'ES', modo_pago: 'completo', items, total_cliente: 1, consentimiento: true, ...over
+  });
+  const item = (pid, colores = {}, montaje = false, nota = '', extras) => {
+    const p = cat.productos.find(x => x.id === pid);
+    const o = { pid, montaje, nota, colores: (p ? p.partes : []).map(pt => ({ grupo: pt.grupo, color_id: colores[pt.grupo] || pt.de_serie })) };
+    if (extras !== undefined) o.extras = extras;
+    return o;
+  };
+  const ped = () => ss.getSheetByName('PEDIDOS_WEB');
+  const ultima = () => { const s = ped(); return s.data[s.getLastRow() - 1]; };
+  const col = name => ['ID_WEB','FECHA','IDIOMA','NOMBRE','EMAIL','TELEFONO','DIRECCION','CP','CIUDAD','PAIS','INSTAGRAM','ITEMS_JSON','RESUMEN_ES','NOTAS_ORIGINAL','SUBTOTAL','MONTAJE','ENVIO','TOTAL','MODO_PAGO','SERVICIO_ENVIO','CAJAS','CONSENTIMIENTO','REGISTRADO','ID_APP'].indexOf(name);
+  const colores = () => ss.getSheetByName('COLORES');
+  const setStock = (id, g) => { const r = colores().data.find(x => x[0] === id); r[8] = g; };
+
+  try {
+    // Instalación
+    G.instalar();
+    check('instalar crea las 5 pestañas y quita la vacía', ss.hojas.map(h => h.name).sort().join(',') === 'COLORES,CONFIG,ESTADO_WEB,PEDIDOS_WEB,RESENAS', ss.hojas.map(h => h.name));
+    check('COLORES con 23 filas iniciales y ELEGIBLE "sí"', colores().getLastRow() === 24 && colores().data.slice(1).every(r => r[9] === 'sí'), colores().getLastRow() - 1);
+    check('Encabezados exactos de PEDIDOS_WEB (24 columnas, A..X)', ped().data[0].length === 24 && ped().data[0][23] === 'ID_APP');
+    check('CONFIG fila 2 con PEDIDOS_ABIERTOS "sí"', ss.getSheetByName('CONFIG').data[1][4] === 'sí', JSON.stringify(ss.getSheetByName('CONFIG').data[1]));
+
+    // ?accion=config
+    const cfg = get({ accion: 'config' });
+    check('?accion=config devuelve 23 colores elegibles y cola vacía = null', cfg.ok && cfg.colores.length === 23 && cfg.horas_cola === null && cfg.pedidos_abiertos === true, `${cfg.colores.length} colores, cola ${cfg.horas_cola}`);
+
+    // Precio correcto aunque el navegador mande otro
+    let r = post(pedido([item('founders-bolt', { rojo: 'azul-marino' }, true), item('las-pistol', {}, true)], { total_cliente: 1 }));
+    let f = ultima();
+    check('Founders Bolt azul marino + Las Pistol + montaje a España = 378 € (caja de 4 kg 18 €; total_cliente manipulado a 1)', r.ok && r.total === 378 && f[col('TOTAL')] === 378 && f[col('SUBTOTAL')] === 260 && f[col('MONTAJE')] === 100 && f[col('ENVIO')] === 18 && f[col('CAJAS')] === 1, JSON.stringify(r));
+    check('Encabezados de ESTADO_WEB: 15 columnas, L = ID_PEDIDO, M = AVISO_ENVIO, N = ENTREGADO_EL, O = AVISO_RESENA', ss.getSheetByName('ESTADO_WEB').data[0].length === 15 && ss.getSheetByName('ESTADO_WEB').data[0][11] === 'ID_PEDIDO' && ss.getSheetByName('ESTADO_WEB').data[0][12] === 'AVISO_ENVIO' && ss.getSheetByName('ESTADO_WEB').data[0][14] === 'AVISO_RESENA');
+    check('ID con formato SR-XXXXXX', /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/.test(r.id), r.id);
+    check('RESUMEN_ES correcto', f[col('RESUMEN_ES')] === '1. Founders Bolt · Detalles rojos: Azul marino · Montaje: sí | 2. Las Pistol · Cuerpo verde: Verde oscuro (de serie) · Partes negras: Negro (de serie) · Montaje: sí', f[col('RESUMEN_ES')]);
+    const items = JSON.parse(f[col('ITEMS_JSON')]);
+    check('ITEMS_JSON con modelo, filamento y gramos', items[0].modelo === 'bolter-pf' && items[0].colores[0].id_filamento === 'FIL-PLAM-MARINEBLUE' && items[0].colores[0].gramos === 296 && items[0].colores[0].de_serie === false, JSON.stringify(items[0].colores[0]));
+    check('ITEMS_JSON con réplica y bandejas: BOLTER-PF placa 1 cambia FIL-PLAM-DARKRED por el elegido', items[0].id_replica === 'BOLTER-PF' && JSON.stringify(items[0].colores[0].placas) === '[1]' && items[0].colores[0].filamento_serie === 'FIL-PLAM-DARKRED' && items[1].id_replica === 'PISTOLA-LASER' && JSON.stringify(items[1].colores[0].placas) === '[7]' && JSON.stringify(items[1].colores[1].placas) === '[1,2,5,6]' && items[1].colores[1].filamento_serie === 'FIL-PLAM-CHARCOAL',JSON.stringify(items.map(i => [i.id_replica, i.colores.map(c => c.placas)])));
+    // Cada parte del catálogo tiene bandejas y filamento de serie
+    const sinPlacas = cat.productos.flatMap(p => p.partes.filter(pt => !Array.isArray(pt.placas) || !pt.placas.length || !pt.filamento_serie).map(pt => p.id + '/' + pt.grupo));
+    check('catalog.json: todas las partes con placas y filamento_serie, todos los productos con id_replica', !sinPlacas.length && cat.productos.every(p => p.id_replica), sinPlacas.join(', '));
+    const est = ss.getSheetByName('ESTADO_WEB').data.find(x => x[0] === r.id);
+    check('ESTADO_WEB: fila inicial recibido / pendiente con hash del email', est && est[2] === 'recibido' && est[5] === 'pendiente' && est[1] === G.hashEmail(`ana${n}@example.com`), est && est.slice(0, 6).join(' | '));
+    check('Dos correos: cliente (responder a la tienda) y copia "Pedido web nuevo"', correos.length === 2 && correos[0].replyTo === 'soyresinator@gmail.com' && correos[1].subject === 'Pedido web nuevo ' + r.id, correos.map(c => c.subject).join(' / '));
+
+    // Pedido en alemán
+    r = post(pedido([item('founders-bolt', { rojo: 'azul-marino' })], { idioma: 'de', pais: 'DE' }));
+    f = ultima();
+    const mailDe = correos[correos.length - 2];
+    check('Pedido en alemán: RESUMEN_ES en español, correo al cliente en alemán', r.ok && f[col('IDIOMA')] === 'de' && f[col('RESUMEN_ES')].includes('Detalles rojos: Azul marino') && mailDe.subject.startsWith('Deine Bestellung') && mailDe.body.includes('Rote Details: Marineblau'), mailDe.subject);
+    document.getElementById('correo').textContent = mailDe.subject + '\n\n' + mailDe.body;
+    check('PAIS en español y servicio', f[col('PAIS')] === 'Alemania' && f[col('SERVICIO_ENVIO')] === 'Correos Standard');
+
+    // Cajas: volumen bólter 3, rifle láser 2,5, pistola bólter 1,5, pistola láser 1; caja de 4 kg hasta 4, de 5 kg hasta 8
+    const envio = (items, pais) => { post(pedido(items, { pais })); const x = ultima(); return `${x[col('CAJAS')]} cajas, ${x[col('ENVIO')]} €`; };
+    let s = envio([item('founders-bolt')], 'ES');
+    check('1 bólter a España = 1 caja individual = 18 €', s === '1 cajas, 18 €', s);
+    s = envio([item('founders-bolt-pistol'), item('heavybolt-pistol')], 'IT');
+    check('2 pistolas bólter a Italia = caja de 4 kg = 23 €', s === '1 cajas, 23 €', s);
+    s = envio([item('trench-las-rifle'), item('founders-bolt-pistol')], 'IT');
+    check('Rifle Krieg + pistola a Italia = caja de 4 kg = 23 €', s === '1 cajas, 23 €', s);
+    s = envio([item('founders-bolt'), item('las-pistol')], 'PT');
+    check('Bólter + Las Pistol a Portugal = caja de 4 kg = 20 €', s === '1 cajas, 20 €', s);
+    s = envio([item('founders-bolt'), item('founders-bolt-pistol')], 'IT');
+    check('Bólter + pistola bólter a Italia = caja de 5 kg = 25 €', s === '1 cajas, 25 €', s);
+    s = envio([item('trench-las-rifle'), item('trooper-las-rifle')], 'DE');
+    check('2 rifles a Alemania = caja de 5 kg = 17 €', s === '1 cajas, 17 €', s);
+    s = envio([item('trench-las-rifle'), item('trooper-las-rifle'), item('founders-bolt-pistol'), item('las-pistol')], 'US');
+    check('2 rifles + 2 pistolas a EE. UU. (Standard) = una caja de 5 kg = 50 €', s === '1 cajas, 50 €', s);
+    // EE. UU.: el cliente elige Standard (45/50) o Premium (70/75)
+    const envioUS = (items, envio) => { const r = post(pedido(items, { pais: 'US', ...(envio === undefined ? {} : { envio }) })); const x = ultima(); return [r, `${x[col('ENVIO')]} € ${x[col('SERVICIO_ENVIO')]}`]; };
+    let [rUS, sUS] = envioUS([item('founders-bolt')]);
+    check('EE. UU. sin elegir: Standard, 1 bólter = 45 €', rUS.ok && sUS === '45 € Correos Standard', sUS);
+    [rUS, sUS] = envioUS([item('founders-bolt')], 'standard');
+    check('EE. UU. Standard: 1 bólter = 45 €', rUS.ok && sUS === '45 € Correos Standard', sUS);
+    [rUS, sUS] = envioUS([item('founders-bolt')], 'premium');
+    const mailUS = correos[correos.length - 2], mailUST = correos[correos.length - 1];
+    check('EE. UU. Premium: 1 bólter = 70 € y SERVICIO_ENVIO "Correos Premium"', rUS.ok && rUS.total === 230 && sUS === '70 € Correos Premium', sUS);
+    check('Correos con Premium: cliente y tienda ven "Correos Premium"', mailUS.body.includes('Correos Premium') && mailUST.body.includes('Correos Premium'), mailUST.body.split('\n').find(l => l.startsWith('Envío')));
+    [rUS, sUS] = envioUS([item('trench-las-rifle'), item('trooper-las-rifle'), item('founders-bolt-pistol')], 'premium');
+    check('EE. UU. Premium: caja de 5 kg = 75 €', rUS.ok && sUS === '75 € Correos Premium', sUS);
+    r = post(pedido([item('founders-bolt')], { pais: 'DE', envio: 'premium' }));
+    check('Premium en un país sin esa opción (Alemania): rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(pedido([item('founders-bolt')], { pais: 'US', envio: 'urgentisimo' }));
+    check('Tipo de envío desconocido: rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    s = envio([item('founders-bolt'), item('heavy-bolt'), item('renegade-bolt')], 'DE');
+    check('3 bólters a Alemania = caja de 5 kg + individual = 33 €', s === '2 cajas, 33 €', s);
+    s = envio([item('las-pistol'), item('las-pistol'), item('founders-bolt-pistol')], 'GB');
+    check('3 pistolas a Reino Unido = caja de 4 kg = 22 €', s === '1 cajas, 22 €', s);
+    r = post(pedido([item('founders-bolt')], { pais: 'SE' }));
+    f = ultima();
+    const mailSe = correos[correos.length - 2], mailSeT = correos[correos.length - 1];
+    check('País sin tarifa (Suecia): envío vacío, "A consultar" y total sin envío = 160 €', r.ok && r.total === 160 && f[col('ENVIO')] === '' && f[col('SERVICIO_ENVIO')] === 'A consultar' && f[col('TOTAL')] === 160, JSON.stringify([f[col('ENVIO')], f[col('SERVICIO_ENVIO')], f[col('TOTAL')]]));
+    check('Correos con "A consultar": cliente con "Total sin envío", tienda con aviso', mailSe.body.includes('Nos pondremos en contacto contigo para darte la mejor solución de envío') && mailSe.body.includes('Total sin envío') && mailSeT.body.includes('Envío: A CONSULTAR'), mailSe.body.split('\n').filter(l => /Env|Total/.test(l)).join(' / '));
+    const shipJ = JSON.parse(ficheros['data/shipping.json']);
+    const conTarifa = shipJ.paises.filter(p => !p.envio_a_consultar);
+    check('shipping.json: más de 200 países con prefijo; 22 con tarifa, todas por Correos; sin Rusia',
+      shipJ.paises.length > 200 && shipJ.paises.every(p => /^\+\d{1,4}$/.test(p.prefijo) && p.nombre_es) && conTarifa.length === 22 &&
+      conTarifa.every(p => p.precio_1 > 0 && p.precio_4kg >= p.precio_1 && p.precio_5kg >= p.precio_4kg && /^Correos /.test(p.servicio)) &&
+      shipJ.paises.filter(p => p.envio_a_consultar).every(p => p.precio_1 === null) && !shipJ.paises.some(p => p.code === 'RU'), conTarifa.map(p => p.code).join(','));
+
+    // Extras
+    r = post(pedido([item('founders-bolt', {}, false, '', { bala: 5, cargador: 1, stand: 1 })]));
+    f = ultima();
+    const itx = JSON.parse(f[col('ITEMS_JSON')])[0];
+    const bala = itx.extras.find(x => x.tipo === 'bala');
+    check('Founders Bolt + 5 balas + cargador + stand = 235 € + 18 € de envío a España', r.ok && f[col('SUBTOTAL')] === 235 && f[col('TOTAL')] === 253, JSON.stringify(r));
+    check('ITEMS_JSON: extras con su réplica, cantidad e importe; 5 balas = 2 bandejas de BALAS-X4', itx.extras.length === 3 && bala.id_replica === 'BALAS-X4' && bala.cantidad === 5 && bala.bandejas === 2 && bala.importe === 15 && itx.extras.find(x => x.tipo === 'cargador').id_replica === 'CARGADOR-BOLTER-PF', JSON.stringify(itx.extras));
+    check('RESUMEN_ES con extras', f[col('RESUMEN_ES')].includes('Extras: Balas de exposición extra × 5, Cargador de exposición extra × 1, Soporte de exposición (Para la familia Bolt) × 1'), f[col('RESUMEN_ES')]);
+    const mailEx = correos[correos.length - 2];
+    check('Correo al cliente con una línea por extra', mailEx.body.includes('+ Cargador de exposición extra × 1: 30 €') && mailEx.body.includes('Tarifa fija de Correos') && !/aproximad|PayPal/i.test(mailEx.body) && mailEx.body.includes('SOYRESINATOR'), mailEx.body.split('\n').filter(l => l.startsWith('-')).join(' / '));
+    r = post(pedido([item('las-pistol', {}, false, '', { stand: 1 })]));
+    check('Extra que no tiene el producto (stand en Las Pistol): rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(pedido([item('founders-bolt', {}, false, '', { bala: 21 })]));
+    check('Más balas que el máximo (21): rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(pedido([item('founders-bolt', {}, false, '', { cargador: 1.5 })]));
+    check('Cantidad no entera: rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(pedido([item('trench-las-rifle', {}, false, '', { cargador: 2, stand: 1 })]));
+    f = ultima();
+    check('Trench Las Rifle + 2 cargadores (10 €) + stand = 210 €', r.ok && f[col('SUBTOTAL')] === 210, f[col('SUBTOTAL')]);
+
+    // Clave que falta en un idioma: el correo usa el inglés, nunca la clave en bruto
+    const ptReal = ficheros['i18n/pt.json'];
+    const ptSin = JSON.parse(ptReal); delete ptSin['mail.intro'];
+    ficheros['i18n/pt.json'] = JSON.stringify(ptSin); delete cacheMem['f:i18n/pt.json'];
+    r = post(pedido([item('founders-bolt')], { idioma: 'pt', pais: 'BR' }));
+    const mailFalta = correos[correos.length - 2];
+    const enIntro = JSON.parse(ficheros['i18n/en.json'])['mail.intro'];
+    check('Clave ausente en pt.json: el correo sale con el texto en inglés, no con "mail.intro"', r.ok && mailFalta.body.includes(enIntro) && !mailFalta.body.includes('mail.intro'), mailFalta.body.split('\n')[2]);
+    ficheros['i18n/pt.json'] = ptReal; delete cacheMem['f:i18n/pt.json'];
+
+    // Portugués
+    r = post(pedido([item('founders-bolt')], { idioma: 'pt', pais: 'BR' }));
+    const mailPt = correos[correos.length - 2];
+    check('Pedido en portugués: correo en portugués con el color traducido', r.ok && ultima()[col('IDIOMA')] === 'pt' && mailPt.subject.startsWith('Seu pedido') && mailPt.body.includes('Detalhes vermelhos: Vermelho escuro'), mailPt.subject);
+
+    // Colores
+    r = post(pedido([item('founders-bolt', { rojo: 'azul-ultramar' })]));
+    check('Azul ultramar (100 g) forzado en Founders Bolt: rechazado', r.error === 'color_no_disponible', JSON.stringify(r));
+    r = post(pedido([item('trooper-las-rifle', { dorado: 'azul-ultramar' })]));
+    check('Azul ultramar forzado en Detalle dorado (19 g): rechazado por el mínimo de 200 g', r.error === 'color_no_disponible', JSON.stringify(r));
+    setStock('rojo-oscuro', 0);
+    r = post(pedido([item('founders-bolt')]));
+    check('Color de serie con stock 0: aceptado', r.ok, JSON.stringify(r));
+    r = post(pedido([item('heavy-bolt-wolf', { principal: 'negro' })]));
+    check('Heavy Bolt Wolf en negro: rechazado (solo amarillo o azul marino)', r.error === 'color_no_disponible', JSON.stringify(r));
+    r = post(pedido([item('heavy-bolt-wolf', { principal: 'azul-marino', metalicos: 'dorado' })]));
+    check('Heavy Bolt Wolf en azul marino y dorado: aceptado', r.ok, JSON.stringify(r));
+    // Ultra-sea Heavy Bolt: 250 €, placas 8 y 9 en azul oscuro de serie; se pueden cambiar a azul marino o negro
+    r = post(pedido([item('heavy-bolt-ultrasea')]));
+    let fu = ultima(), cu = r.ok && JSON.parse(fu[col('ITEMS_JSON')])[0];
+    check('Ultra-sea Heavy Bolt de serie: 250 €, BOLTER-PRIMARIS-UM, placas 8 y 9 en FIL-PLAM-DARKBLUE', r.ok && fu[col('SUBTOTAL')] === 250 && cu.id_replica === 'BOLTER-PRIMARIS-UM' && cu.colores[0].color_id === 'azul-oscuro' && cu.colores[0].placas.join() === '8,9' && cu.colores[0].id_filamento === 'FIL-PLAM-DARKBLUE', JSON.stringify(cu || r));
+    r = post(pedido([item('heavy-bolt-ultrasea', { principal: 'azul-marino' })]));
+    cu = r.ok && JSON.parse(ultima()[col('ITEMS_JSON')])[0];
+    check('Ultra-sea en azul marino: aceptado, con FIL-PLAM-MARINEBLUE', r.ok && cu.colores[0].id_filamento === 'FIL-PLAM-MARINEBLUE', JSON.stringify(cu || r));
+    r = post(pedido([item('heavy-bolt-ultrasea', { principal: 'negro' }, false, '', { tambor: 1, badge: 0, stand: 1 })]));
+    check('Ultra-sea en negro + tambor + soporte = 325 €', r.ok && ultima()[col('SUBTOTAL')] === 325, JSON.stringify(r));
+    r = post(pedido([item('heavy-bolt-ultrasea', { principal: 'azul' })]));
+    check('Ultra-sea en azul (Basic Blue): rechazado', r.error === 'color_no_disponible', JSON.stringify(r));
+    r = post(pedido([item('las-pistol', { verde: 'negro' })]));
+    check('Las Pistol con el cuerpo en negro: aceptado', r.ok, JSON.stringify(r));
+    r = post(pedido([item('las-pistol', { verde: 'rojo-oscuro' })]));
+    check('Las Pistol con el cuerpo en rojo: rechazado (solo verde o negro)', r.error === 'color_no_disponible', JSON.stringify(r));
+    r = post(pedido([item('las-pistol', { negro: 'verde-oscuro' })]));
+    check('Las Pistol con las partes negras en verde oscuro: aceptado', r.ok && ultima()[col('RESUMEN_ES')].includes('Partes negras: Verde oscuro'), JSON.stringify(r));
+    r = post(pedido([item('las-pistol', { negro: 'dorado' })]));
+    check('Las Pistol con las partes negras en dorado: rechazado (solo negro o verde oscuro)', r.error === 'color_no_disponible', JSON.stringify(r));
+    r = post(pedido([item('trench-las-rifle', { negro: 'verde-oscuro' })]));
+    const krieg = r.ok && JSON.parse(ultima()[col('ITEMS_JSON')])[0].colores[0];
+    check('Trench Las Rifle con las partes negras en verde oscuro: bandejas 3 y 7, 399 g, filamento verde', r.ok && krieg && JSON.stringify(krieg.placas) === '[3,7]' && krieg.gramos === 399 && krieg.filamento_serie === 'FIL-PLAM-CHARCOAL' && krieg.id_filamento !== '' && krieg.de_serie === false, JSON.stringify(krieg || r));
+    // Custom Badge (Founders, Heavy y Renegade): color dorado o gris titán y nota obligatoria
+    const conOp = (o, ops) => Object.assign(o, { extras_op: ops });
+    r = post(pedido([conOp(item('founders-bolt', {}, false, 'Calavera de cuervo', { badge: 1 }), { badge: 'gris-titan' })]));
+    let fb = ultima(), xb = r.ok && JSON.parse(fb[col('ITEMS_JSON')])[0].extras[0];
+    check('Founders Bolt + Custom Badge gris titán: 170 €, BADGE-CUSTOM con FIL-SILK-GREYTITAN y nota', r.ok && fb[col('SUBTOTAL')] === 170 && xb.id_replica === 'BADGE-CUSTOM' && xb.opcion === 'gris-titan' && xb.id_filamento === 'FIL-SILK-GREYTITAN' && fb[col('RESUMEN_ES')].includes('Custom Badge (Gris titán) × 1'), JSON.stringify(xb || r));
+    r = post(pedido([item('renegade-bolt', {}, false, 'Ojo de Horus', { badge: 1 })]));
+    xb = r.ok && JSON.parse(ultima()[col('ITEMS_JSON')])[0].extras[0];
+    check('Renegade Bolt + badge sin elegir color: dorado de serie', r.ok && xb.opcion === 'dorado' && xb.id_filamento === 'FIL-SILK-GOLD', JSON.stringify(xb || r));
+    r = post(pedido([item('heavy-bolt', {}, false, '   ', { badge: 1 })]));
+    check('Heavy Bolt + badge con la nota vacía: rechazado (nota_obligatoria)', r.error === 'nota_obligatoria', JSON.stringify(r));
+    r = post(pedido([conOp(item('founders-bolt', {}, false, 'x', { badge: 1 }), { badge: 'rojo-oscuro' })]));
+    check('Badge en un color que no es dorado ni gris titán: rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(pedido([item('heavy-bolt-wolf', {}, false, 'x', { badge: 1 })]));
+    check('Heavy Bolt versión lobo con badge: rechazado (no lo tiene)', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(pedido([item('plague-bolt', {}, false, 'x', { badge: 1 })]));
+    check('Plague Bolt con badge: rechazado (no lo tiene)', r.error === 'datos_invalidos', JSON.stringify(r));
+    // Asa con rail, culata y cargador de tambor: solo Heavy Bolt y su versión lobo, 1 de cada como mucho
+    r = post(pedido([item('heavy-bolt', {}, false, '', { asa: 1, culata: 1, tambor: 1 })]));
+    fb = ultima();
+    let xs = r.ok ? JSON.parse(fb[col('ITEMS_JSON')])[0].extras : [];
+    check('Heavy Bolt + asa + culata + tambor = 295 € (precios del servidor)', r.ok && fb[col('SUBTOTAL')] === 295, JSON.stringify(r.ok ? fb[col('SUBTOTAL')] : r));
+    check('ITEMS_JSON: tipos asa/culata/tambor con su ID_REPLICA y precio', xs.map(x => x.tipo + ':' + x.id_replica + ':' + x.importe).join(',') === 'asa:ASA-RAIL-HB:30,culata:CULATA-HB:30,tambor:TAMBOR-HB:45', JSON.stringify(xs));
+    check('RESUMEN_ES: "Asa con rail", "Culata", "Cargador de tambor"', r.ok && fb[col('RESUMEN_ES')].includes('Extras: Asa con rail × 1, Culata × 1, Cargador de tambor × 1'), r.ok && fb[col('RESUMEN_ES')]);
+    r = post(pedido([item('heavy-bolt-wolf', {}, false, '', { tambor: 1 })]));
+    check('Heavy Bolt Wolf + tambor = 295 €', r.ok && ultima()[col('SUBTOTAL')] === 295, JSON.stringify(r));
+    r = post(pedido([item('heavy-bolt', {}, false, '', { asa: 2 })]));
+    check('Dos asas en el mismo arma: rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    // Los tres también se venden sueltos en Accesorios (para quien ya tiene su Heavy Bolt)
+    r = post(pedido([item('heavy-bolt-carry-handle'), item('heavy-bolt-shoulder-stock'), item('heavy-bolt-drum-magazine')]));
+    fb = ultima();
+    xs = r.ok ? JSON.parse(fb[col('ITEMS_JSON')]).map(x => x.id_replica + ':' + x.precio).join(',') : '';
+    check('Asa + culata + tambor sueltos: 105 €, con ASA-RAIL-HB, CULATA-HB y TAMBOR-HB', r.ok && fb[col('SUBTOTAL')] === 105 && xs === 'ASA-RAIL-HB:30,CULATA-HB:30,TAMBOR-HB:45', JSON.stringify(r.ok ? [fb[col('SUBTOTAL')], xs] : r));
+    r = post(pedido([item('founders-bolt', {}, false, '', { culata: 1 })]));
+    check('Culata en el Founders Bolt: rechazado (solo Heavy)', r.error === 'datos_invalidos', JSON.stringify(r));
+    // Soporte: versión Bolt o Las, la de su familia por defecto; mismo precio
+    r = post(pedido([item('trooper-las-rifle', {}, false, '', { stand: 1 })]));
+    xb = r.ok && JSON.parse(ultima()[col('ITEMS_JSON')])[0].extras[0];
+    check('Trooper + soporte sin elegir versión: versión láser, 30 €', r.ok && xb.id_replica === 'STAND' && xb.opcion === 'las' && xb.importe === 30, JSON.stringify(xb || r));
+    r = post(pedido([conOp(item('trooper-las-rifle', {}, false, '', { stand: 1 }), { stand: 'bolt' })]));
+    check('Trooper + soporte versión Bolt (elegida): aceptado y en el resumen', r.ok && ultima()[col('RESUMEN_ES')].includes('Soporte de exposición (Para la familia Bolt) × 1'), JSON.stringify(r));
+    r = post(pedido([conOp(item('founders-bolt', {}, false, '', { stand: 1 }), { stand: 'grande' })]));
+    check('Soporte en una versión que no existe: rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(pedido([conOp(item('founders-bolt'), { badge: 'dorado' })]));
+    check('Opción de un extra que no se ha pedido: aceptada sin cobrarla', r.ok && ultima()[col('SUBTOTAL')] === 160, JSON.stringify(r));
+    // Display Stand comprado solo: un producto con la versión a elegir (bolt / las); 30 € + envío de una caja
+    r = post(pedido([Object.assign(item('display-stand'), { variante: 'las' })]));
+    fb = ultima(); xb = r.ok && JSON.parse(fb[col('ITEMS_JSON')])[0];
+    check('Display Stand versión Las solo: 30 € + 18 € de envío a España, STAND con variante "las"', r.ok && fb[col('SUBTOTAL')] === 30 && fb[col('ENVIO')] === 18 && xb.id_replica === 'STAND' && xb.variante === 'las' && fb[col('RESUMEN_ES')].includes('Display Stand · Versión: Para rifles láser'), JSON.stringify(xb || r));
+    r = post(pedido([item('founders-bolt'), item('display-stand')]));
+    xb = r.ok && JSON.parse(ultima()[col('ITEMS_JSON')])[1];
+    check('Founders Bolt + Display Stand sin elegir versión: Bolt de serie, 190 € y una sola caja', r.ok && ultima()[col('SUBTOTAL')] === 190 && ultima()[col('CAJAS')] === 1 && xb.variante === 'bolt', JSON.stringify(xb || r));
+    r = post(pedido([Object.assign(item('display-stand'), { variante: 'grande' })]));
+    check('Display Stand con una versión que no existe: rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(pedido([Object.assign(item('founders-bolt'), { variante: 'las' })]));
+    check('Versión en un producto que no tiene versiones: rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    // Plague Bolt visible, con balas, cargador del Founders/Renegade y soporte
+    r = post(pedido([item('plague-bolt', {}, false, '', { bala: 4, cargador: 1, stand: 1 })]));
+    xb = r.ok && JSON.parse(ultima()[col('ITEMS_JSON')])[0].extras;
+    check('Plague Bolt + 4 balas + cargador + soporte = 220 + 12 + 30 + 30 = 292 €', r.ok && ultima()[col('SUBTOTAL')] === 292 && xb[1].id_replica === 'CARGADOR-BOLTER-PF' && xb[2].opcion === 'bolt', JSON.stringify(xb || r));
+    r = post(pedido([item('trench-las-rifle', { negro: 'rojo-oscuro' })]));
+    check('Trench Las Rifle con las partes negras en rojo: rechazado (solo negro o verde oscuro)', r.error === 'color_no_disponible', JSON.stringify(r));
+    colores().data.find(x => x[0] === 'azul-marino')[9] = 'no';
+    r = post(pedido([item('founders-bolt', { rojo: 'azul-marino' })]));
+    check('Color con ELEGIBLE "no": rechazado', r.error === 'color_no_disponible', JSON.stringify(r));
+    colores().data.find(x => x[0] === 'azul-marino')[9] = 'sí';
+    colores().data.find(x => x[0] === 'dorado')[7] = 'FIL-SILK-GOLD:900;FIL-WINKLE-SILK-GOLD:2500';
+    r = post(pedido([item('trooper-las-rifle')]));
+    check('id_filamento: el de más gramos si la tarea los escribe', JSON.parse(ultima()[col('ITEMS_JSON')])[0].colores[1].id_filamento === 'FIL-WINKLE-SILK-GOLD');
+
+    // Montaje y otros rechazos
+    r = post(pedido([item('founders-bolt', {}, true)], { pais: 'FR' }));
+    check('Montaje fuera de España: rechazado', r.error === 'montaje_no_disponible', JSON.stringify(r));
+    r = post(pedido([item('tau-rifle')]));
+    check('Producto inexistente: rechazado', r.error === 'producto_no_existe', JSON.stringify(r));
+    // Producto oculto: lo simulamos marcando el Plague Bolt como "oculto" solo en esta prueba.
+    const catTxt = ficheros['data/catalog.json'];
+    const catOculto = JSON.parse(catTxt);
+    catOculto.productos.find(p => p.id === 'plague-bolt').oculto = true;
+    ficheros['data/catalog.json'] = JSON.stringify(catOculto);
+    Object.keys(cacheMem).forEach(k => delete cacheMem[k]);
+    r = post(pedido([item('plague-bolt')]));
+    ficheros['data/catalog.json'] = catTxt;
+    Object.keys(cacheMem).forEach(k => delete cacheMem[k]);
+    check('Producto oculto ("oculto": true en catalog.json): rechazado', r.error === 'producto_no_existe', JSON.stringify(r));
+    r = post(pedido([item('las-pistol')], { pais: 'RU' }));
+    check('País fuera de la lista: rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(pedido([item('las-pistol')], { web: 'http://spam' }));
+    check('Campo trampa relleno: rechazado', r.error === 'datos_invalidos');
+    r = post(JSON.stringify(pedido([item('las-pistol', {}, false, 'x'.repeat(21000))])));
+    check('Cuerpo de más de 20 KB: rechazado', r.error === 'datos_invalidos');
+    r = post(pedido([item('las-pistol')], { cliente: { nombre: 'A', email: 'no-es-email', telefono: '1', direccion: '', cp: '', ciudad: '' } }));
+    check('Email y campos inválidos: rechazado', r.error === 'datos_invalidos');
+
+    // Inyección de fórmulas
+    r = post(pedido([item('las-pistol', {}, false, '=IMPORTXML("http://x","//a")')], { cliente: { nombre: '=HYPERLINK("http://x")', email: 'formula@example.com', telefono: '+34 612345678', direccion: 'Calle 1', cp: '08001', ciudad: 'BCN' } }));
+    const fila = ped().getLastRow();
+    check('Textos que empiezan por "=" se guardan como texto (formato @)', r.ok && ped().formats[fila][col('NOMBRE')] === '@' && ped().formats[fila][col('NOTAS_ORIGINAL')] === '@' && ped().formats[fila][col('TELEFONO')] === '@', ped().formats[fila].slice(0, 8).join(','));
+    check('Fórmulas neutralizadas: NOMBRE y NOTAS sin el "=" del principio', ped().data[fila - 1][col('NOMBRE')] === 'HYPERLINK("http://x")' && ped().data[fila - 1][col('NOTAS_ORIGINAL')] === '1: IMPORTXML("http://x","//a")', ped().data[fila - 1][col('NOMBRE')] + ' / ' + ped().data[fila - 1][col('NOTAS_ORIGINAL')]);
+    r = post(pedido([item('las-pistol')], { cliente: { nombre: ' +-@=SUM(A1)', email: 'f2@example.com', telefono: '+34 612345678', direccion: '-Calle 2', cp: '=1', ciudad: '@BCN', instagram: '@ana.res' } }));
+    const f2 = ultima();
+    check('Fórmulas neutralizadas también con + - @ y espacios delante (dirección, CP, ciudad, Instagram)', r.ok && f2[col('NOMBRE')] === 'SUM(A1)' && f2[col('DIRECCION')] === 'Calle 2' && f2[col('CP')] === '1' && f2[col('CIUDAD')] === 'BCN' && f2[col('INSTAGRAM')] === 'ana.res', [f2[col('NOMBRE')], f2[col('DIRECCION')], f2[col('CP')], f2[col('CIUDAD')], f2[col('INSTAGRAM')]].join(' | '));
+    r = post(pedido([item('las-pistol')], { cliente: { nombre: 'Ana', email: '=x@example.com', telefono: '+34 612345678', direccion: 'C 1', cp: '1', ciudad: 'X' } }));
+    check('Email que empieza por "=": rechazado', r.error === 'datos_invalidos', JSON.stringify(r));
+
+    // Enlaces en el correo al cliente
+    r = post(pedido([item('las-pistol', {}, false, 'Mira https://trampa.example/login y www.malo.net o banco-falso.com/entra')], { cliente: { nombre: 'Tu cuenta caduca: entra en cuenta-segura.com', email: 'enlaces@example.com', telefono: '+34 612345678', direccion: 'Calle Mayor 3', cp: '08001', ciudad: 'Barcelona' } }));
+    const mC = correos[correos.length - 2], mT = correos[correos.length - 1];
+    check('Correo al cliente: los enlaces del nombre y las notas salen como [enlace]', r.ok && !/trampa|malo\.net|banco-falso|cuenta-segura/.test(mC.body + mC.htmlBody) && mC.body.includes('[enlace]'), mC.body.split('\n').filter(l => l.includes('enlace')).join(' / '));
+    check('Copia de la tienda y hoja: texto original', mT.body.includes('cuenta-segura.com') && mT.body.includes('https://trampa.example/login') && ultima()[col('NOMBRE')].includes('cuenta-segura.com'));
+    check('Nombres normales no se tocan en el correo (J.R. Pérez, Mr.Smith)', (() => { post(pedido([item('las-pistol')], { cliente: { nombre: 'J.R. Pérez Mr.Smith', email: 'jr@example.com', telefono: '+34 612345678', direccion: 'Av. Diagonal 5.2B', cp: '08001', ciudad: 'Barcelona' } })); const m = correos[correos.length - 2]; return m.body.includes('J.R. Pérez Mr.Smith') && m.body.includes('Av. Diagonal 5.2B'); })());
+
+    // Límite por email y día
+    const mismo = 'repetido@example.com';
+    let res6;
+    for (let i = 0; i < 6; i++) res6 = post(pedido([item('las-pistol')], { cliente: { nombre: 'Rep', email: mismo, telefono: '+34 612345678', direccion: 'C 1', cp: '1', ciudad: 'X' } }));
+    check('Sexto pedido del mismo email en el día: rechazado', res6.error === 'demasiados_pedidos', JSON.stringify(res6));
+
+    // Pedidos cerrados
+    ss.getSheetByName('CONFIG').data[1][4] = 'no';
+    r = post(pedido([item('las-pistol')]));
+    check('PEDIDOS_ABIERTOS "no": pedido forzado rechazado', r.error === 'pedidos_cerrados', JSON.stringify(r));
+    delete cacheMem['config_pub'];
+    check('PEDIDOS_ABIERTOS "no": ?accion=config lo indica', get({ accion: 'config' }).pedidos_abiertos === false);
+    ss.getSheetByName('CONFIG').data[1][4] = 'sí';
+
+    // Estado
+    r = post(pedido([item('las-pistol')], { cliente: { nombre: 'Eva', email: 'Eva@Example.com', telefono: '+34 612345678', direccion: 'C 1', cp: '1', ciudad: 'X' } }));
+    let e = post({ accion: 'estado', id: r.id, email: ' eva@example.com ' });
+    check('Estado con el email correcto (sin importar mayúsculas ni espacios)', e.ok && e.estado === 'recibido' && e.pago === 'pendiente', JSON.stringify(e));
+    check('Estado sin datos personales', e.ok && !JSON.stringify(e).toLowerCase().includes('eva') && !('email' in e) && !('nombre' in e), Object.keys(e).join(','));
+    e = post({ accion: 'estado', id: r.id, email: 'otra@example.com' });
+    const e2 = post({ accion: 'estado', id: 'SR-ZZZZZZ', email: 'eva@example.com' });
+    check('Email equivocado o ID inexistente: mismo "no_encontrado"', e.error === 'no_encontrado' && e2.error === 'no_encontrado' && JSON.stringify(e) === JSON.stringify(e2));
+
+    // Freno global (valores reales de Code.gs)
+    check('Freno global razonable: 10 por hora y 30 al día', frenoReal.hora === 10 && frenoReal.dia === 30, JSON.stringify(frenoReal));
+    // ---------- Reseñas ----------
+    r = post(pedido([item('founders-bolt'), item('display-stand')], { pais: 'DE' }));
+    const idR = r.id;
+    const filaEst = () => ss.getSheetByName('ESTADO_WEB').data.find(x => x[0] === idR);
+    const kR = G.tokenResena(idR);
+    check('Enlace de reseña: token de 24 caracteres y URL con id, k e idioma', kR.length === 24 && G.enlaceResena(idR, 'de') === `https://soyresinator.com/resena.html?id=${idR}&k=${kR}&lang=de` && props.RESENA_SECRETO, kR);
+    r = post({ accion: 'resena_info', id: idR, k: 'x'.repeat(24) });
+    check('Reseña con un token que no es el del pedido: enlace_invalido', r.error === 'enlace_invalido', JSON.stringify(r));
+    r = post({ accion: 'resena_info', id: idR, k: kR });
+    check('Reseña de un pedido aún no entregado: no_entregado', r.error === 'no_entregado', JSON.stringify(r));
+    filaEst()[2] = 'entregado';
+    r = post({ accion: 'resena_info', id: idR, k: kR });
+    check('Pedido entregado: el enlace vale, productos del pedido, nombre y país', r.ok && !r.ya && r.productos.map(p => p.pid).join(',') === 'founders-bolt,display-stand' && r.nombre === 'Ana' && r.pais === 'DE', JSON.stringify(r));
+    const resena = over => ({ accion: 'resena', id: idR, k: kR, estrellas: 5, texto: 'Acabado brutal, mira www.spam.com', nombre: '=Ana', pais: 'Alemania', idioma: 'es', consentimiento: true, web: '', ...over });
+    r = post(resena({ estrellas: 6 }));
+    check('Reseña con 6 estrellas: datos_invalidos', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(resena({ consentimiento: false }));
+    check('Reseña sin permiso para publicar: datos_invalidos', r.error === 'datos_invalidos', JSON.stringify(r));
+    r = post(resena({ texto: 'corto' }));
+    check('Reseña de menos de 10 caracteres: datos_invalidos', r.error === 'datos_invalidos', JSON.stringify(r));
+    let pub = get({ accion: 'resenas' }); // deja la lista vacía en caché: la publicación automática tiene que vaciarla
+    check('?accion=resenas sin reseñas: lista vacía', pub.ok && pub.resenas.length === 0 && pub.total.n === 0, JSON.stringify(pub));
+    const avisosAntes = correos.length;
+    r = post(resena());
+    const rs = ss.getSheetByName('RESENAS'); const fr = rs.data[rs.getLastRow() - 1];
+    const avR = correos[correos.length - 1];
+    check('Reseña limpia: se PUBLICA sola (sí, sin motivo), sin fórmula ni enlaces, y aviso «Reseña publicada» con botón para retirarla', r.ok && fr[1] === idR && fr[3] === 5 && fr[4] === 'Ana' && fr[8] === 'Acabado brutal, mira [enlace]' && fr[6] === 'founders-bolt,display-stand' && fr[9] === 'sí' && fr[10] === '' && correos.length === avisosAntes + 1 && avR.to === 'soyresinator@gmail.com' && avR.subject === `Reseña publicada ${idR} · ★★★★★` && avR.htmlBody.includes(`accion=moderar&amp;id=${idR}&amp;a=no&amp;k=${G.tokenModeracion(idR, 'no')}`), JSON.stringify(fr));
+    pub = get({ accion: 'resenas' });
+    check('Publicada sale al momento en la web, con la media por producto, sin el ID ni el email', pub.resenas.length === 1 && pub.resenas[0].estrellas === 5 && pub.resenas[0].nombre === 'Ana' && pub.medias['founders-bolt'].media === 5 && pub.total.n === 1 && !JSON.stringify(pub).includes(idR) && !JSON.stringify(pub).includes('@'), JSON.stringify(pub));
+    r = post(resena({ estrellas: 1 }));
+    check('Segunda reseña del mismo pedido: ya_enviada', r.error === 'ya_enviada', JSON.stringify(r));
+    r = post({ accion: 'resena_info', id: idR, k: kR });
+    check('resena_info avisa de que ya opinó', r.ok && r.ya === true, JSON.stringify(r));
+    // Botones del correo: el GET solo enseña el botón de confirmar (los antivirus abren los enlaces); el POST lo aplica
+    let html = G.doGet({ parameter: { accion: 'moderar', id: idR, a: 'no', k: G.tokenModeracion(idR, 'no') } }).content;
+    check('Enlace «Retirar» (GET): página con botón de confirmar y la reseña sigue publicada', html.includes('Retirar la reseña de la web') && html.includes('method="post"') && fr[9] === 'sí', html.slice(0, 200));
+    html = G.doPost({ parameter: { accion: 'moderar', id: idR, a: 'no', k: G.tokenModeracion(idR, 'no') } }).content;
+    pub = get({ accion: 'resenas' });
+    check('Confirmar «Retirar» (POST): PUBLICAR = no, MOTIVO = retirada a mano y desaparece de la web al momento', html.includes('Reseña retirada') && fr[9] === 'no' && fr[10] === 'retirada a mano' && pub.resenas.length === 0, `${fr[9]} · ${fr[10]} · ${pub.resenas.length}`);
+    html = G.doPost({ parameter: { accion: 'moderar', id: idR, a: 'si', k: G.tokenModeracion(idR, 'no') } }).content;
+    check('Botón con la firma de otra acción: «Enlace no válido» y no cambia nada', html.includes('Enlace no válido') && fr[9] === 'no', html.slice(0, 120));
+    G.doPost({ parameter: { accion: 'moderar', id: idR, a: 'si', k: G.tokenModeracion(idR, 'si') } });
+    check('Confirmar «Publicar»: vuelve a sí y sin motivo', fr[9] === 'sí' && fr[10] === '' && get({ accion: 'resenas' }).resenas.length === 1, fr[9]);
+    // Filtro automático: cada caso en un pedido entregado nuevo
+    const nuevaResena = (texto, nombre = 'Pepe') => {
+      const rr = post(pedido([item('las-pistol')]));
+      ss.getSheetByName('ESTADO_WEB').data.find(x => x[0] === rr.id)[2] = 'entregado';
+      const res = post({ accion: 'resena', id: rr.id, k: G.tokenResena(rr.id), estrellas: 2, texto, nombre, pais: '', idioma: 'es', consentimiento: true, web: '' });
+      const s = ss.getSheetByName('RESENAS'); return { res, fila: s.data[s.getLastRow() - 1], aviso: correos[correos.length - 1] };
+    };
+    let z = nuevaResena('Llegó tarde y es una puta mierda de embalaje');
+    check('Insultos: retenida (no), MOTIVO lenguaje ofensivo con las palabras y aviso «Revisar reseña» con botón Publicar', z.res.ok && z.fila[9] === 'no' && z.fila[10].startsWith('lenguaje ofensivo') && z.fila[10].includes('mierda') && z.aviso.subject.startsWith('Revisar reseña') && z.aviso.htmlBody.includes('a=si'), z.fila[10]);
+    z = nuevaResena('Parece un arma real, impresiona mucho');
+    check('Arma real: retenida por política de pagos', z.fila[9] === 'no' && z.fila[10].startsWith('política de pagos'), z.fila[10]);
+    z = nuevaResena('Igualito al bolter de Warhammer 40K, me encanta');
+    check('Marcas de terceros: retenida por marcas', z.fila[9] === 'no' && z.fila[10].startsWith('marcas') && z.fila[10].includes('warhammer'), z.fila[10]);
+    z = nuevaResena('Muy bien. Si tenéis dudas escribidme a pepe.lopez@correo.es o al 612 345 678', 'Pepe pepe@x.com');
+    check('Emails y teléfonos: se cambian por [dato] (texto y nombre) y se publica', z.fila[9] === 'sí' && z.fila[8] === 'Muy bien. Si tenéis dudas escribidme a [dato] o al [dato]' && z.fila[4] === 'Pepe [dato]', z.fila[8] + ' | ' + z.fila[4]);
+    z = nuevaResena('Hubo una disputa con el transportista, pero el acabado es excelente');
+    check('Sin falsos positivos por trozos de palabra ("disputa" no es un insulto): se publica', z.fila[9] === 'sí' && z.fila[10] === '', z.fila[10]);
+    z = nuevaResena('NO ME GUSTÓ NADA, MUY MAL ACABADO');
+    check('Reseña negativa sin insultos: se publica igual (hay que publicar también las malas)', z.fila[9] === 'sí', z.fila[9]);
+    // ---------- Fotos en reseñas ----------
+    const jpeg = 'data:image/jpeg;base64,' + btoa('\xFF\xD8\xFF' + 'x'.repeat(3000));
+    const conFotos = (fotos, texto = 'Muy buen acabado, mirad las fotos') => {
+      const rr = post(pedido([item('las-pistol')]));
+      ss.getSheetByName('ESTADO_WEB').data.find(x => x[0] === rr.id)[2] = 'entregado';
+      const res = post({ accion: 'resena', id: rr.id, k: G.tokenResena(rr.id), estrellas: 5, texto, nombre: 'Foto', pais: '', idioma: 'es', consentimiento: true, web: '', fotos });
+      const s = ss.getSheetByName('RESENAS'); return { id: rr.id, res, fila: s.data[s.getLastRow() - 1], aviso: correos[correos.length - 1] };
+    };
+    r = conFotos([jpeg, jpeg, jpeg, jpeg]);
+    check('Más de 3 fotos: datos_invalidos', r.res.error === 'datos_invalidos', JSON.stringify(r.res));
+    r = conFotos(['data:image/png;base64,' + btoa('png')]);
+    check('Foto que no es JPEG/WebP: datos_invalidos', r.res.error === 'datos_invalidos', JSON.stringify(r.res));
+    r = conFotos(['data:image/jpeg;base64,' + btoa('x'.repeat(950 * 1024))]);
+    check('Foto de más de 900 KB: datos_invalidos', r.res.error === 'datos_invalidos', JSON.stringify(r.res));
+    const fz = conFotos([jpeg, jpeg]);
+    const idsF = fz.fila[11].split(',');
+    check('2 fotos: se guardan en la carpeta de Drive, PRIVADAS, FOTOS_PUBLICAR = no y el texto se publica', fz.res.ok && fz.res.fotos === 2 && idsF.length === 2 && fz.fila[12] === 'no' && fz.fila[9] === 'sí' && idsF.every(i => drive.ficheros[i].acceso === 'PRIVATE') && props.FOTOS_CARPETA && drive.ficheros[idsF[0]].blob.name === `${fz.id}-1.jpg`, JSON.stringify(fz.fila));
+    check('Aviso a la tienda con las fotos dentro del correo y botón «Publicar las fotos»', fz.aviso.inlineImages && fz.aviso.inlineImages.foto1 && fz.aviso.inlineImages.foto2 && fz.aviso.htmlBody.includes('cid:foto2') && fz.aviso.htmlBody.includes(`a=fotos&amp;k=${G.tokenModeracion(fz.id, 'fotos')}`), Object.keys(fz.aviso.inlineImages || {}).join(','));
+    let pubF = get({ accion: 'resenas' }).resenas.find(x => x.nombre === 'Foto');
+    check('Sin aprobar, la web muestra la reseña SIN fotos', pubF && pubF.fotos.length === 0, JSON.stringify(pubF));
+    html = G.doGet({ parameter: { accion: 'moderar', id: fz.id, a: 'fotos', k: G.tokenModeracion(fz.id, 'fotos') } }).content;
+    check('Enlace «Publicar las fotos» (GET): solo página de confirmar, siguen privadas', html.includes('Publicar las fotos') && idsF.every(i => drive.ficheros[i].acceso === 'PRIVATE'), html.slice(0, 120));
+    html = G.doPost({ parameter: { accion: 'moderar', id: fz.id, a: 'fotos', k: G.tokenModeracion(fz.id, 'fotos') } }).content;
+    pubF = get({ accion: 'resenas' }).resenas.find(x => x.nombre === 'Foto');
+    check('Confirmar «Publicar las fotos»: compartidas con enlace, FOTOS_PUBLICAR = sí y la web las muestra (miniatura y grande)', html.includes('Fotos publicadas') && fz.fila[12] === 'sí' && idsF.every(i => drive.ficheros[i].acceso === 'ANYONE_WITH_LINK') && pubF.fotos.length === 2 && pubF.fotos[0].mini === `https://drive.google.com/thumbnail?id=${idsF[0]}&sz=w400` && pubF.fotos[0].grande.endsWith('&sz=w1600'), JSON.stringify(pubF && pubF.fotos));
+    G.doPost({ parameter: { accion: 'moderar', id: fz.id, a: 'no', k: G.tokenModeracion(fz.id, 'no') } });
+    check('Retirar la reseña: también vuelven a privadas sus fotos (FOTOS_PUBLICAR = no)', fz.fila[9] === 'no' && fz.fila[12] === 'no' && idsF.every(i => drive.ficheros[i].acceso === 'PRIVATE'), fz.fila[12]);
+    html = G.doPost({ parameter: { accion: 'moderar', id: idR, a: 'fotos', k: G.tokenModeracion(idR, 'fotos') } }).content;
+    check('«Publicar las fotos» en una reseña sin fotos: aviso «Sin fotos»', html.includes('Sin fotos'), html.slice(0, 120));
+    check('autorizarFotos devuelve la carpeta (para dar el permiso de Drive desde el editor)', /Carpeta de fotos lista/.test(G.autorizarFotos()));
+
+    const pedidosAntes = ped().getLastRow(), correosAntes = correos.length;
+    G.AJUSTES.MAX_PEDIDOS_HORA = pedidosAntes - 1 + 2; // caben 2 pedidos más en esta hora
+    let rf = [];
+    for (let i = 0; i < 4; i++) rf.push(post(pedido([item('las-pistol')])));
+    const avisos = correos.slice(correosAntes).filter(c => c.subject === 'Aviso: la web está frenando pedidos');
+    check('Freno por hora: los 2 primeros entran, los siguientes "ocupado" y no se guardan', rf[0].ok && rf[1].ok && rf[2].error === 'ocupado' && rf[3].error === 'ocupado' && ped().getLastRow() === pedidosAntes + 2, rf.map(x => x.ok ? 'ok' : x.error).join(','));
+    check('Freno: un solo aviso a la tienda aunque se rechacen varios', avisos.length === 1 && avisos[0].to === 'soyresinator@gmail.com', avisos.length);
+    G.AJUSTES.MAX_PEDIDOS_HORA = 10000; G.AJUSTES.MAX_PEDIDOS_DIA_TOTAL = ped().getLastRow() - 1;
+    r = post(pedido([item('las-pistol')]));
+    check('Freno por día: rechazado al llegar al máximo diario', r.error === 'ocupado', JSON.stringify(r));
+  } catch (err) {
+    check('Error inesperado', false, err.stack || err);
+  }
+
+  const ok = resultados.filter(x => x.ok).length;
+  document.getElementById('resumen').textContent = `${ok} de ${resultados.length} pruebas correctas`;
+  document.getElementById('filas').innerHTML = resultados.map(x =>
+    `<tr><td>${x.nombre}</td><td class="${x.ok ? 'ok' : 'ko'}">${x.ok ? 'OK' : 'FALLA'}</td><td>${x.detalle.replace(/</g, '&lt;')}</td></tr>`).join('');
+  window.__resultados = resultados;
+})();
+</script>
+</body>
+</html>
