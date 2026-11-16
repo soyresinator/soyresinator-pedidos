@@ -113,12 +113,20 @@ const ScriptApp = { getService: () => ({ getUrl: () => 'https://script.google.co
 const drive = { carpetas: {}, ficheros: {}, n: 0 };
 const nuevoFichero = blob => {
   const id = 'F' + (++drive.n);
-  const f = drive.ficheros[id] = { id, blob, acceso: 'PRIVATE', getId: () => id, setSharing(a) { this.acceso = a; return this; } };
+  const f = drive.ficheros[id] = { id, blob, acceso: 'PRIVATE', getId: () => id, setSharing(a) { this.acceso = a; return this; },
+    getName: () => blob.getName && blob.getName(),
+    getBlob: () => ({ getDataAsString: () => new TextDecoder().decode(new Uint8Array(blob.getBytes())) }) };
   return f;
 };
+const iterador = lista => { let i = 0; return { hasNext: () => i < lista.length, next: () => lista[i++] }; };
 const DriveApp = {
   Access: { ANYONE_WITH_LINK: 'ANYONE_WITH_LINK', PRIVATE: 'PRIVATE' }, Permission: { VIEW: 'VIEW', NONE: 'NONE' },
-  createFolder: name => { const id = 'C' + (++drive.n); return drive.carpetas[id] = { name, getId: () => id, getName: () => name, getUrl: () => 'https://drive/' + id, createFile: nuevoFichero }; },
+  createFolder: name => {
+    const id = 'C' + (++drive.n), dentro = [];
+    return drive.carpetas[id] = { name, getId: () => id, getName: () => name, getUrl: () => 'https://drive/' + id,
+      createFile: b => { const f = nuevoFichero(b); dentro.push(f); return f; },
+      getFilesByName: n => iterador(dentro.filter(f => f.getName() === n)) };
+  },
   getFolderById: id => { if (!drive.carpetas[id]) throw new Error('no existe'); return drive.carpetas[id]; },
   getFileById: id => { if (!drive.ficheros[id]) throw new Error('no existe'); return drive.ficheros[id]; }
 };
@@ -153,7 +161,7 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
   ficheros['data/shipping.json'] = JSON.stringify(shipReal);
   const codigo = await (await fetch('../apps-script/Code.gs', { cache: 'no-cache' })).text();
   const G = new Function('SpreadsheetApp', 'CacheService', 'LockService', 'MailApp', 'UrlFetchApp', 'Utilities', 'ContentService', 'PropertiesService', 'ScriptApp', 'HtmlService', 'DriveApp',
-    codigo + '\nreturn { instalar, doGet, doPost, hashEmail, AJUSTES, tokenResena, enlaceResena, limpiarCache, tokenModeracion, autorizarFotos };')(
+    codigo + '\nreturn { instalar, doGet, doPost, hashEmail, AJUSTES, tokenResena, enlaceResena, limpiarCache, tokenModeracion, autorizarFotos, firmaManual, carpetaManuales, prepararManuales };')(
     SpreadsheetApp, CacheService, LockService, MailApp, UrlFetchApp, Utilities, ContentService, PropertiesService, ScriptApp, HtmlService, DriveApp);
 
   // Las pruebas mandan muchos pedidos seguidos: el freno global se prueba al final con sus valores reales.
@@ -196,7 +204,7 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     let r = post(pedido([item('founders-bolt', { rojo: 'azul-marino' }, true), item('las-pistol', {}, true)], { total_cliente: 1 }));
     let f = ultima();
     check('Founders Bolt azul marino + Las Pistol + montaje a España = 378 € (caja de 4 kg 18 €; total_cliente manipulado a 1)', r.ok && r.total === 378 && f[col('TOTAL')] === 378 && f[col('SUBTOTAL')] === 260 && f[col('MONTAJE')] === 100 && f[col('ENVIO')] === 18 && f[col('CAJAS')] === 1, JSON.stringify(r));
-    check('Encabezados de ESTADO_WEB: 15 columnas, L = ID_PEDIDO, M = AVISO_ENVIO, N = ENTREGADO_EL, O = AVISO_RESENA', ss.getSheetByName('ESTADO_WEB').data[0].length === 15 && ss.getSheetByName('ESTADO_WEB').data[0][11] === 'ID_PEDIDO' && ss.getSheetByName('ESTADO_WEB').data[0][12] === 'AVISO_ENVIO' && ss.getSheetByName('ESTADO_WEB').data[0][14] === 'AVISO_RESENA');
+    check('Encabezados de ESTADO_WEB: 16 columnas, L = ID_PEDIDO, M = AVISO_ENVIO, N = ENTREGADO_EL, O = AVISO_RESENA, P = MANUALES', ss.getSheetByName('ESTADO_WEB').data[0].length === 16 && ss.getSheetByName('ESTADO_WEB').data[0][11] === 'ID_PEDIDO' && ss.getSheetByName('ESTADO_WEB').data[0][12] === 'AVISO_ENVIO' && ss.getSheetByName('ESTADO_WEB').data[0][14] === 'AVISO_RESENA' && ss.getSheetByName('ESTADO_WEB').data[0][15] === 'MANUALES');
     check('ID con formato SR-XXXXXX', /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/.test(r.id), r.id);
     check('RESUMEN_ES correcto', f[col('RESUMEN_ES')] === '1. Founders Bolt · Detalles rojos: Azul marino · Montaje: sí | 2. Las Pistol · Cuerpo verde: Verde oscuro (de serie) · Partes negras: Negro (de serie) · Montaje: sí', f[col('RESUMEN_ES')]);
     const items = JSON.parse(f[col('ITEMS_JSON')]);
@@ -467,6 +475,40 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     e = post({ accion: 'estado', id: r.id, email: 'otra@example.com' });
     const e2 = post({ accion: 'estado', id: 'SR-ZZZZZZ', email: 'eva@example.com' });
     check('Email equivocado o ID inexistente: mismo "no_encontrado"', e.error === 'no_encontrado' && e2.error === 'no_encontrado' && JSON.stringify(e) === JSON.stringify(e2));
+
+    // ---------- Manuales de montaje ----------
+    const filaM = ss.getSheetByName('ESTADO_WEB').data.find(x => x[0] === r.id);
+    filaM[15] = 'heavy-bolt';
+    e = post({ accion: 'estado', id: r.id, email: 'eva@example.com' });
+    check('Manual: pedido sin enviar → sin enlaces', e.ok && Array.isArray(e.manuales) && e.manuales.length === 0, JSON.stringify(e.manuales));
+    filaM[2] = 'enviado';
+    e = post({ accion: 'estado', id: r.id, email: 'eva@example.com' });
+    const em = e.manuales && e.manuales[0];
+    const ahoraS = Math.floor(Date.now() / 1000);
+    check('Manual: pedido enviado → 1 enlace heavy-bolt con firma de 32 y caducidad de 24 h', e.ok && e.manuales.length === 1 && em.m === 'heavy-bolt' && /^[0-9a-f]{32}$/.test(em.k) && Math.abs(em.e - (ahoraS + 86400)) < 5, JSON.stringify(e.manuales));
+    filaM[15] = 'heavy-bolt,inventado,heavy-bolt';
+    e = post({ accion: 'estado', id: r.id, email: 'eva@example.com' });
+    check('Manual: claves desconocidas o repetidas no salen', e.manuales.length === 1 && e.manuales[0].m === 'heavy-bolt', JSON.stringify(e.manuales));
+    filaM[15] = 'heavy-bolt,trench-las-rifle';
+    e = post({ accion: 'estado', id: r.id, email: 'eva@example.com' });
+    check('Manual: pedido con Heavy Bolt y Trench → dos enlaces, cada uno con su firma', e.manuales.length === 2 && e.manuales[1].m === 'trench-las-rifle' && e.manuales[0].k !== e.manuales[1].k, JSON.stringify(e.manuales));
+    filaM[15] = 'heavy-bolt';
+    const pm = (x) => Object.assign({ accion: 'manual', id: r.id, m: em.m, e: String(em.e), k: em.k }, x || {});
+    check('Manual: sin fichero en Drive → no_disponible', get(pm()).error === 'no_disponible', JSON.stringify(get(pm())));
+    G.carpetaManuales().createFile(Utilities.newBlob(JSON.stringify({ manual: 'heavy-bolt', plantilla: '<article class="manual"><h1 data-t="titulo">Manual</h1></article>', textos: { es: { titulo: 'Manual' }, en: { titulo: 'Manual EN' } } }), 'application/json', 'heavy-bolt.json'));
+    let mr = get(pm());
+    check('Manual: enlace bueno → plantilla y textos de Drive', mr.ok && mr.manual.plantilla.includes('data-t="titulo"') && mr.manual.textos.en.titulo === 'Manual EN', JSON.stringify(mr).slice(0, 200));
+    check('Manual: firma cambiada → enlace_caducado', get(pm({ k: em.k.replace(/.$/, c => c === 'a' ? 'b' : 'a') })).error === 'enlace_caducado');
+    check('Manual: otro pedido con la misma firma → enlace_caducado', get(pm({ id: 'SR-ZZZZZZ' })).error === 'enlace_caducado');
+    check('Manual: caducidad alargada a mano → enlace_caducado', get(pm({ e: String(em.e + 3600) })).error === 'enlace_caducado');
+    const eViejo = ahoraS - 10;
+    check('Manual: enlace caducado (aunque la firma sea buena) → enlace_caducado', get(pm({ e: String(eViejo), k: G.firmaManual(r.id, 'heavy-bolt', String(eViejo)) })).error === 'enlace_caducado');
+    check('Manual: manual que no existe → enlace_caducado', get(pm({ m: 'otro', k: G.firmaManual(r.id, 'otro', String(em.e)) })).error === 'enlace_caducado');
+    check('Manual: prepararManuales dice que el fichero está', /heavy-bolt\.json: sí/.test(G.prepararManuales()), G.prepararManuales());
+    filaM[2] = 'entregado';
+    e = post({ accion: 'estado', id: r.id, email: 'eva@example.com' });
+    check('Manual: entregado → sigue saliendo', e.manuales.length === 1);
+    filaM[2] = 'recibido'; filaM[15] = '';
 
     // Freno global (valores reales de Code.gs)
     check('Freno global razonable: 10 por hora y 30 al día', frenoReal.hora === 10 && frenoReal.dia === 30, JSON.stringify(frenoReal));

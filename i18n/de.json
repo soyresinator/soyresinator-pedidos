@@ -331,5 +331,18 @@
   "resena.gracias_fotos": "Fotos prüfen wir vor der Veröffentlichung, daher erscheinen sie etwas später.",
   "rev.foto_aria": "Foto {n}",
   "rev.foto_ver": "Foto {n} von {nombre} ansehen",
-  "rev.cerrar": "Schließen"
+  "rev.cerrar": "Schließen",
+  "seg.manual": "Montageanleitung",
+  "manual.ver": "Montageanleitung öffnen",
+  "manual.nombre.heavy-bolt": "Heavy Bolt und Zubehör",
+  "manual.enlace_ayuda": "Der Link gilt 24 Stunden. Danach kommst du einfach mit deiner ID und deiner E-Mail wieder hierher.",
+  "manual.volver": "Zurück zu meiner Bestellung",
+  "manual.imprimir": "Drucken",
+  "manual.cargando": "Anleitung wird geladen …",
+  "manual.caducado": "Dieser Link ist abgelaufen. Öffne „Meine Bestellung“ mit deiner ID und deiner E-Mail, um die Anleitung erneut aufzurufen.",
+  "manual.no_disponible": "Diese Anleitung ist noch nicht verfügbar. Schreib uns mit deiner Bestellnummer, dann schicken wir sie dir.",
+  "manual.error": "Die Anleitung konnte nicht geladen werden. Versuch es in ein paar Minuten noch einmal.",
+  "meta.manual.titulo": "Montageanleitung · Soy Resinator",
+  "meta.manual.desc": "Montageanleitung für deine Soy-Resinator-Replik.",
+  "manual.nombre.trench-las-rifle": "Trench Las Rifle"
 }

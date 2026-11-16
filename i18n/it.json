@@ -331,5 +331,18 @@
   "resena.gracias_fotos": "Controlliamo le foto prima di pubblicarle, quindi potrebbero comparire un po' più tardi.",
   "rev.foto_aria": "Foto {n}",
   "rev.foto_ver": "Vedi la foto {n} di {nombre}",
-  "rev.cerrar": "Chiudi"
+  "rev.cerrar": "Chiudi",
+  "seg.manual": "Manuale di montaggio",
+  "manual.ver": "Apri il manuale di montaggio",
+  "manual.nombre.heavy-bolt": "Heavy Bolt e i suoi accessori",
+  "manual.enlace_ayuda": "Il link vale 24 ore. Dopo, torna qui con il tuo ID e la tua email.",
+  "manual.volver": "Torna al mio ordine",
+  "manual.imprimir": "Stampa",
+  "manual.cargando": "Caricamento del manuale…",
+  "manual.caducado": "Questo link è scaduto. Entra in «Il mio ordine» con il tuo ID e la tua email per riaprire il manuale.",
+  "manual.no_disponible": "Questo manuale non è ancora disponibile. Scrivici con il codice dell'ordine e te lo inviamo.",
+  "manual.error": "Non siamo riusciti a caricare il manuale. Riprova tra qualche minuto.",
+  "meta.manual.titulo": "Manuale di montaggio · Soy Resinator",
+  "meta.manual.desc": "Manuale di montaggio della tua replica Soy Resinator.",
+  "manual.nombre.trench-las-rifle": "Trench Las Rifle"
 }

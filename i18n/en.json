@@ -331,5 +331,18 @@
   "resena.gracias_fotos": "We review photos before publishing them, so they may take a little longer to appear.",
   "rev.foto_aria": "Photo {n}",
   "rev.foto_ver": "View photo {n} by {nombre}",
-  "rev.cerrar": "Close"
+  "rev.cerrar": "Close",
+  "seg.manual": "Assembly manual",
+  "manual.ver": "Open the assembly manual",
+  "manual.nombre.heavy-bolt": "Heavy Bolt and its accessories",
+  "manual.enlace_ayuda": "The link is valid for 24 hours. After that, come back here with your ID and email.",
+  "manual.volver": "Back to my order",
+  "manual.imprimir": "Print",
+  "manual.cargando": "Loading the manual…",
+  "manual.caducado": "This link has expired. Go to “My order” with your ID and email to open the manual again.",
+  "manual.no_disponible": "This manual isn't available yet. Write to us with your order code and we'll send it to you.",
+  "manual.error": "We couldn't load the manual. Please try again in a few minutes.",
+  "meta.manual.titulo": "Assembly manual · Soy Resinator",
+  "meta.manual.desc": "Assembly manual for your Soy Resinator replica.",
+  "manual.nombre.trench-las-rifle": "Trench Las Rifle"
 }

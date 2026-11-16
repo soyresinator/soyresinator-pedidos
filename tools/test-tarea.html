@@ -177,6 +177,22 @@ function check(nombre, cond, detalle) { resultados.push({ nombre, ok: !!cond, de
     G.tareaHoraria();
     e = H('ESTADO_WEB').data.find(r => r[0] === a.id);
     check('Enviado con tracking; la fecha estimada no cambia', e[2] === 'enviado' && e[5] === 'pagado' && e[9] === 'UA123456789ES' && e[7] === fechaFijada, e.slice(2, 10).join(' | '));
+    // Manuales (columna P): de las réplicas de LINEAS
+    check('ESTADO_WEB tiene la columna P = MANUALES', H('ESTADO_WEB').data[0][15] === 'MANUALES', H('ESTADO_WEB').data[0][15]);
+    check('Pedido sin Heavy Bolt ni accesorios: MANUALES vacía', e[15] === '', JSON.stringify(e[15]));
+    const resA = pa[c('ID_PEDIDO')];
+    shLin.data.push([resA, 9, 'CULATA-HB', 'Culata', 1, 'Culata']);
+    G.tareaHoraria();
+    e = H('ESTADO_WEB').data.find(r => r[0] === a.id);
+    check('Con una culata suelta en LINEAS: MANUALES = heavy-bolt', e[15] === 'heavy-bolt', JSON.stringify(e[15]));
+    shLin.data.push([resA, 10, 'BOLTER-PRIMARIS-UM', 'Ultra-sea', 1, 'Ultra-sea']);
+    G.tareaHoraria();
+    e = H('ESTADO_WEB').data.find(r => r[0] === a.id);
+    check('Ultra-sea + culata: un solo manual heavy-bolt', e[15] === 'heavy-bolt', JSON.stringify(e[15]));
+    shLin.data.splice(shLin.data.length - 2, 2);
+    G.tareaHoraria();
+    e = H('ESTADO_WEB').data.find(r => r[0] === a.id);
+    check('Sin esas líneas: MANUALES vuelve a vacía', e[15] === '', JSON.stringify(e[15]));
 
     // Aviso de envío por email
     const mailsDe = to => mails.filter(m => m.to === to && /on its way|en camino|unterwegs/.test(m.subject));

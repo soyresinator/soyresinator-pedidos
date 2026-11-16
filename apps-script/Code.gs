@@ -10,6 +10,8 @@
  *   GET  ?accion=resenas             -> reseñas aprobadas (PUBLICAR = sí) y media por producto (caché 10 min)
  *   POST {accion:"resena_info", id, k} -> ¿vale el enlace de reseña? productos del pedido y si ya opinó
  *   POST {accion:"resena", id, k, ...} -> guarda la reseña en RESENAS como no publicada y avisa a la tienda
+ *   GET  ?accion=manual&id&m&e&k     -> manual de montaje (plantilla + textos de los 6 idiomas) desde Drive,
+ *                                       con el enlace firmado que da "estado" cuando el pedido está enviado
  *
  * Los POST llegan como text/plain con JSON dentro (así el navegador no hace la petición previa de CORS).
  * Las reglas de cajas, totales y colores son las mismas que js/calc.js y js/core.js de la web.
@@ -40,7 +42,18 @@ const AJUSTES = {
   // Fotos de reseñas: las reduce el navegador (JPEG ~1600 px). Se guardan en Drive, privadas hasta que la tienda las aprueba.
   FOTOS_MAX: 3,
   FOTO_MAX_BYTES: 900 * 1024,        // por foto, ya decodificada
-  MAX_BYTES_RESENA: 4 * 1024 * 1024  // tamaño máximo de una petición de reseña con fotos (el resto: MAX_BYTES)
+  MAX_BYTES_RESENA: 4 * 1024 * 1024, // tamaño máximo de una petición de reseña con fotos (el resto: MAX_BYTES)
+  // Manuales de montaje: el enlace de "Mi pedido" vale estas horas. Después el cliente vuelve a entrar con su ID y email.
+  HORAS_ENLACE_MANUAL: 24,
+  MAX_MANUALES_ID_HORA: 30
+};
+
+/* Manuales de montaje: qué manual lleva cada ID_REPLICA de RES · Pedidos (LINEAS).
+ * El fichero <clave>.json vive en la carpeta de Drive "Soy Resinator · manuales" (nunca en GitHub):
+ * { plantilla: "<article class=manual>…", textos: { es: {…}, en: {…}, … } }. Se sube a mano tras ejecutar prepararManuales(). */
+const MANUALES = {
+  'heavy-bolt': ['BOLTER-PRIMARIS', 'BOLTER-PRIMARIS-SW', 'BOLTER-PRIMARIS-UM', 'ASA-RAIL-HB', 'CULATA-HB', 'TAMBOR-HB'],
+  'trench-las-rifle': ['RIFLE-KRIEG']
 };
 // ===================================================================================
 
@@ -61,8 +74,10 @@ const ENCABEZADOS = {
   // AVISO_ENVIO (M) = fecha ISO del correo "tu pedido ha salido" (o "previo"). Bórrala para que se reenvíe.
   // ENTREGADO_EL (N) = primera vez que la tarea vio el pedido Entregado. AVISO_RESENA (O) = fecha del correo
   // pidiendo la reseña (o "previo"); la tarea lo manda TAREA.DIAS_RESENA días después de N.
+  // MANUALES (P) = claves de MANUALES separadas por comas (p. ej. "heavy-bolt"); la tarea las saca de LINEAS.
   ESTADO_WEB: ['ID_WEB', 'EMAIL_HASH', 'ESTADO', 'PLACAS_HECHAS', 'PLACAS_TOTAL', 'PAGO', 'FECHA_PAGO',
-    'FECHA_ENVIO_ESTIMADA', 'SERVICIO', 'TRACKING', 'ACTUALIZADO', 'ID_PEDIDO', 'AVISO_ENVIO', 'ENTREGADO_EL', 'AVISO_RESENA'],
+    'FECHA_ENVIO_ESTIMADA', 'SERVICIO', 'TRACKING', 'ACTUALIZADO', 'ID_PEDIDO', 'AVISO_ENVIO', 'ENTREGADO_EL', 'AVISO_RESENA',
+    'MANUALES'],
   CONFIG: ['HORAS_COLA', 'HORAS_DIA', 'DIAS_PREPARACION', 'ACTUALIZADO', 'PEDIDOS_ABIERTOS'],
   COLORES: ['COLOR_ID', 'NOMBRE_ES', 'NOMBRE_EN', 'NOMBRE_DE', 'NOMBRE_FR', 'NOMBRE_IT', 'HEX',
     'IDS_FILAMENTO', 'DISPONIBLE_G', 'ELEGIBLE', 'ACTUALIZADO'],
@@ -76,7 +91,7 @@ const ENCABEZADOS = {
 // Formato de cada columna al escribir una fila: '@' = texto (evita fórmulas y que se pierdan ceros), '0.00' = número.
 const FORMATO_PEDIDOS = ['@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@',
   '0.00', '0.00', '0.00', '0.00', '@', '@', '0', '@', '@', '@'];
-const FORMATO_ESTADO = ['@', '@', '@', '0', '0', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@'];
+const FORMATO_ESTADO = ['@', '@', '@', '0', '0', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@'];
 const FORMATO_RESENAS = ['@', '@', '@', '0', '@', '@', '@', '@', '@', '@', '@', '@', '@'];
 
 /* Filtro de reseñas. Se compara en minúsculas y sin acentos. Si aparece algo de estas listas, la reseña NO se publica
@@ -196,6 +211,7 @@ function doGet(e) {
     if (accion === 'config') return json(configPublica());
     if (accion === 'resenas') return json(resenasPublicas());
     if (accion === 'moderar') return pedirConfirmacionModeracion(e.parameter);
+    if (accion === 'manual') return servirManual(e.parameter);
     return json({ ok: false, error: 'accion_desconocida' });
   } catch (err) {
     console.error(err);
@@ -452,7 +468,7 @@ function crearPedido(b) {
     ];
     escribirFila(hoja(H.PEDIDOS), fila, FORMATO_PEDIDOS);
     escribirFila(hoja(H.ESTADO),
-      [id, hashEmail(cliente.email), 'recibido', '', '', 'pendiente', '', '', '', '', fechaIso, '', '', '', ''], FORMATO_ESTADO);
+      [id, hashEmail(cliente.email), 'recibido', '', '', 'pendiente', '', '', '', '', fechaIso, '', '', '', '', ''], FORMATO_ESTADO);
     SpreadsheetApp.flush();
   } finally {
     lock.releaseLock();
@@ -485,11 +501,16 @@ function consultarEstado(b) {
   const sh = hoja(H.ESTADO);
   const filas = sh.getLastRow() - 1;
   if (filas < 1) return NO;
-  const datos = sh.getRange(2, 1, filas, 11).getValues();
+  const datos = sh.getRange(2, 1, filas, 16).getValues();
   const r = datos.filter(function (x) { return String(x[0]).trim() === id; })[0];
   if (!r || String(r[1]).trim() !== hashEmail(email)) return NO;
 
+  // Manuales de montaje: solo cuando el pedido ya ha salido. Enlace firmado que caduca (no hace falta volver a dar el email).
+  const estadoTxt = String(r[2] || 'recibido');
+  const manuales = (estadoTxt === 'enviado' || estadoTxt === 'entregado') ? enlacesManuales(id, r[15]) : [];
+
   return {
+    manuales: manuales,
     ok: true,
     id: id,
     estado: String(r[2] || 'recibido'),
@@ -502,6 +523,58 @@ function consultarEstado(b) {
     tracking: String(r[9] || ''),
     actualizado: fechaTexto(r[10])
   };
+}
+
+/* =====================================================================
+ * MANUALES DE MONTAJE
+ * "estado" da, para cada manual del pedido, un enlace firmado {m, e, k}: e = caducidad (segundos UNIX), k = firma.
+ * manual.html lo pide con ?accion=manual&id&m&e&k y lo pinta. El manual vive en Drive y nunca en el repositorio.
+ * ===================================================================== */
+function firmaManual(id, m, e) {
+  return hashEmail(secretoResenas() + '|manual|' + id + '|' + m + '|' + e).slice(0, 32);
+}
+
+/** Claves de la columna MANUALES ("heavy-bolt,…") → [{ m, e, k }] (solo las que existen en MANUALES). */
+function enlacesManuales(id, columna) {
+  const e = Math.floor(Date.now() / 1000) + AJUSTES.HORAS_ENLACE_MANUAL * 3600;
+  return String(columna || '').split(',').map(function (s) { return s.trim(); })
+    .filter(function (m, i, a) { return m && MANUALES[m] && a.indexOf(m) === i; })
+    .map(function (m) { return { m: m, e: e, k: firmaManual(id, m, e) }; });
+}
+
+/** Carpeta de Drive de los manuales. Se crea sola la primera vez; su id queda en las propiedades del script. */
+function carpetaManuales() {
+  const props = PropertiesService.getScriptProperties();
+  const id = props.getProperty('MANUALES_CARPETA');
+  if (id) { try { return DriveApp.getFolderById(id); } catch (e) { /* borrada: creamos otra */ } }
+  const f = DriveApp.createFolder('Soy Resinator · manuales');
+  props.setProperty('MANUALES_CARPETA', f.getId());
+  return f;
+}
+
+/** Ejecútala UNA vez desde el editor: crea la carpeta. Sube a ella heavy-bolt.json (y los manuales que vengan). */
+function prepararManuales() {
+  const f = carpetaManuales();
+  const hay = Object.keys(MANUALES).map(function (m) { return m + '.json: ' + (f.getFilesByName(m + '.json').hasNext() ? 'sí' : 'FALTA'); });
+  return 'Carpeta de manuales: ' + f.getUrl() + ' · ' + hay.join(' · ');
+}
+
+function servirManual(p) {
+  const NO = { ok: false, error: 'enlace_caducado' };
+  const id = String(p.id || '').trim().toUpperCase(), m = String(p.m || ''), e = Number(p.e), k = String(p.k || '');
+  const ahora = Math.floor(Date.now() / 1000);
+  if (!RE_ID.test(id) || !MANUALES[m] || !(e > ahora) || e > ahora + AJUSTES.HORAS_ENLACE_MANUAL * 3600 + 60) return json(NO);
+  if (k.length !== 32 || k !== firmaManual(id, m, String(p.e))) return json(NO);
+  // Freno: como mucho N descargas por pedido y hora (cada una son ~2 MB).
+  const cache = CacheService.getScriptCache(), ck = 'man:' + id;
+  const n = Number(cache.get(ck) || 0) + 1;
+  cache.put(ck, String(n), 3600);
+  if (n > AJUSTES.MAX_MANUALES_ID_HORA) return json({ ok: false, error: 'ocupado' });
+  const files = carpetaManuales().getFilesByName(m + '.json');
+  if (!files.hasNext()) return json({ ok: false, error: 'no_disponible' });
+  // El fichero ya es JSON: va tal cual dentro de la respuesta (sin parsear ~2 MB en el servidor).
+  const contenido = files.next().getBlob().getDataAsString('UTF-8');
+  return ContentService.createTextOutput('{"ok":true,"manual":' + contenido + '}').setMimeType(ContentService.MimeType.JSON);
 }
 
 /* =====================================================================

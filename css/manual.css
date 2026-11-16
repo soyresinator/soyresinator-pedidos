@@ -1,0 +1,63 @@
+/* Manuales de montaje (manual.html). Las variables de color son las de la web. Generado desde el manual HTML. */
+.manual{box-sizing:border-box;max-width:60rem;margin:0 auto;padding:1rem;font-family:inherit;font-size:1rem;line-height:1.5;color:var(--text);background:var(--bg);overflow-wrap:break-word}
+.manual *,.manual *::before,.manual *::after{box-sizing:border-box}
+.manual h1,.manual h2,.manual h3{font-family:inherit;color:var(--text);line-height:1.3;margin:0 0 .75rem}
+.manual h1{font-size:2rem}
+.manual h2{font-size:1.5rem;margin-top:2.5rem;padding-top:1rem;border-top:.25rem solid var(--gold)}
+.manual h3{font-size:1.25rem}
+.manual p,.manual ul,.manual dl{margin:0 0 1rem}
+.manual ul{padding-left:1.5rem}
+.manual li{margin-bottom:.5rem}
+.manual .ficha{display:grid;grid-template-columns:1fr;gap:.75rem;margin:1.5rem 0}
+.manual .dato{background:var(--surface);border:.125rem solid var(--line);padding:.75rem 1rem}
+.manual .ficha dt{font-weight:700;color:var(--gold-hi)}
+.manual .ficha dd{margin:0}
+.manual .aviso{background:var(--surface-2);border:.125rem solid var(--gold);padding:.75rem 1rem;margin:1rem 0}
+.manual .aviso p{margin:0}
+.manual .aviso-atencion{border-color:var(--danger)}
+.manual .tabla{width:100%;border-collapse:collapse;margin:0 0 1.5rem;background:var(--surface)}
+.manual .tabla caption{text-align:left;font-weight:700;padding:0 0 .5rem}
+.manual .tabla th,.manual .tabla td{border:.0625rem solid var(--line);padding:.5rem;text-align:left;vertical-align:top}
+.manual .tabla th{background:var(--surface-2);color:var(--text)}
+.manual .pasos{list-style:none;counter-reset:paso;margin:0;padding:0}
+.manual .paso{counter-increment:paso;background:var(--surface);border:.125rem solid var(--line);padding:1rem;margin:0 0 1.5rem}
+.manual .paso h3::before{content:counter(paso);display:inline-flex;align-items:center;justify-content:center;min-width:2.5rem;height:2.5rem;margin-right:.75rem;border:.125rem solid var(--gold);border-radius:50%;color:var(--gold-hi);font-weight:700}
+.manual .comparte{break-inside:avoid;background:var(--surface-2);border:.125rem solid var(--gold);padding:1rem}
+.manual .celebra{font-size:1.25rem;line-height:1.5;color:var(--gold-hi)}
+.manual .referencia{margin:0 0 1rem}
+.manual .referencia img{display:block;max-width:100%;height:auto;border:.0625rem solid var(--line)}
+.manual .referencia figcaption{margin-top:.5rem;color:var(--muted)}
+.manual .paso figure{margin:0 0 1rem}
+.manual .paso img{display:block;max-width:100%;height:auto;border:.0625rem solid var(--line)}
+.manual .paso figcaption{margin-top:.5rem;color:var(--muted)}
+.manual .paso p{margin:0 0 .75rem}
+.manual .problema{margin:0 0 1.25rem}
+.manual :focus-visible{outline:.125rem solid var(--gold);outline-offset:.125rem}
+@media (min-width:48rem){
+.manual .ficha{grid-template-columns:repeat(2,minmax(0,1fr))}
+.manual .paso{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);column-gap:1.5rem;align-items:start}
+.manual .paso h3{grid-column:1/-1}
+.manual .paso figure{grid-column:1;margin:0}
+.manual .paso .paso-texto{grid-column:2}
+}
+@media (prefers-reduced-motion:reduce){.manual,.manual *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media print{
+.manual{max-width:none;padding:0}
+.manual .paso,.manual .aviso,.manual .tabla,.manual .problema,.manual .dato{break-inside:avoid}
+.manual h2,.manual h3{break-after:avoid}
+.manual .paso{display:block}
+.manual .paso img{max-height:14rem;width:auto}
+}
+.manual .pasos-a .paso h3::before{content:"A" counter(paso)}
+.manual .pasos-b .paso h3::before{content:"B" counter(paso)}
+.manual .pasos-c .paso h3::before{content:"C" counter(paso)}
+.manual .opcional-intro{background:var(--surface-2);border:.125rem dashed var(--gold);padding:.75rem 1rem;margin:0 0 1.5rem}
+.manual .opcional-intro p{margin:0}
+.manual .etiqueta{display:inline-block;font-size:.85rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--bg);background:var(--gold-hi);padding:.1rem .5rem;margin-left:.5rem;vertical-align:middle}
+.manual h3.subtitulo-opcional{margin-top:2rem}
+/* Titulares con la tipografía de la web; el texto, con la de cuerpo */
+.manual :is(h1,h2,h3){font-family:"Saira Condensed","Arial Narrow",sans-serif;letter-spacing:.02em}
+/* Barra de arriba de la página del manual: idioma y volver a Mi pedido */
+.manual-barra{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75rem;margin:0 auto 1rem;max-width:60rem;padding:0 1rem}
+.manual-estado{max-width:40rem;margin:2rem auto;padding:0 1rem}
+@media print{.site-header,.site-footer,.manual-barra{display:none}}

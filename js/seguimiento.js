@@ -1,6 +1,6 @@
 // Soy Resinator · "Mi pedido" (pedido.html)
 // El ID puede venir en la URL (?id=SR-XXXXXX). El email nunca: se escribe y se envía por POST.
-import * as C from './core.js?v=20261116c';
+import * as C from './core.js?v=20261117';
 
 const $ = id => document.getElementById(id);
 const RE_ID = /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/;
@@ -143,6 +143,16 @@ function pintar(r) {
     fila('seg.fecha', C.esc(f));
     if (r.servicio) fila('seg.servicio', C.esc(r.servicio));
     if (r.tracking) fila('seg.tracking', `<span class="mono">${C.esc(r.tracking)}</span>`);
+    // Manuales de montaje: el servidor solo los da cuando el pedido ya ha salido (enlace firmado que caduca).
+    const mans = (Array.isArray(r.manuales) ? r.manuales : []).filter(x => x && /^[a-z0-9-]{1,40}$/.test(x.m) && /^\d+$/.test(String(x.e)) && /^[0-9a-f]{32}$/.test(x.k));
+    if (mans.length) {
+      fila('seg.manual', mans.map(x => {
+        const href = `manual.html?id=${encodeURIComponent(r.id)}&m=${encodeURIComponent(x.m)}&e=${x.e}&k=${x.k}`;
+        const nombre = C.hasKey('manual.nombre.' + x.m) ? C.t('manual.nombre.' + x.m) : x.m;
+        return `<a class="btn btn-ghost" href="${C.esc(href)}" target="_blank" rel="noopener">${C.esc(C.t('manual.ver'))}</a>
+          <span class="help">${C.esc(nombre)}</span>`;
+      }).join('') + `<p class="help">${C.esc(C.t('manual.enlace_ayuda'))}</p>`);
+    }
   }
   $('r-datos').innerHTML = aviso + filas.join('') +
     (r.actualizado ? `<p class="help">${C.esc(C.t('seg.actualizado', { fecha: fecha(r.actualizado) }))}</p>` : '');
