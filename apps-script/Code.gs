@@ -53,7 +53,8 @@ const AJUSTES = {
  * { plantilla: "<article class=manual>…", textos: { es: {…}, en: {…}, … } }. Se sube a mano tras ejecutar prepararManuales(). */
 const MANUALES = {
   'heavy-bolt': ['BOLTER-PRIMARIS', 'BOLTER-PRIMARIS-SW', 'BOLTER-PRIMARIS-UM', 'ASA-RAIL-HB', 'CULATA-HB', 'TAMBOR-HB'],
-  'trench-las-rifle': ['RIFLE-KRIEG']
+  'trench-las-rifle': ['RIFLE-KRIEG'],
+  'trooper-las-rifle': ['RIFLE-CADIA']
 };
 // ===================================================================================
 
