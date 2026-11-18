@@ -54,7 +54,8 @@ const AJUSTES = {
 const MANUALES = {
   'heavy-bolt': ['BOLTER-PRIMARIS', 'BOLTER-PRIMARIS-SW', 'BOLTER-PRIMARIS-UM', 'ASA-RAIL-HB', 'CULATA-HB', 'TAMBOR-HB'],
   'trench-las-rifle': ['RIFLE-KRIEG'],
-  'trooper-las-rifle': ['RIFLE-CADIA']
+  'trooper-las-rifle': ['RIFLE-CADIA'],
+  'founders-bolt-pistol': ['PISTOLA-PF']
 };
 // ===================================================================================
 
