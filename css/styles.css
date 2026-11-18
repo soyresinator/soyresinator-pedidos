@@ -384,6 +384,11 @@ body.has-float .toast { bottom: 80px; }
 .extra-name { min-width: 0; }
 .extra-price { color: var(--muted); font-size: .9rem; white-space: nowrap; }
 .compat-line { margin: 0 0 6px; color: var(--gold-hi); font-weight: 600; font-size: .92rem; }
+/* Mi pedido: un manual por fila, nombre y botón juntos */
+.manual-lista { list-style: none; margin: 0 0 8px; padding: 0; border: 1px solid var(--line); border-radius: 6px; }
+.manual-lista li { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 12px; }
+.manual-lista li + li { border-top: 1px solid var(--line); }
+.manual-nombre { font-weight: 600; min-width: 0; }
 .stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 6px; }
 .step {
   width: 44px; height: 44px; border: 0; background: transparent; color: var(--gold);
