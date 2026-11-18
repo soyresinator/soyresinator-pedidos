@@ -51,6 +51,7 @@
 .manual .pasos-a .paso h3::before{content:"A" counter(paso)}
 .manual .pasos-b .paso h3::before{content:"B" counter(paso)}
 .manual .pasos-c .paso h3::before{content:"C" counter(paso)}
+.manual .pasos-s .paso h3::before{content:"S" counter(paso)}
 .manual .opcional-intro{background:var(--surface-2);border:.125rem dashed var(--gold);padding:.75rem 1rem;margin:0 0 1.5rem}
 .manual .opcional-intro p{margin:0}
 .manual .etiqueta{display:inline-block;font-size:.85rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--bg);background:var(--gold-hi);padding:.1rem .5rem;margin-left:.5rem;vertical-align:middle}

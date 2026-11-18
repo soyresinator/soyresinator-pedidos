@@ -56,7 +56,8 @@ const MANUALES = {
   'trench-las-rifle': ['RIFLE-KRIEG'],
   'trooper-las-rifle': ['RIFLE-CADIA'],
   'founders-bolt-pistol': ['PISTOLA-PF'],
-  'las-pistol': ['PISTOLA-LASER']
+  'las-pistol': ['PISTOLA-LASER'],
+  'heavybolt-pistol': ['PISTOLA-PRIMARIS']
 };
 // ===================================================================================
 
