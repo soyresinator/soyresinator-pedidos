@@ -194,6 +194,7 @@ function render() {
   box.querySelectorAll('img[data-ph]').forEach(img => {
     img.addEventListener('error', () => img.remove(), { once: true });
   });
+  box.querySelectorAll('.media').forEach(carrusel);
   box.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => add(b.dataset.add)));
 }
 
@@ -227,7 +228,15 @@ function card(p, tax) {
       <div class="media">
         ${p.especial ? `<span class="badge">${C.esc(C.t('cat.especial'))}</span>` : ''}
         <span class="ph-name" aria-hidden="true">${C.esc(p.nombre)}</span>
-        <img data-ph src="img/${p.id}-1.webp" alt="${C.esc(p.nombre)}" loading="lazy" decoding="async" width="1200" height="675">
+        <div class="slides" tabindex="-1">
+          <img data-ph src="img/${p.id}-1.webp" alt="${C.esc(p.nombre)}" loading="lazy" decoding="async" width="1200" height="675">
+          <a class="slide-ficha" href="img/${p.id}-2.webp" target="_blank" rel="noopener" aria-label="${C.esc(C.t('cat.ficha') + ': ' + p.nombre)}">
+            <img data-ficha src="img/${p.id}-2.webp" alt="${C.esc(C.t('cat.ficha') + ': ' + p.nombre)}" loading="lazy" decoding="async" width="1600" height="1257">
+          </a>
+        </div>
+        <button class="slide-btn prev" type="button" data-dir="-1" aria-label="${C.esc(C.t('cat.foto_ant'))}" hidden>‹</button>
+        <button class="slide-btn next" type="button" data-dir="1" aria-label="${C.esc(C.t('cat.foto_sig'))}" hidden>›</button>
+        <div class="slide-dots" aria-hidden="true" hidden><span class="on"></span><span></span></div>
       </div>
       <div class="card-body">
         <h4>${C.esc(p.nombre)}</h4>
@@ -249,6 +258,29 @@ function card(p, tax) {
         <div class="card-actions">${action}</div>
       </div>
     </article>`;
+}
+
+/** Carrusel de la tarjeta: foto (-1) y ficha de medidas (-2). Sin ficha, se queda la foto sola y sin controles. */
+function carrusel(media) {
+  const track = media.querySelector('.slides');
+  const ficha = media.querySelector('img[data-ficha]');
+  const btns = media.querySelectorAll('.slide-btn');
+  const dots = media.querySelector('.slide-dots');
+  if (!track || !ficha) return;
+  btns.forEach(b => { b.hidden = false; }); dots.hidden = false;
+  ficha.addEventListener('error', () => {
+    ficha.closest('.slide-ficha').remove(); btns.forEach(b => { b.hidden = true; }); dots.hidden = true;
+  }, { once: true });
+  const ir = i => track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' });
+  const actual = () => Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+  btns.forEach(b => b.addEventListener('click', () => {
+    const n = track.children.length;
+    ir((actual() + Number(b.dataset.dir) + n) % n);
+  }));
+  track.addEventListener('scroll', () => {
+    const i = actual();
+    dots.querySelectorAll('span').forEach((d, k) => d.classList.toggle('on', k === i));
+  }, { passive: true });
 }
 
 /** "★ 4,9 (12)" bajo el nombre, si el producto tiene reseñas publicadas; enlaza a la sección de reseñas. */

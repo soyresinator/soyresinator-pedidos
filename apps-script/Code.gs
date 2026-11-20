@@ -57,7 +57,10 @@ const MANUALES = {
   'trooper-las-rifle': ['RIFLE-CADIA'],
   'founders-bolt-pistol': ['PISTOLA-PF'],
   'las-pistol': ['PISTOLA-LASER'],
-  'heavybolt-pistol': ['PISTOLA-PRIMARIS']
+  'heavybolt-pistol': ['PISTOLA-PRIMARIS'],
+  'founders-bolt': ['BOLTER-PF', 'BOLTER-PF-SW', 'BOLTER-CAOS', 'BOLTER-PLAGUE'],
+  'pulse-carabine': ['RIFLE-TAU-CORTO'],
+  'pulse-long-shot': ['RIFLE-TAU-LARGO']
 };
 // ===================================================================================
 

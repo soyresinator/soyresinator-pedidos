@@ -59,6 +59,9 @@
   "cat.plazo": "Se paghi oggi, spedizione verso il {fecha}",
   "cat.extras": "Extra disponibili da {precio}",
   "cat.anadir": "Aggiungi all'ordine",
+ "cat.ficha": "Scheda delle misure",
+ "cat.foto_ant": "Immagine precedente",
+ "cat.foto_sig": "Immagine successiva",
   "cat.anadido": "Aggiunto al tuo ordine: {nombre}",
   "cat.cargando": "Caricamento della collezione…",
   "cat.error_carga": "Non siamo riusciti a caricare il catalogo. Ricarica la pagina o riprova tra un minuto.",
@@ -255,6 +258,7 @@
   "desc.heavy-bolt-ultrasea": "L'Heavy Bolt nella sua edizione d'oltremare: corpo blu scuro, dettagli dorati e parti metalliche grigio titanio. Replica da esposizione a grandezza naturale in kit di PLA, non funzionante, viteria inclusa e pronta da montare senza carteggiare né verniciare. Con caricatore da esposizione estraibile.",
   "desc.founders-bolt-wolf": "Il Founders Bolt nella sua edizione del branco, con palette fissa da edizione speciale e dettagli che la versione standard non ha. Replica da esposizione a grandezza naturale in kit di PLA, non funzionante, viteria inclusa e pronta da montare senza carteggiare né verniciare. Con caricatore da esposizione estraibile.",
   "desc.pulse-carabine": "Un design di un altro mondo, dalle linee pulite e dalle superfici lisce che contrastano con il resto del catalogo. Replica da esposizione a grandezza naturale in kit di PLA, non funzionante, nei colori che scegli e con viteria inclusa.",
+  "desc.pulse-long-shot": "La versione lunga dell'arma a impulsi: oltre un metro di canna dalle linee pulite, di serie in sabbia del deserto con dettagli grigio titanio e oro. Replica da esposizione a grandezza naturale in kit di PLA, non funzionante, nel colore principale che scegli e con viteria inclusa.",
   "pago.metodo": "Dopo aver confermato il tuo ordine, ti inviamo un link di pagamento sicuro. Paghi con carta. Nell'UE puoi pagare anche con bonifico bancario.",
   "aviso.nf": "Replica da esposizione non funzionante in plastica PLA. Non può sparare alcun proiettile e non ha alcun meccanismo funzionante. Non è un giocattolo: non adatta ai minori di 14 anni. Verifica le leggi locali e le regole degli eventi prima di portarla in pubblico.",
   "aviso.nf_corto": "Replica da esposizione non funzionante in PLA · Non è un giocattolo (14+)",
@@ -280,7 +284,7 @@
   "err.nota_obligatoria": "Hai scelto un Custom Badge: scrivi nelle note di quella replica quale badge vuoi.",
   "acc.titulo": "Accessori",
   "desc.plague-bolt": "Forgiata nella putrefazione: replica espositiva a grandezza naturale con carcassa corrosa, dettagli in rame e ornamenti della pestilenza. Kit in PLA non funzionante nei colori standard, viti incluse, da montare senza carteggiare né verniciare. Con caricatore espositivo rimovibile.",
-  "desc.display-stand": "Supporto espositivo per mostrare la tua replica in orizzontale. Scegli la versione nel tuo ordine: per la famiglia Bolt (Founders, Heavy, Renegade, Plague) o per i fucili laser (Trench, Trooper, Pulse Carabine). Kit in PLA nero con viti.",
+  "desc.display-stand": "Supporto espositivo per mostrare la tua replica in orizzontale. Scegli la versione nel tuo ordine: per la famiglia Bolt (Founders, Heavy, Renegade, Plague) o per i fucili laser (Trench, Trooper, Pulse Carabine, Pulse Long Shot). Kit in PLA nero con viti.",
   "inc.balas2": "2 proiettili da esposizione extra (6 in totale con i 4 della tua replica)",
   "acc.solo_heavy": "Solo per l'Heavy Bolt (standard, Wolf Version e Ultra-sea)",
   "desc.heavy-bolt-carry-handle": "Maniglia di trasporto avvitata con slitta Picatinny MIL-STD-1913 a misura reale, per montare le tue ottiche e accessori softair. Hai già il tuo Heavy Bolt? Ordinala da sola e montala: viti incluse, senza colla. Grigio titanio e nero.",
@@ -353,5 +357,8 @@
   "manual.nombre.trooper-las-rifle": "Trooper Las Rifle",
   "manual.nombre.founders-bolt-pistol": "Founders Bolt Pistol",
   "manual.nombre.las-pistol": "Las Pistol",
-  "manual.nombre.heavybolt-pistol": "Heavybolt Pistol"
+  "manual.nombre.heavybolt-pistol": "Heavybolt Pistol",
+  "manual.nombre.founders-bolt": "Founders Bolt, Renegade e Plague",
+  "manual.nombre.pulse-carabine": "Pulse Carabine",
+  "manual.nombre.pulse-long-shot": "Pulse Long Shot"
 }

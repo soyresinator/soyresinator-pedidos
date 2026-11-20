@@ -27,6 +27,7 @@
     { "id": "iron-crusade", "nombre": "Iron Crusade" },
     { "id": "ash-regiments", "nombre": "Ash Regiments" },
     { "id": "the-outer-dark", "nombre": "The Outer Dark" },
+    { "id": "the-far-horizon", "nombre": "The Far Horizon" },
     { "id": "accesorios", "nombre": "Accessories", "etiqueta": "acc.titulo" }
   ],
   "productos": [
@@ -385,7 +386,7 @@
       "nombre": "Pulse Carabine",
       "modelo": "tau-corto",
       "id_replica": "RIFLE-TAU-CORTO",
-      "coleccion": "the-outer-dark",
+      "coleccion": "the-far-horizon",
       "pvp": 160,
       "especial": false,
       "incluye": ["inc.kit"],
@@ -411,6 +412,31 @@
           "opciones": ["dorado", "gris-titan"],
           "placas": [1],
           "filamento_serie": "FIL-SILK-GOLD"
+        }
+      ]
+    },
+    {
+      "id": "pulse-long-shot",
+      "nombre": "Pulse Long Shot",
+      "modelo": "tau-largo",
+      "id_replica": "RIFLE-TAU-LARGO",
+      "coleccion": "the-far-horizon",
+      "pvp": 190,
+      "especial": false,
+      "incluye": ["inc.kit"],
+      "horas": 48.0,
+      "volumen": 3,
+      "extras": [{"tipo": "stand", "id_replica": "STAND", "pvp": 30, "horas": 6.97, "opcion_defecto": "las"}],
+      "caja": "larga",
+      "partes": [
+        {
+          "grupo": "principal",
+          "etiqueta": "parte.color_principal",
+          "gramos": 733,
+          "de_serie": "arena",
+          "opciones": "stock",
+          "placas": [3, 6],
+          "filamento_serie": "FIL-PLAM-DESERTTAN"
         }
       ]
     },

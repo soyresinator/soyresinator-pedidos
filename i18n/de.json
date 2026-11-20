@@ -59,6 +59,9 @@
   "cat.plazo": "Bei Zahlung heute Versand um den {fecha}",
   "cat.extras": "Extras ab {precio}",
   "cat.anadir": "Zur Bestellung",
+ "cat.ficha": "Maßblatt",
+ "cat.foto_ant": "Vorheriges Bild",
+ "cat.foto_sig": "Nächstes Bild",
   "cat.anadido": "{nombre} zur Bestellung hinzugefügt",
   "cat.cargando": "Kollektion wird geladen…",
   "cat.error_carga": "Wir konnten den Katalog nicht laden. Lade die Seite neu oder versuch es in einer Minute noch einmal.",
@@ -255,6 +258,7 @@
   "desc.heavy-bolt-ultrasea": "Der Heavy Bolt in seiner Ultra-sea-Edition: dunkelblauer Korpus, goldene Details und titangraue Metallteile. Ausstellungsreplik in Originalgröße als nicht funktionsfähiger PLA-Bausatz, Schrauben inklusive, bereit zum Zusammenbauen ohne Schleifen und Lackieren. Mit abnehmbarem Ausstellungsmagazin.",
   "desc.founders-bolt-wolf": "Der Founders Bolt in seiner Rudel-Edition, mit fester Sonderedition-Farbpalette und Details, die die Standardversion nicht hat. Ausstellungsreplik in Originalgröße als nicht funktionsfähiger PLA-Bausatz, Schrauben inklusive, bereit zum Zusammenbauen ohne Schleifen und Lackieren. Mit abnehmbarem Ausstellungsmagazin.",
   "desc.pulse-carabine": "Ein Design aus einer anderen Welt, mit klaren Linien und glatten Flächen, die sich vom Rest des Katalogs abheben. Ausstellungsreplik in Originalgröße als nicht funktionsfähiger PLA-Bausatz, in den Farben deiner Wahl und mit Schrauben.",
+  "desc.pulse-long-shot": "Die lange Version der Pulswaffe: über einen Meter Lauf mit klaren Linien, serienmäßig in Wüstensand mit Details in Titangrau und Gold. Ausstellungsreplik in Originalgröße als nicht funktionsfähiger PLA-Bausatz, in der Hauptfarbe deiner Wahl und mit Schrauben.",
   "pago.metodo": "Sobald wir deine Bestellung bestätigt haben, schicken wir dir einen sicheren Zahlungslink. Du zahlst mit Karte. In der EU kannst du auch per Banküberweisung zahlen.",
   "aviso.nf": "Nicht funktionsfähige Ausstellungsreplik aus PLA-Kunststoff. Sie kann keine Projektile abfeuern und hat keinen funktionierenden Mechanismus. Kein Spielzeug: nicht für Kinder unter 14 Jahren geeignet. Prüfe die örtlichen Gesetze und die Regeln von Veranstaltungen, bevor du sie in der Öffentlichkeit trägst.",
   "aviso.nf_corto": "Nicht funktionsfähige Ausstellungsreplik aus PLA · Kein Spielzeug (ab 14)",
@@ -280,7 +284,7 @@
   "err.nota_obligatoria": "Du hast ein Custom Badge gewählt: Schreib in die Notizen dieser Replik, welches Badge du möchtest.",
   "acc.titulo": "Zubehör",
   "desc.plague-bolt": "In Fäulnis geschmiedet: Displayreplik in Originalgröße mit korrodiertem Gehäuse, Kupferdetails und Seuchenornamenten. Nicht funktionsfähiger PLA-Bausatz in den Standardfarben, Schrauben inklusive, ohne Schleifen oder Lackieren zu montieren. Mit abnehmbarem Display-Magazin.",
-  "desc.display-stand": "Displayständer, um deine Replik waagerecht zu präsentieren. Wähle die Version in deiner Bestellung: für die Bolt-Familie (Founders, Heavy, Renegade, Plague) oder für Lasergewehre (Trench, Trooper, Pulse Carabine). Schwarzer PLA-Bausatz mit Schrauben.",
+  "desc.display-stand": "Displayständer, um deine Replik waagerecht zu präsentieren. Wähle die Version in deiner Bestellung: für die Bolt-Familie (Founders, Heavy, Renegade, Plague) oder für Lasergewehre (Trench, Trooper, Pulse Carabine, Pulse Long Shot). Schwarzer PLA-Bausatz mit Schrauben.",
   "inc.balas2": "2 zusätzliche Ausstellungspatronen (6 insgesamt mit den 4 deiner Replik)",
   "acc.solo_heavy": "Nur für den Heavy Bolt (Standard, Wolf Version und Ultra-sea)",
   "desc.heavy-bolt-carry-handle": "Angeschraubter Tragegriff mit Picatinny-Schiene nach MIL-STD-1913 in Originalmaßen. Montiere deine eigenen Airsoft-Optiken und Zubehörteile. Du hast schon einen Heavy Bolt? Bestell ihn einzeln und rüste nach: Schrauben inklusive, ohne Kleber. Titangrau und Schwarz.",
@@ -353,5 +357,8 @@
   "manual.nombre.trooper-las-rifle": "Trooper Las Rifle",
   "manual.nombre.founders-bolt-pistol": "Founders Bolt Pistol",
   "manual.nombre.las-pistol": "Las Pistol",
-  "manual.nombre.heavybolt-pistol": "Heavybolt Pistol"
+  "manual.nombre.heavybolt-pistol": "Heavybolt Pistol",
+  "manual.nombre.founders-bolt": "Founders Bolt, Renegade und Plague",
+  "manual.nombre.pulse-carabine": "Pulse Carabine",
+  "manual.nombre.pulse-long-shot": "Pulse Long Shot"
 }

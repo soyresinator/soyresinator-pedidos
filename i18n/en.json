@@ -59,6 +59,9 @@
   "cat.plazo": "Pay today and it ships around {fecha}",
   "cat.extras": "Extras available from {precio}",
   "cat.anadir": "Add to order",
+ "cat.ficha": "Dimensions sheet",
+ "cat.foto_ant": "Previous image",
+ "cat.foto_sig": "Next image",
   "cat.anadido": "{nombre} added to your order",
   "cat.cargando": "Loading the collection…",
   "cat.error_carga": "We couldn't load the catalog. Refresh the page or try again in a minute.",
@@ -255,6 +258,7 @@
   "desc.heavy-bolt-ultrasea": "The Heavy Bolt in its ultra-sea edition: dark blue body, gold details and titan grey metalwork. Full-size display replica as a non-functional PLA kit, screws included, ready to assemble without sanding or painting. With a removable display magazine.",
   "desc.founders-bolt-wolf": "The Founders Bolt in its pack edition, with a fixed special-edition palette and details the standard version doesn't have. Full-size display replica as a non-functional PLA kit, screws included, ready to assemble without sanding or painting. With a removable display magazine.",
   "desc.pulse-carabine": "Otherworldly design, with clean lines and smooth surfaces that contrast with the rest of the catalog. Full-size display replica as a non-functional PLA kit, in the colors you choose and with screws included.",
+  "desc.pulse-long-shot": "The long version of the pulse weapon: over a metre of clean-lined barrel, in desert tan as standard with titan grey and gold details. Full-size display replica as a non-functional PLA kit, in the main color you choose and with screws included.",
   "pago.metodo": "After we confirm your order, we send you a secure payment link. Pay by card. EU customers can also pay by bank transfer.",
   "aviso.nf": "Non-functional display prop made of PLA plastic. It cannot fire any projectile and has no working mechanism. Not a toy: not intended for children under 14. Check local laws and event rules before carrying it in public.",
   "aviso.nf_corto": "Non-functional PLA display prop · Not a toy (14+)",
@@ -280,7 +284,7 @@
   "err.nota_obligatoria": "You chose a Custom Badge: tell us in that replica's notes which badge you want.",
   "acc.titulo": "Accessories",
   "desc.plague-bolt": "Forged in rot: a full-size display replica with a corroded casing, copper details and plague ornaments. Non-functional PLA kit in its standard colors, screws included, to assemble with no sanding or painting. Removable display magazine.",
-  "desc.display-stand": "Display stand to show off your replica horizontally. Choose the version in your order: for the Bolt family (Founders, Heavy, Renegade, Plague) or for las rifles (Trench, Trooper, Pulse Carabine). Black PLA kit with screws.",
+  "desc.display-stand": "Display stand to show off your replica horizontally. Choose the version in your order: for the Bolt family (Founders, Heavy, Renegade, Plague) or for las rifles (Trench, Trooper, Pulse Carabine, Pulse Long Shot). Black PLA kit with screws.",
   "inc.balas2": "2 extra display rounds (6 in total with the 4 from your replica)",
   "acc.solo_heavy": "Heavy Bolt only (standard, Wolf Version and Ultra-sea)",
   "desc.heavy-bolt-carry-handle": "Bolt-on carry handle with a full-spec MIL-STD-1913 Picatinny rail. Mount your own airsoft optics and accessories. Already own a Heavy Bolt? Order it on its own and fit it yourself: screws included, no glue. Titan grey and black.",
@@ -353,5 +357,8 @@
   "manual.nombre.trooper-las-rifle": "Trooper Las Rifle",
   "manual.nombre.founders-bolt-pistol": "Founders Bolt Pistol",
   "manual.nombre.las-pistol": "Las Pistol",
-  "manual.nombre.heavybolt-pistol": "Heavybolt Pistol"
+  "manual.nombre.heavybolt-pistol": "Heavybolt Pistol",
+  "manual.nombre.founders-bolt": "Founders Bolt, Renegade and Plague",
+  "manual.nombre.pulse-carabine": "Pulse Carabine",
+  "manual.nombre.pulse-long-shot": "Pulse Long Shot"
 }
