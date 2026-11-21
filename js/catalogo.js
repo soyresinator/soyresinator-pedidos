@@ -1,7 +1,7 @@
 // Soy Resinator · catálogo (index.html). Arranca también la vista de pedido.
-import * as C from './core.js?v=20261121b';
-import * as P from './carrito.js?v=20261121b';
-import { plazoDias } from './calc.js?v=20261121b';
+import * as C from './core.js?v=20261121c';
+import * as P from './carrito.js?v=20261121c';
+import { plazoDias } from './calc.js?v=20261121c';
 
 const state = {
   cfg: null, cat: null, ship: null, serie: [],
@@ -231,13 +231,14 @@ function card(p, tax) {
         <span class="ph-name" aria-hidden="true">${C.esc(p.nombre)}</span>
         <div class="slides" tabindex="-1">
           <img data-ph src="img/${p.id}-1.webp" alt="${C.esc(p.nombre)}" loading="lazy" decoding="async" width="1200" height="675">
-          <a class="slide-ficha" href="img/${p.id}-2.webp" target="_blank" rel="noopener" aria-label="${C.esc(C.t('cat.ficha') + ': ' + p.nombre)}">
-            <img data-ficha src="img/${p.id}-2.webp" alt="${C.esc(C.t('cat.ficha') + ': ' + p.nombre)}" loading="lazy" decoding="async" width="1600" height="1257">
+          ${(p.fotos_extra || []).map(f => `<img src="img/${C.esc(f)}" alt="${C.esc(p.nombre)}" loading="lazy" decoding="async" width="1200" height="675">`).join('')}
+          <a class="slide-ficha" href="img/${p.id}-2.webp?v=169" target="_blank" rel="noopener" aria-label="${C.esc(C.t('cat.ficha') + ': ' + p.nombre)}">
+            <img data-ficha src="img/${p.id}-2.webp?v=169" alt="${C.esc(C.t('cat.ficha') + ': ' + p.nombre)}" loading="lazy" decoding="async" width="1600" height="900">
           </a>
         </div>
         <button class="slide-btn prev" type="button" data-dir="-1" aria-label="${C.esc(C.t('cat.foto_ant'))}" hidden>‹</button>
         <button class="slide-btn next" type="button" data-dir="1" aria-label="${C.esc(C.t('cat.foto_sig'))}" hidden>›</button>
-        <div class="slide-dots" aria-hidden="true" hidden><span class="on"></span><span></span></div>
+        <div class="slide-dots" aria-hidden="true" hidden><span class="on"></span>${'<span></span>'.repeat(1 + (p.fotos_extra || []).length)}</div>
       </div>
       <div class="card-body">
         <h4>${C.esc(p.nombre)}</h4>
@@ -261,7 +262,8 @@ function card(p, tax) {
     </article>`;
 }
 
-/** Carrusel de la tarjeta: foto (-1) y ficha de medidas (-2). Sin ficha, se queda la foto sola y sin controles. */
+/** Carrusel de la tarjeta: foto (-1), fotos extra del catálogo (fotos_extra) y ficha de medidas (-2).
+ *  Si falta la ficha, se quita; con una sola imagen no hay controles. */
 function carrusel(media) {
   const track = media.querySelector('.slides');
   const ficha = media.querySelector('img[data-ficha]');
@@ -269,8 +271,10 @@ function carrusel(media) {
   const dots = media.querySelector('.slide-dots');
   if (!track || !ficha) return;
   btns.forEach(b => { b.hidden = false; }); dots.hidden = false;
+  const fichaSlide = ficha.closest('.slide-ficha');
   ficha.addEventListener('error', () => {
-    ficha.closest('.slide-ficha').remove(); btns.forEach(b => { b.hidden = true; }); dots.hidden = true;
+    fichaSlide.remove(); if (dots.lastElementChild) dots.lastElementChild.remove();
+    if (track.children.length < 2) { btns.forEach(b => { b.hidden = true; }); dots.hidden = true; }
   }, { once: true });
   const ir = i => track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' });
   const actual = () => Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
@@ -283,9 +287,9 @@ function carrusel(media) {
   track.addEventListener('scroll', () => {
     const i = actual();
     dots.querySelectorAll('span').forEach((d, k) => d.classList.toggle('on', k === i));
-    if (i === 1 && !fichaVista) { fichaVista = true; C.ev('ficha', { pid }); }
+    if (!fichaVista && track.children[i] === fichaSlide) { fichaVista = true; C.ev('ficha', { pid }); }
   }, { passive: true });
-  ficha.closest('.slide-ficha').addEventListener('click', () => C.ev('ficha_abrir', { pid }));
+  fichaSlide.addEventListener('click', () => C.ev('ficha_abrir', { pid }));
 }
 
 /** "★ 4,9 (12)" bajo el nombre, si el producto tiene reseñas publicadas; enlaza a la sección de reseñas. */

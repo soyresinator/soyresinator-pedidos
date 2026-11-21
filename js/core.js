@@ -1,6 +1,6 @@
 // Soy Resinator · utilidades compartidas por todas las páginas.
 // Sin framework ni compilación: módulos ES servidos tal cual por GitHub Pages.
-import { initAnalitica, ev } from './analitica.js?v=20261121b';
+import { initAnalitica, ev } from './analitica.js?v=20261121c';
 export { ev };   // las demás páginas anotan eventos con C.ev(tipo, datos)
 
 export const LANGS = ['en', 'es', 'pt', 'de', 'fr', 'it'];

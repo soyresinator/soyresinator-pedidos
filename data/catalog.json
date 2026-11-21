@@ -97,6 +97,7 @@
     {
       "id": "heavy-bolt-wolf",
       "nombre": "Heavy Bolt Wolf Version",
+      "fotos_extra": ["heavy-bolt-wolf-3.webp"],
       "modelo": "bolter-primaris-sw",
       "id_replica": "BOLTER-PRIMARIS-SW",
       "coleccion": "iron-crusade",
