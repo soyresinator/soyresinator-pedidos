@@ -1,7 +1,7 @@
 // Soy Resinator · catálogo (index.html). Arranca también la vista de pedido.
-import * as C from './core.js?v=20261121';
-import * as P from './carrito.js?v=20261121';
-import { plazoDias } from './calc.js?v=20261121';
+import * as C from './core.js?v=20261121b';
+import * as P from './carrito.js?v=20261121b';
+import { plazoDias } from './calc.js?v=20261121b';
 
 const state = {
   cfg: null, cat: null, ship: null, serie: [],
@@ -179,7 +179,7 @@ function paintFloat() {
 function render() {
   const box = document.getElementById('colecciones');
   box.removeAttribute('aria-busy');
-  document.getElementById('cerrado').hidden = state.abiertos;
+  C.avisoForja('cerrado', !state.abiertos);
 
   const tax = taxLabel();
   box.innerHTML = state.cat.colecciones.map(col => {

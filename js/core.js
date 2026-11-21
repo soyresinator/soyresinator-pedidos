@@ -1,6 +1,6 @@
 // Soy Resinator · utilidades compartidas por todas las páginas.
 // Sin framework ni compilación: módulos ES servidos tal cual por GitHub Pages.
-import { initAnalitica, ev } from './analitica.js?v=20261121';
+import { initAnalitica, ev } from './analitica.js?v=20261121b';
 export { ev };   // las demás páginas anotan eventos con C.ev(tipo, datos)
 
 export const LANGS = ['en', 'es', 'pt', 'de', 'fr', 'it'];
@@ -68,6 +68,29 @@ export function t(key, vars) {
   let s = dict[key] ?? dictEn[key] ?? key;
   if (vars) s = s.replace(/\{(\w+)\}/g, (m, n) => (vars[n] !== undefined ? vars[n] : m));
   return s;
+}
+
+let igCuenta = '';
+/** Aviso «La forja está llena» (#cerrado, #ped-cerrado). Solo existe mientras los pedidos están cerrados:
+ *  si el texto estuviera en el HTML, aunque oculto, Google (y su IA) lo leería y diría que no aceptamos pedidos. */
+export function avisoForja(id, cerrado) {
+  const box = document.getElementById(id);
+  if (!box) return;
+  box.hidden = !cerrado;
+  if (!cerrado) { box.replaceChildren(); return; }
+  if (box.childElementCount) return;
+  const h = document.createElement('h3'); h.dataset.i18n = 'cerrado.titulo';
+  const p = document.createElement('p'); p.dataset.i18n = 'cerrado.texto';
+  box.append(h, p);
+  if (igCuenta) {
+    const a = document.createElement('a');
+    a.className = 'btn btn-ghost contact-ig-btn';
+    a.href = 'https://www.instagram.com/' + encodeURIComponent(igCuenta) + '/';
+    a.rel = 'noopener'; a.target = '_blank';
+    a.textContent = t('cerrado.instagram', { ig: igCuenta });
+    box.append(a);
+  }
+  applyI18n(box);
 }
 
 /** Pinta los textos: data-i18n="clave" (texto) y data-i18n-attr="aria-label:clave;title:clave2". */
@@ -386,6 +409,7 @@ export function setupChrome(cfg) {
 
   // Contacto
   const ig = cfg.instagram;
+  igCuenta = ig || '';
   document.querySelectorAll('.contact-email').forEach(a => {
     a.href = 'mailto:' + cfg.email;
     a.textContent = cfg.email;

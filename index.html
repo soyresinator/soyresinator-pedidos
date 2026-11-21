@@ -23,7 +23,7 @@
   <link rel="icon" type="image/png" href="/img/logo/favicon-48.png" sizes="48x48">
   <link rel="icon" type="image/png" href="/img/logo/favicon-192.png" sizes="192x192">
   <link rel="apple-touch-icon" href="/img/logo/apple-touch-icon.png">
-  <link rel="stylesheet" href="css/fonts.css?v=20261121">
+  <link rel="stylesheet" href="css/fonts.css?v=20261121b">
   <!-- jsonld -->
   <script type="application/ld+json">
 {
@@ -2407,8 +2407,8 @@
 }
   </script>
   <!-- /jsonld -->
-  <link rel="stylesheet" href="css/styles.css?v=20261121">
-  <script type="module" src="js/catalogo.js?v=20261121"></script>
+  <link rel="stylesheet" href="css/styles.css?v=20261121b">
+  <script type="module" src="js/catalogo.js?v=20261121b"></script>
 </head>
 <body data-meta="index">
   <a class="skip" href="#main" data-i18n="nav.saltar">Skip to content</a>
@@ -2499,11 +2499,8 @@
       </div>
       <p id="precio-nota" class="price-note"></p>
 
-      <div id="cerrado" class="notice notice-forge" hidden>
-        <h3 data-i18n="cerrado.titulo">The forge is full</h3>
-        <p data-i18n="cerrado.texto">Right now the forge is full. Follow us on Instagram to know when we open the next window.</p>
-        <a class="btn btn-ghost contact-ig-btn" href="#" rel="noopener" target="_blank"></a>
-      </div>
+      <!-- Aviso de pedidos cerrados: lo rellena el JS (core.js avisoForja) solo cuando CONFIG lo pide. Sin texto aquí: aunque esté oculto, Google lo lee -->
+      <div id="cerrado" class="notice notice-forge" hidden></div>
 
       <div id="colecciones" aria-busy="true">
         <!-- prerender:catalogo -->
@@ -2570,11 +2567,7 @@
           <a href="#catalogo" class="btn btn-ghost" data-i18n="ped.seguir">Back to the collection</a>
         </div>
 
-        <div id="ped-cerrado" class="notice notice-forge" hidden>
-          <h3 data-i18n="cerrado.titulo">The forge is full</h3>
-          <p data-i18n="cerrado.texto">Right now the forge is full. Follow us on Instagram to know when we open the next window.</p>
-          <a class="btn btn-ghost contact-ig-btn" href="#" rel="noopener" target="_blank"></a>
-        </div>
+        <div id="ped-cerrado" class="notice notice-forge" hidden></div>
         <div id="ped-avisos" class="notice notice-warn" role="status" hidden></div>
 
         <div id="items"></div>

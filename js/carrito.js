@@ -1,7 +1,7 @@
 // Soy Resinator · vista de pedido (#pedido en index.html)
 // Tarjeta por unidad, datos y envío, pago, resumen, envío al Apps Script y confirmación.
-import * as C from './core.js?v=20261121';
-import { totales, plazoDias, extrasDe, conEnvio, opcionExtra } from './calc.js?v=20261121';
+import * as C from './core.js?v=20261121b';
+import { totales, plazoDias, extrasDe, conEnvio, opcionExtra } from './calc.js?v=20261121b';
 
 const $ = id => document.getElementById(id);
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -59,7 +59,7 @@ function refresh() {
   renderItems();
   renderPago();
   renderResumen();
-  $('ped-cerrado').hidden = S.abiertos;
+  C.avisoForja('ped-cerrado', !S.abiertos);
   $('btn-enviar').disabled = !S.abiertos;
 }
 
@@ -786,7 +786,7 @@ async function enviar(e) {
   C.ev('pedido_error', { code: String(code).slice(0, 30) });
   if (code === 'pedidos_cerrados') {
     S.abiertos = false;
-    $('ped-cerrado').hidden = false;
+    C.avisoForja('ped-cerrado', true);
     btn.disabled = true;
   }
   if (code === 'color_no_disponible') {

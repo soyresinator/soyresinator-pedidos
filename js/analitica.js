@@ -7,7 +7,7 @@
 // No cuenta: localhost (salvo ?analitica=prueba), navegadores con «No rastrear» o GPC, y quien abra la web con
 // ?analitica=off (lo recuerda en este navegador; ?analitica=on lo deshace).
 let api = '', sesion = '', cola = [], t0 = 0, enviada = false, prueba = false, activo = false;
-let visibleMs = 0, desde = 0, maxScroll = 0, pedidoHecho = false, helpers = {};
+let visibleMs = 0, desde = 0, maxScroll = 0, pedidoHecho = false, helpers = {}, salidaHecha = false;
 const MAX_COLA = 20;
 
 function rnd() { const a = new Uint8Array(9); crypto.getRandomValues(a); return [...a].map(x => (x % 36).toString(36)).join(''); }
@@ -51,7 +51,7 @@ export function initAnalitica(cfg, h) {
   addEventListener('scroll', medirScroll, { passive: true });
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') { pausar(); salida(); }
-    else { desde = Date.now(); }
+    else { desde = Date.now(); salidaHecha = false; }
   });
   addEventListener('pagehide', () => { pausar(); salida(); });
   addEventListener('hashchange', () => ev('vista', { pag: pagina() }));
@@ -83,7 +83,8 @@ function medirScroll() {
 }
 /** Al irse (o al pasar a otra pestaña): tiempo visible, scroll y lo que había en el carrito. Una vez por cambio de visibilidad. */
 function salida() {
-  if (!activo) return;
+  if (!activo || salidaHecha) return;   // visibilitychange y pagehide llegan juntos al cerrar
+  salidaHecha = true;
   const d = { seg: Math.round(visibleMs / 1000), scroll: maxScroll };
   try {
     const c = helpers.cart ? helpers.cart() : null;
