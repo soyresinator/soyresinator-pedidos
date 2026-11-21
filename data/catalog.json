@@ -121,7 +121,7 @@
           "etiqueta": "parte.color_principal",
           "gramos": 754,
           "de_serie": "amarillo",
-          "opciones": ["amarillo", "azul-marino"],
+          "opciones": ["amarillo", "azul-apagado", "azul-marino"],
           "placas": [8, 9],
           "filamento_serie": "FIL-PLAM-LEMONYELLOW"
         },
