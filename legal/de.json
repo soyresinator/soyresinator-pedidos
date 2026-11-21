@@ -70,7 +70,8 @@
         "h": "Cookies und Speicherung",
         "p": [
           "Diese Website verwendet keine Cookies. Sie speichert in deinem Browser (localStorage) nur die Bestellung, die du gerade zusammenstellst, und die gewählte Sprache, damit nichts verloren geht, wenn du zurückkommst. Du kannst beides jederzeit in den Browsereinstellungen löschen.",
-          "Um zu wissen, wie viele Besuche wir haben, nutzen wir Cloudflare Web Analytics von Cloudflare, Inc. Es verwendet keine Cookies, speichert nichts in deinem Browser und identifiziert dich nicht: Wir sehen nur Gesamtzahlen wie Seitenaufrufe, Herkunftsland oder Gerätetyp."
+          "Um zu wissen, wie viele Besuche wir haben, nutzen wir Cloudflare Web Analytics von Cloudflare, Inc. Es verwendet keine Cookies, speichert nichts in deinem Browser und identifiziert dich nicht: Wir sehen nur Gesamtzahlen wie Seitenaufrufe, Herkunftsland oder Gerätetyp.",
+          "Außerdem erfasst die Website selbst anonym, wie sie genutzt wird, damit wir sie verbessern können: welche Seiten, Abschnitte und Repliken angesehen werden, was zur Bestellung hinzugefügt wird und ob sie abgeschlossen wird, von welcher Website oder Kampagne der Besuch kommt, die Sprache, die Art des Geräts und die Zeitzone des Browsers. Sie verwendet keine Cookies und speichert nichts in deinem Browser, sie erfasst weder deine IP-Adresse noch deine Kontaktdaten noch das, was du in Formulare eingibst, und sie erkennt dich nicht von einem Besuch zum nächsten wieder. Diese Daten werden in Google Workspace (Google Ireland Ltd.) gespeichert und nach 12 Monaten gelöscht. Wenn in deinem Browser „Do Not Track“ oder Global Privacy Control aktiviert ist, wird nichts erfasst."
         ]
       }
     ]

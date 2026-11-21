@@ -70,7 +70,8 @@
         "h": "Cookies et stockage",
         "p": [
           "Ce site n'utilise pas de cookies. Il enregistre seulement dans ton navigateur (localStorage) la commande en cours de préparation et la langue choisie, pour que tu ne les perdes pas en revenant. Tu peux les effacer à tout moment depuis les réglages de ton navigateur.",
-          "Pour savoir combien de visites nous recevons, nous utilisons Cloudflare Web Analytics, de Cloudflare, Inc. Il n'utilise pas de cookies, n'enregistre rien dans ton navigateur et ne t'identifie pas : il nous montre seulement des chiffres globaux, comme les pages vues, le pays d'origine ou le type d'appareil."
+          "Pour savoir combien de visites nous recevons, nous utilisons Cloudflare Web Analytics, de Cloudflare, Inc. Il n'utilise pas de cookies, n'enregistre rien dans ton navigateur et ne t'identifie pas : il nous montre seulement des chiffres globaux, comme les pages vues, le pays d'origine ou le type d'appareil.",
+          "En outre, le site lui-même enregistre de façon anonyme la manière dont il est utilisé, afin de l'améliorer : quelles pages, sections et répliques sont vues, ce qui est ajouté à la commande et si elle est finalisée, de quel site ou de quelle campagne provient la visite, la langue, le type d'appareil et le fuseau horaire du navigateur. Il n'utilise pas de cookies et n'enregistre rien dans ton navigateur, il ne collecte ni ton adresse IP, ni tes coordonnées, ni ce que tu écris dans les formulaires, et il ne te reconnaît pas d'une visite à l'autre. Ces données sont conservées dans Google Workspace (Google Ireland Ltd.) et nous les supprimons au bout de 12 mois. Si ton navigateur a activé « Ne pas me pister » ou Global Privacy Control, rien n'est enregistré."
         ]
       }
     ]

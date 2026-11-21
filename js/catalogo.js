@@ -1,7 +1,7 @@
 // Soy Resinator · catálogo (index.html). Arranca también la vista de pedido.
-import * as C from './core.js?v=20261118';
-import * as P from './carrito.js?v=20261118';
-import { plazoDias } from './calc.js?v=20261118';
+import * as C from './core.js?v=20261121';
+import * as P from './carrito.js?v=20261121';
+import { plazoDias } from './calc.js?v=20261121';
 
 const state = {
   cfg: null, cat: null, ship: null, serie: [],
@@ -136,7 +136,8 @@ function setupCountry() {
       C.saveCart(cart);
     }
   }
-  picker = C.countryPicker(document.getElementById('pais'), state.ship.paises, () => C.loadCart().pais, P.setPais);
+  picker = C.countryPicker(document.getElementById('pais'), state.ship.paises, () => C.loadCart().pais,
+    code => { C.ev('pais', { pais: code, donde: 'catalogo' }); P.setPais(code); });
   paintPriceNote();
 }
 
@@ -273,6 +274,8 @@ function carrusel(media) {
   }, { once: true });
   const ir = i => track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' });
   const actual = () => Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+  const pid = (media.closest('article.card') || { id: 'p-' }).id.slice(2);
+  let fichaVista = false;
   btns.forEach(b => b.addEventListener('click', () => {
     const n = track.children.length;
     ir((actual() + Number(b.dataset.dir) + n) % n);
@@ -280,7 +283,9 @@ function carrusel(media) {
   track.addEventListener('scroll', () => {
     const i = actual();
     dots.querySelectorAll('span').forEach((d, k) => d.classList.toggle('on', k === i));
+    if (i === 1 && !fichaVista) { fichaVista = true; C.ev('ficha', { pid }); }
   }, { passive: true });
+  ficha.closest('.slide-ficha').addEventListener('click', () => C.ev('ficha_abrir', { pid }));
 }
 
 /** "★ 4,9 (12)" bajo el nombre, si el producto tiene reseñas publicadas; enlaza a la sección de reseñas. */
@@ -298,6 +303,7 @@ function add(pid) {
   const cart = C.loadCart();
   cart.items.push(C.newItem(prod));
   C.saveCart(cart);
+  C.ev('carrito', { pid, pvp: prod.pvp, n: cart.items.length });
   C.toast(C.t('cat.anadido', { nombre: prod.nombre }));
 }
 

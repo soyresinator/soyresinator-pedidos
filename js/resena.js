@@ -1,7 +1,7 @@
 // Soy Resinator · reseña de un pedido entregado (resena.html?id=SR-XXXXXX&k=…&lang=xx).
 // El enlace llega en el correo que manda la tarea unos días después de la entrega. El servidor comprueba
 // que id + k son de ese pedido y que está Entregado; una reseña por pedido. Se publica cuando la aprobamos.
-import * as C from './core.js?v=20261118';
+import * as C from './core.js?v=20261121';
 
 const $ = id => document.getElementById(id);
 const RE_ID = /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/;

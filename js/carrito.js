@@ -1,7 +1,7 @@
 // Soy Resinator · vista de pedido (#pedido en index.html)
 // Tarjeta por unidad, datos y envío, pago, resumen, envío al Apps Script y confirmación.
-import * as C from './core.js?v=20261118';
-import { totales, plazoDias, extrasDe, conEnvio, opcionExtra } from './calc.js?v=20261118';
+import * as C from './core.js?v=20261121';
+import { totales, plazoDias, extrasDe, conEnvio, opcionExtra } from './calc.js?v=20261121';
 
 const $ = id => document.getElementById(id);
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -42,6 +42,8 @@ function route() {
     $('confirmacion').hidden = true;
     $('ped-main').hidden = false;
     refresh();
+    const cart = C.loadCart();
+    C.ev('ver_pedido', { n: cart.items.length, pids: cart.items.map(i => i.pid).join(',').slice(0, 200), total: totalActual() });
     window.scrollTo(0, 0);
     $('pedido-titulo').focus({ preventScroll: true });
   } else if (location.hash) {
@@ -68,6 +70,10 @@ const paisBase = code => S.ship.paises.find(p => p.code === code) || null;
 /** País con el servicio de envío elegido (Standard o, donde exista, la alternativa Premium). */
 const paisDe = code => conEnvio(paisBase(code), C.loadCart().envio);
 const paisActual = () => paisDe(C.loadCart().pais);
+/** Total del carrito con el país elegido (para la analítica); null si no se puede calcular. */
+function totalActual() {
+  try { const c = C.loadCart(); return c.items.length ? Math.round(totales(c.items, S.cat, paisActual(), S.ship).total) : 0; } catch (e) { return null; }
+}
 
 /** Colores para una parte de una unidad: los disponibles y, si el script no responde, también el ya guardado. */
 function coloresDe(part, it) {
@@ -520,6 +526,7 @@ function wire() {
       it.snap = it.snap || {};
       it.snap[grupo] = { hex: c.hex, nombres: c.nombres };
       C.saveCart(cart);
+      C.ev('color', { pid: it.pid, grupo, color: c.id });
       const out = $(`ch-${uid}-${grupo}`);
       if (out) out.textContent = chosenText(c);
       $('ped-avisos').hidden = true;
@@ -563,6 +570,7 @@ function wire() {
       const n = Math.min(Math.max((Number(it.extras[tipo]) || 0) + Number(b.dataset.d), 0), max);
       if (n) it.extras[tipo] = n; else delete it.extras[tipo];
       C.saveCart(cart);
+      C.ev('extra', { pid: it.pid, tipo, n });
       const focusSel = `button[data-act="extra"][data-uid="${it.uid}"][data-tipo="${tipo}"][data-d="${b.dataset.d}"]`;
       renderItems();
       renderResumen();
@@ -573,6 +581,7 @@ function wire() {
       return;
     }
     const nombre = prodDe(cart.items[idx].pid).nombre;
+    C.ev(b.dataset.act === 'dup' ? 'duplicar' : 'quitar', { pid: cart.items[idx].pid });
     let focusId = null;
     if (b.dataset.act === 'dup') {
       const copia = JSON.parse(JSON.stringify(cart.items[idx]));
@@ -600,6 +609,7 @@ function wire() {
     const cart = C.loadCart();
     cart.envio = e.target.value === 'premium' ? 'premium' : 'standard';
     C.saveCart(cart);
+    C.ev('envio', { tipo: cart.envio });
     $('resumen').innerHTML = resumenHtml(cart); // sin repintar las opciones, para no perder el foco
   });
 
@@ -614,6 +624,8 @@ function wire() {
   $('ped-form').addEventListener('input', e => clearErr(e.target));
   $('ped-form').addEventListener('change', e => clearErr(e.target));
   $('ped-form').addEventListener('submit', enviar);
+  // Analítica: primera vez que tocan el formulario de datos (sin anotar nada de lo que escriben)
+  $('ped-form').addEventListener('focusin', () => C.ev('form_inicio', { n: C.loadCart().items.length }), { once: true });
 
   $('btn-copiar-resumen').addEventListener('click', async () => {
     flushNotas();
@@ -729,7 +741,7 @@ async function enviar(e) {
   }
   const errs = validarFormulario();
   mostrarErrores(errs);
-  if (errs.length) return;
+  if (errs.length) { C.ev('form_error', { campos: errs.map(x => x.id.replace(/^f-/, '')).join(',') }); return; }
   if (!S.abiertos) { fallo('pedidos_cerrados'); return; }
 
   const body = payload();
@@ -765,10 +777,13 @@ async function enviar(e) {
 
   // Nunca mostramos un ID que no venga del servidor.
   if (res && res.ok === true && typeof res.id === 'string' && RE_ID.test(res.id)) {
+    C.ev('pedido', { n: body.items.length, pids: body.items.map(i => i.pid).join(',').slice(0, 200), total: Math.round(body.total_cliente || 0),
+      pais: body.pais, envio: body.envio, modo: body.modo_pago });
     confirmar(res, body);
     return;
   }
   const code = res && typeof res.error === 'string' ? res.error : 'servidor';
+  C.ev('pedido_error', { code: String(code).slice(0, 30) });
   if (code === 'pedidos_cerrados') {
     S.abiertos = false;
     $('ped-cerrado').hidden = false;

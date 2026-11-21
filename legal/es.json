@@ -70,7 +70,8 @@
         "h": "Cookies y almacenamiento",
         "p": [
           "Esta web no usa cookies. Solo guarda en tu navegador (localStorage) el pedido que estás preparando y el idioma elegido, para que no los pierdas al volver. Puedes borrarlos cuando quieras desde los ajustes de tu navegador.",
-          "Para saber cuántas visitas recibimos usamos Cloudflare Web Analytics, de Cloudflare, Inc. No usa cookies ni guarda nada en tu navegador, y no te identifica: solo nos muestra cifras de conjunto, como páginas vistas, país de origen o tipo de dispositivo."
+          "Para saber cuántas visitas recibimos usamos Cloudflare Web Analytics, de Cloudflare, Inc. No usa cookies ni guarda nada en tu navegador, y no te identifica: solo nos muestra cifras de conjunto, como páginas vistas, país de origen o tipo de dispositivo.",
+          "Además, la propia web anota de forma anónima cómo se usa, para mejorarla: qué páginas, secciones y réplicas se ven, qué se añade al pedido y si se termina, desde qué web o campaña se llega, el idioma, el tipo de dispositivo y la zona horaria del navegador. No usa cookies ni guarda nada en tu navegador, no recoge tu IP, tus datos de contacto ni lo que escribes en los formularios, y no te reconoce entre una visita y otra. Esos datos se guardan en Google Workspace (Google Ireland Ltd.) y los borramos a los 12 meses. Si tu navegador tiene activado «No rastrear» o Global Privacy Control, no se anota nada."
         ]
       }
     ]

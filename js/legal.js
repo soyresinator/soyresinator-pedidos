@@ -1,7 +1,7 @@
 // Soy Resinator · páginas de texto: privacidad, condiciones, aviso legal, preguntas frecuentes, envíos,
 // devoluciones y contacto. Los textos salen de legal/<idioma>.json; los datos de la titular, de
 // data/config.json ("legal"), y la lista de países con tarifa, de data/shipping.json.
-import * as C from './core.js?v=20261118';
+import * as C from './core.js?v=20261121';
 
 let cfg = null;
 let ship = null;

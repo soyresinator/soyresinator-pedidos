@@ -1,5 +1,7 @@
 // Soy Resinator · utilidades compartidas por todas las páginas.
 // Sin framework ni compilación: módulos ES servidos tal cual por GitHub Pages.
+import { initAnalitica, ev } from './analitica.js?v=20261121';
+export { ev };   // las demás páginas anotan eventos con C.ev(tipo, datos)
 
 export const LANGS = ['en', 'es', 'pt', 'de', 'fr', 'it'];
 const LS_LANG = 'sr_lang';
@@ -92,6 +94,7 @@ export async function setLang(l) {
   await loadLang(l);
   lsSet(LS_LANG, l);
   applyI18n();
+  ev('idioma', { l });
   document.dispatchEvent(new CustomEvent('sr:lang', { detail: l }));
 }
 
@@ -401,6 +404,7 @@ export function setupChrome(cfg) {
   document.addEventListener('sr:lang', paintIg);
 
   contadorVisitas(cfg);
+  initAnalitica(cfg, { lang: getLang, cart: () => { const c = loadCart(); return { items: c.items }; } });
   clicCorreo(cfg);
 
   // Contador del carrito

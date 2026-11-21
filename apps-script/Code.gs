@@ -243,6 +243,7 @@ function doPost(e) {
     if (body.accion === 'resena_info') return json(infoResena(body));
     if (body.accion === 'resena') return json(guardarResena(body));
     if (body.accion === 'clic') return json(clicWeb(body));
+    if (body.accion === 'ev') return json(registrarEventos(body));
     return json({ ok: false, error: 'accion_desconocida' });
   } catch (err) {
     console.error(err);
@@ -650,6 +651,104 @@ function clicWeb(b) {
   if (!RE_ID.test(id) || k.length !== 24 || k !== tokenClic(id)) return { ok: false, error: 'enlace_invalido' };
   registrarClic(id, 'web');
   return { ok: true };
+}
+
+/* =====================================================================
+ * ANALÍTICA PROPIA (POST accion:"ev", la manda js/analitica.js)
+ * Eventos anónimos de la web: sin datos de contacto, sin IP y sin parámetros de la URL.
+ * Se guardan en una hoja aparte, "RES · Analítica" (pestaña EVENTOS), para no cargar la de pedidos.
+ * La crea sola el primer evento, en la misma carpeta que esta hoja; su id queda en la propiedad ANALITICA_ID.
+ * ===================================================================== */
+const ANALITICA = {
+  EVENTOS: ['vista', 'seccion', 'prod', 'ficha', 'ficha_abrir', 'carrito', 'ver_pedido', 'quitar', 'duplicar', 'color', 'extra',
+    'envio', 'pais', 'idioma', 'form_inicio', 'form_error', 'pedido', 'pedido_error', 'enlace', 'salida', 'visor3d'],
+  MAX_EVENTOS: 40,          // por envío
+  MAX_ENVIOS_SESION: 60,    // por visita y hora
+  MAX_FILAS_HORA: 5000,     // tope global, por si alguien abusa del endpoint
+  ENCABEZADOS: ['FECHA', 'SESION', 'SEG', 'EVENTO', 'PAGINA', 'DATOS', 'ORIGEN', 'UTM', 'IDIOMA', 'DISPOSITIVO', 'ZONA', 'ANCHO', 'PRUEBA']
+};
+
+function hojaAnalitica() {
+  const props = PropertiesService.getScriptProperties();
+  let id = props.getProperty('ANALITICA_ID'), ss = null;
+  if (id) { try { ss = SpreadsheetApp.openById(id); } catch (e) { ss = null; } }
+  if (!ss) {
+    ss = SpreadsheetApp.create('RES · Analítica');
+    try {
+      const padre = DriveApp.getFileById(SpreadsheetApp.getActiveSpreadsheet().getId()).getParents();
+      if (padre.hasNext()) DriveApp.getFileById(ss.getId()).moveTo(padre.next());
+    } catch (e) { console.warn('No se ha podido mover la hoja de analítica: ' + e); }
+    const sh = ss.getSheets()[0];
+    sh.setName('EVENTOS');
+    sh.getRange(1, 1, 1, ANALITICA.ENCABEZADOS.length).setValues([ANALITICA.ENCABEZADOS]).setFontWeight('bold');
+    sh.setFrozenRows(1);
+    props.setProperty('ANALITICA_ID', ss.getId());
+  }
+  return ss.getSheetByName('EVENTOS') || ss.getSheets()[0];
+}
+
+/** Texto corto y limpio para la hoja: sin saltos ni caracteres de control, y sin empezar como fórmula. */
+function textoAnalitica(v, max) {
+  let s = String(v === undefined || v === null ? '' : v).replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, max || 60);
+  if (/^[=+\-@]/.test(s)) s = "'" + s;
+  return s;
+}
+
+function registrarEventos(b) {
+  const s = String(b.s || '');
+  if (!/^[a-z0-9]{6,16}$/.test(s) || !Array.isArray(b.e) || !b.e.length) return { ok: false, error: 'datos_invalidos' };
+  const cache = CacheService.getScriptCache();
+  const kS = 'an_s_' + s, nS = Number(cache.get(kS) || 0);
+  if (nS >= ANALITICA.MAX_ENVIOS_SESION) return { ok: true };
+  cache.put(kS, String(nS + 1), 3600);
+  const hora = Utilities.formatDate(new Date(), 'UTC', 'yyyyMMddHH'), kH = 'an_h_' + hora, nH = Number(cache.get(kH) || 0);
+  if (nH >= ANALITICA.MAX_FILAS_HORA) return { ok: true };
+
+  const m = b.m && typeof b.m === 'object' ? b.m : null;
+  const utm = m && m.utm && typeof m.utm === 'object'
+    ? ['source', 'medium', 'campaign', 'content'].map(function (k) { return textoAnalitica(m.utm[k], 40); }).join('|').replace(/\|+$/, '') : '';
+  const ahora = new Date().toISOString();
+  const filas = [];
+  b.e.slice(0, ANALITICA.MAX_EVENTOS).forEach(function (x, i) {
+    if (!Array.isArray(x)) return;
+    const tipo = String(x[0] || '');
+    if (ANALITICA.EVENTOS.indexOf(tipo) < 0) return;
+    const seg = Math.max(0, Math.min(86400, Math.round(Number(x[1]) || 0)));
+    const d = x[2] && typeof x[2] === 'object' ? x[2] : {};
+    const datos = {};
+    Object.keys(d).slice(0, 8).forEach(function (k) {
+      if (!/^[a-z]{1,10}$/.test(k)) return;
+      const v = d[k];
+      datos[k] = typeof v === 'number' && isFinite(v) ? Math.round(v * 100) / 100 : textoAnalitica(v, k === 'pids' ? 200 : 60);
+    });
+    const pag = tipo === 'vista' ? textoAnalitica(datos.pag, 40) : '';
+    const conMeta = m && filas.length === 0;   // los datos de la visita van solo en su primera fila
+    filas.push([ahora, s, seg, tipo, pag, JSON.stringify(datos),
+      conMeta ? textoAnalitica(m.ref, 60) : '', conMeta ? utm : '', conMeta ? textoAnalitica(m.lang, 5) : '',
+      conMeta ? textoAnalitica(m.dev, 10) : '', conMeta ? textoAnalitica(m.tz, 40) : '', conMeta ? Math.max(0, Math.min(9999, Math.round(Number(m.w) || 0))) : '',
+      m && Number(m.pr) === 1 ? 'sí' : '']);
+  });
+  if (!filas.length) return { ok: true };
+  cache.put(kH, String(nH + filas.length), 3700);
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(5000)) return { ok: false, error: 'ocupado' };
+  try {
+    const sh = hojaAnalitica();
+    sh.getRange(sh.getLastRow() + 1, 1, filas.length, ANALITICA.ENCABEZADOS.length).setValues(filas);
+  } finally { lock.releaseLock(); }
+  return { ok: true };
+}
+
+/** Borra los eventos de más de 12 meses (la privacidad dice que no se guardan más). Ejecútala de vez en cuando. */
+function podarAnalitica() {
+  const sh = hojaAnalitica(), n = sh.getLastRow() - 1;
+  if (n < 1) return 'Sin eventos';
+  const limite = Date.now() - 365 * 86400000;
+  const fechas = sh.getRange(2, 1, n, 1).getValues();
+  let borrar = 0;
+  while (borrar < n && new Date(fechas[borrar][0]).getTime() < limite) borrar++;
+  if (borrar) sh.deleteRows(2, borrar);
+  return 'Borrados ' + borrar + ' eventos de hace más de 12 meses';
 }
 
 /** Ejecútala desde el editor cuando queráis ver cómo van los correos de reseña. */

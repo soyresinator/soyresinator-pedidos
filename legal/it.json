@@ -70,7 +70,8 @@
         "h": "Cookie e memorizzazione",
         "p": [
           "Questo sito non usa cookie. Salva nel tuo browser (localStorage) solo l'ordine che stai preparando e la lingua scelta, così non li perdi quando torni. Puoi cancellarli quando vuoi dalle impostazioni del browser.",
-          "Per sapere quante visite riceviamo usiamo Cloudflare Web Analytics, di Cloudflare, Inc. Non usa cookie, non salva nulla nel tuo browser e non ti identifica: ci mostra solo dati aggregati, come pagine viste, paese di provenienza o tipo di dispositivo."
+          "Per sapere quante visite riceviamo usiamo Cloudflare Web Analytics, di Cloudflare, Inc. Non usa cookie, non salva nulla nel tuo browser e non ti identifica: ci mostra solo dati aggregati, come pagine viste, paese di provenienza o tipo di dispositivo.",
+          "Inoltre, il sito stesso registra in forma anonima come viene utilizzato, per migliorarlo: quali pagine, sezioni e repliche vengono viste, cosa viene aggiunto all'ordine e se l'ordine viene completato, da quale sito o campagna arriva la visita, la lingua, il tipo di dispositivo e il fuso orario del browser. Non usa cookie né salva nulla nel tuo browser, non raccoglie il tuo indirizzo IP, i tuoi dati di contatto né quello che scrivi nei moduli, e non ti riconosce da una visita all'altra. Questi dati sono conservati in Google Workspace (Google Ireland Ltd.) e li cancelliamo dopo 12 mesi. Se nel tuo browser è attivo «Do Not Track» o Global Privacy Control, non viene registrato nulla."
         ]
       }
     ]

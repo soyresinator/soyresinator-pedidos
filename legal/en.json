@@ -70,7 +70,8 @@
         "h": "Cookies and storage",
         "p": [
           "This website uses no cookies. It only stores in your browser (localStorage) the order you're putting together and your chosen language, so you don't lose them when you come back. You can delete them at any time from your browser settings.",
-          "To know how many visits we get, we use Cloudflare Web Analytics, by Cloudflare, Inc. It uses no cookies, stores nothing in your browser and does not identify you: it only shows us aggregate figures, such as page views, country of origin or device type."
+          "To know how many visits we get, we use Cloudflare Web Analytics, by Cloudflare, Inc. It uses no cookies, stores nothing in your browser and does not identify you: it only shows us aggregate figures, such as page views, country of origin or device type.",
+          "In addition, the website itself anonymously records how it is used, so we can improve it: which pages, sections and replicas are viewed, what is added to the order and whether the order is completed, which website or campaign the visit comes from, the language, the type of device and the browser's time zone. It does not use cookies or store anything in your browser, it does not collect your IP address, your contact details or what you type in forms, and it does not recognise you from one visit to the next. This data is stored in Google Workspace (Google Ireland Ltd.) and we delete it after 12 months. If your browser has \"Do Not Track\" or Global Privacy Control turned on, nothing is recorded."
         ]
       }
     ]
