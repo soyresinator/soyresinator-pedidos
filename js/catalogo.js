@@ -1,7 +1,7 @@
 // Soy Resinator · catálogo (index.html). Arranca también la vista de pedido.
-import * as C from './core.js?v=20261121c';
-import * as P from './carrito.js?v=20261121c';
-import { plazoDias } from './calc.js?v=20261121c';
+import * as C from './core.js?v=20261123';
+import * as P from './carrito.js?v=20261123';
+import { plazoDias } from './calc.js?v=20261123';
 
 const state = {
   cfg: null, cat: null, ship: null, serie: [],
@@ -157,6 +157,9 @@ function paintPriceNote() {
   if (!p) note.textContent = C.t('precio.sin_pais');
   else if (p.ue) note.textContent = '';
   else note.textContent = C.t('precio.aduanas');
+  // con moneda propia: se cobra en euros y su importe es orientativo
+  const nm = p ? C.notaMoneda(p.code) : '';
+  if (nm) note.textContent = (note.textContent ? note.textContent + ' ' : '') + nm;
 }
 
 function taxLabel() {
@@ -182,6 +185,7 @@ function render() {
   C.avisoForja('cerrado', !state.abiertos);
 
   const tax = taxLabel();
+  paintPriceNote();   // la nota de moneda depende del cambio, que llega con la config del servidor
   box.innerHTML = state.cat.colecciones.map(col => {
     const prods = state.cat.productos.filter(p => p.coleccion === col.id);
     if (!prods.length) return '';
@@ -247,6 +251,7 @@ function card(p, tax) {
         ${C.hasKey('desc.' + p.id) ? `<p class="card-desc">${C.esc(C.t('desc.' + p.id))}</p>` : ''}
         <div class="price-row">
           <span class="price">${C.esc(C.money(p.pvp))}</span>
+          ${C.otraMoneda(p.pvp, C.loadCart().pais) ? `<span class="price-alt">${C.esc(C.otraMoneda(p.pvp, C.loadCart().pais))}</span>` : ''}
           ${tax ? `<span class="tax">${C.esc(tax)}</span>` : ''}
         </div>
         <div>

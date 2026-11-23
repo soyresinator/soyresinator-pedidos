@@ -285,6 +285,10 @@ img { max-width: 100%; display: block; }
 .card-desc { margin: 0; color: var(--muted); font-size: .95rem; }
 .price-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
 .price { font-size: 1.9rem; font-weight: 700; color: var(--gold); }
+/* precio orientativo en la moneda del país elegido (se cobra en euros) */
+.price-alt { font-size: 1.05rem; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sum-alt { margin: 4px 0 0; text-align: right; font-size: .88rem; color: var(--muted); }
+.sum-alt strong { font-size: 1.05rem; color: var(--text); font-variant-numeric: tabular-nums; }
 .tax { font-size: .85rem; color: var(--muted); }
 .includes { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; font-size: .95rem; }
 .includes li::before { content: "◆"; color: var(--gold); font-size: .65em; margin-right: 8px; vertical-align: .15em; }

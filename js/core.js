@@ -1,6 +1,6 @@
 // Soy Resinator · utilidades compartidas por todas las páginas.
 // Sin framework ni compilación: módulos ES servidos tal cual por GitHub Pages.
-import { initAnalitica, ev } from './analitica.js?v=20261121c';
+import { initAnalitica, ev } from './analitica.js?v=20261123';
 export { ev };   // las demás páginas anotan eventos con C.ev(tipo, datos)
 
 export const LANGS = ['en', 'es', 'pt', 'de', 'fr', 'it'];
@@ -128,6 +128,35 @@ export function money(n) {
     style: 'currency', currency: 'EUR',
     minimumFractionDigits: whole ? 0 : 2, maximumFractionDigits: whole ? 0 : 2
   }).format(n);
+}
+
+/* ---------- Precio en la moneda del país (orientativo) ----------
+ * El servidor da el cambio oficial del BCE del día (?accion=config → cambio). Se cobra siempre en euros. */
+let cambioBce = null;
+// país → moneda, solo las que publica el BCE; los países con euro (o con una moneda que el BCE no da) no llevan segundo precio
+const MONEDA_PAIS = {
+  US: 'USD', PR: 'USD', GU: 'USD', VI: 'USD', AS: 'USD', MP: 'USD', EC: 'USD', SV: 'USD', PA: 'USD', TL: 'USD', BQ: 'USD', FM: 'USD', MH: 'USD', PW: 'USD',
+  GB: 'GBP', GG: 'GBP', JE: 'GBP', IM: 'GBP', CA: 'CAD', AU: 'AUD', NZ: 'NZD', CH: 'CHF', LI: 'CHF', JP: 'JPY', CN: 'CNY', HK: 'HKD', KR: 'KRW',
+  SG: 'SGD', IN: 'INR', ID: 'IDR', MY: 'MYR', PH: 'PHP', TH: 'THB', IL: 'ILS', ZA: 'ZAR', MX: 'MXN', BR: 'BRL', TR: 'TRY',
+  NO: 'NOK', SE: 'SEK', DK: 'DKK', GL: 'DKK', FO: 'DKK', IS: 'ISK', PL: 'PLN', CZ: 'CZK', HU: 'HUF', RO: 'RON', BG: 'BGN'
+};
+/** «≈ 209 US$» para un importe en euros y el país elegido; '' si el país usa euro, no hay cambio o el BCE no da su moneda. */
+export function otraMoneda(euros, paisCode) {
+  const mon = MONEDA_PAIS[paisCode];
+  const k = mon && cambioBce && cambioBce.tasas[mon];
+  if (!k || !euros) return '';
+  try {
+    return t('moneda.aprox', { precio: new Intl.NumberFormat(locale(), { style: 'currency', currency: mon, maximumFractionDigits: 0 }).format(Math.round(euros * k)) });
+  } catch (e) { return ''; }
+}
+/** Nota junto al total: se cobra en euros, el importe en su moneda es orientativo (con la fecha del cambio). */
+export function notaMoneda(paisCode) {
+  const mon = MONEDA_PAIS[paisCode];
+  if (!mon || !cambioBce || !cambioBce.tasas[mon]) return '';
+  let nombre = mon;
+  try { nombre = new Intl.DisplayNames([locale()], { type: 'currency' }).of(mon) || mon; } catch (e) { /* nada */ }
+  const f = /^\d{4}-\d{2}-\d{2}$/.test(cambioBce.fecha || '') ? new Date(cambioBce.fecha + 'T12:00:00').toLocaleDateString(locale(), { day: 'numeric', month: 'long' }) : '';
+  return t('moneda.nota', { moneda: nombre, fecha: f });
 }
 
 export function countryName(pais) {
@@ -306,6 +335,7 @@ export function loadRemote(cfg, force = false) {
         const r = await fetch(cfg.api_url + '?accion=config', { signal: ctl.signal });
         const j = await r.json();
         if (!j || j.ok !== true || !Array.isArray(j.colores)) return { ok: false };
+        cambioBce = j.cambio && j.cambio.tasas ? j.cambio : null;
         return j;
       } catch (e) {
         return { ok: false };

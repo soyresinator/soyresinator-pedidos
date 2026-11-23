@@ -1,7 +1,7 @@
 // Soy Resinator · vista de pedido (#pedido en index.html)
 // Tarjeta por unidad, datos y envío, pago, resumen, envío al Apps Script y confirmación.
-import * as C from './core.js?v=20261121c';
-import { totales, plazoDias, extrasDe, conEnvio, opcionExtra } from './calc.js?v=20261121c';
+import * as C from './core.js?v=20261123';
+import { totales, plazoDias, extrasDe, conEnvio, opcionExtra } from './calc.js?v=20261123';
 
 const $ = id => document.getElementById(id);
 const RE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -349,7 +349,7 @@ function renderEnvio() {
   const opcion = (id, ayuda) => {
     const p = conEnvio(base, id);
     const tot = totales(cart.items, S.cat, p, S.ship);
-    const precio = cart.items.length ? ' · ' + C.money(tot.envio) : '';
+    const precio = cart.items.length ? ' · ' + C.money(tot.envio) + (C.otraMoneda(tot.envio, base.code) ? ' (' + C.otraMoneda(tot.envio, base.code) + ')' : '') : '';
     return `
       <label class="choice">
         <input type="radio" name="envio" value="${C.esc(id)}" ${id === elegido ? 'checked' : ''}>
@@ -462,6 +462,7 @@ function resumenHtml(cart) {
         <span>${C.esc(C.t(tot.consultar ? 'res.total_sin_envio' : 'res.total'))}</span>
         <span class="price">${C.esc(C.money(tot.total))}</span>
       </div>
+      ${pais && C.otraMoneda(tot.total, pais.code) ? `<p class="sum-alt"><strong>${C.esc(C.otraMoneda(tot.total, pais.code))}</strong> · ${C.esc(C.notaMoneda(pais.code))}</p>` : ''}
       ${tax ? `<p class="tax">${C.esc(tax)}${pais && !pais.ue ? ' · ' + C.esc(C.t('precio.aduanas')) : ''}</p>` : ''}
       <p class="sum-note">${C.esc(pago)}</p>
       <p class="sum-note">${C.esc(plazoTexto(tot.horas))}</p>

@@ -1,7 +1,7 @@
 // Soy Resinator · manual de montaje (manual.html)
 // Se llega desde "Mi pedido" con un enlace firmado: ?id=SR-XXXXXX&m=heavy-bolt&e=<caducidad>&k=<firma>.
 // El manual (plantilla con fotos + textos de los 6 idiomas) lo sirve el Apps Script desde Drive; aquí no se guarda nada.
-import * as C from './core.js?v=20261121c';
+import * as C from './core.js?v=20261123';
 
 const $ = id => document.getElementById(id);
 const RE_ID = /^SR-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/;
